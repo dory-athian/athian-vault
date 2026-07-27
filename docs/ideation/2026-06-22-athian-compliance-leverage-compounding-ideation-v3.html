@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ideation: Athian Compliance — Leverage &amp; Compounding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+  :root {
+    --bg: #F8F7F4;
+    --surface: #FFFFFF;
+    --border: #E2DDD6;
+    --border-strong: #C8C0B4;
+    --text: #1A1714;
+    --text-muted: #6B6560;
+    --text-faint: #9C9590;
+
+    /* axis colors */
+    --ax1: #1B5E8C; /* standard encoding — cobalt */
+    --ax1-soft: #EAF2F8;
+    --ax2: #2D6A4F; /* evidence collection — forest */
+    --ax2-soft: #EBF5EE;
+    --ax3: #7B3F00; /* supplier experience — amber-brown */
+    --ax3-soft: #FBF3E8;
+    --ax4: #4A3080; /* review & reporting — slate-violet */
+    --ax4-soft: #F0EDF8;
+    --ax5: #1F5C6E; /* standard lifecycle — steel-teal */
+    --ax5-soft: #E8F4F6;
+
+    --conf-high: #2D6A4F;
+    --conf-high-soft: #EBF5EE;
+    --conf-med: #7B5C00;
+    --conf-med-soft: #FEF9E7;
+    --cx-low-soft: #F0F8F0;
+    --cx-med-soft: #FEF9E7;
+    --cx-high-soft: #FEF0EE;
+
+    --font-body: 'Libre Baskerville', Georgia, serif;
+    --font-ui: 'Inter', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 15px; line-height: 1.7; }
+
+  body { max-width: 900px; margin-inline: auto; padding: 2.5rem 2rem 5rem; }
+
+  /* Header */
+  .doc-header { border-bottom: 2px solid var(--border-strong); padding-bottom: 1.75rem; margin-bottom: 2.5rem; }
+  .doc-eyebrow { font-family: var(--font-ui); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 0.5rem; }
+  .doc-title { font-size: 1.9rem; font-weight: 700; line-height: 1.2; margin-bottom: 0.75rem; }
+  .doc-meta { font-family: var(--font-ui); font-size: 0.82rem; color: var(--text-muted); display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  .doc-meta span::before { content: ''; }
+
+  /* Stats strip */
+  .stats-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 2.5rem; }
+  .stat { background: var(--surface); padding: 1rem 1.25rem; }
+  .stat-value { font-family: var(--font-mono); font-size: 1.6rem; font-weight: 500; color: var(--text); line-height: 1; margin-bottom: 0.25rem; }
+  .stat-label { font-family: var(--font-ui); font-size: 0.75rem; color: var(--text-muted); }
+
+  /* Sections */
+  section { margin-bottom: 3rem; }
+  h2 { font-family: var(--font-ui); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 1.25rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 1.1rem; font-weight: 700; line-height: 1.3; margin-bottom: 0.6rem; }
+
+  p { max-width: 70ch; margin-bottom: 0.75rem; }
+  p:last-child { margin-bottom: 0; }
+
+  /* Grounding context */
+  .grounding-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .grounding-block { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1.1rem 1.25rem; }
+  .grounding-block h4 { font-family: var(--font-ui); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 0.6rem; }
+  .grounding-block ul { padding-left: 1.2rem; }
+  .grounding-block li { font-size: 0.88rem; line-height: 1.5; margin-bottom: 0.3rem; color: var(--text-muted); }
+  .grounding-block p { font-size: 0.88rem; color: var(--text-muted); max-width: none; }
+
+  /* Axis legend */
+  .axis-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .axis-chip { font-family: var(--font-ui); font-size: 0.78rem; font-weight: 500; border-radius: 4px; padding: 0.2rem 0.65rem; }
+  .axis-1 { background: var(--ax1-soft); color: var(--ax1); }
+  .axis-2 { background: var(--ax2-soft); color: var(--ax2); }
+  .axis-3 { background: var(--ax3-soft); color: var(--ax3); }
+  .axis-4 { background: var(--ax4-soft); color: var(--ax4); }
+  .axis-5 { background: var(--ax5-soft); color: var(--ax5); }
+
+  /* Jump list */
+  .jump-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.75rem; }
+  .jump-link { font-family: var(--font-ui); font-size: 0.78rem; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 0.2rem 0.65rem; color: var(--text-muted); text-decoration: none; transition: border-color 0.15s; }
+  .jump-link:hover { border-color: var(--border-strong); color: var(--text); }
+
+  /* Idea cards */
+  article.idea-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 1.25rem; }
+  .idea-card-header { display: flex; align-items: flex-start; gap: 1rem; padding: 1.25rem 1.5rem 1rem; }
+  .idea-rank { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-faint); min-width: 1.6rem; margin-top: 0.15rem; }
+  .idea-title-group { flex: 1; }
+  .idea-title-group h3 { margin-bottom: 0.35rem; }
+  .idea-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+  .chip { font-family: var(--font-ui); font-size: 0.72rem; font-weight: 500; border-radius: 4px; padding: 0.15rem 0.55rem; }
+  .chip-conf-high { background: var(--conf-high-soft); color: var(--conf-high); }
+  .chip-conf-med { background: var(--conf-med-soft); color: var(--conf-med); }
+  .chip-cx-low { background: var(--cx-low-soft); color: #2D5A27; }
+  .chip-cx-med { background: var(--cx-med-soft); color: #5C4400; }
+  .chip-cx-high { background: var(--cx-high-soft); color: #7A2E1A; }
+
+  .idea-card-body { padding: 0 1.5rem 0.5rem 3.85rem; }
+  .idea-card-body p { font-size: 0.95rem; max-width: 72ch; }
+
+  details.idea-detail { border-top: 1px solid var(--border); }
+  details.idea-detail summary { cursor: pointer; padding: 0.7rem 1.5rem 0.7rem 3.85rem; font-family: var(--font-ui); font-size: 0.78rem; font-weight: 600; color: var(--text-muted); list-style: none; display: flex; align-items: center; gap: 0.4rem; user-select: none; }
+  details.idea-detail summary::-webkit-details-marker { display: none; }
+  details.idea-detail summary::before { content: '▶'; font-size: 0.6rem; transition: transform 0.15s; }
+  details[open].idea-detail summary::before { transform: rotate(90deg); }
+
+  .idea-detail-content { padding: 0.75rem 1.5rem 1.25rem 3.85rem; }
+  dl.idea-fields { display: grid; grid-template-columns: max-content 1fr; gap: 0.5rem 1.25rem; }
+  dl.idea-fields dt { font-family: var(--font-ui); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint); padding-top: 0.1rem; white-space: nowrap; }
+  dl.idea-fields dd { font-size: 0.88rem; line-height: 1.55; color: var(--text-muted); max-width: 66ch; }
+  .basis-tag { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; background: var(--bg); border: 1px solid var(--border); border-radius: 3px; padding: 0.05rem 0.35rem; color: var(--text); }
+  .meeting-test-block { margin-top: 0.75rem; background: var(--bg); border-left: 3px solid var(--border-strong); padding: 0.5rem 0.75rem; border-radius: 0 4px 4px 0; font-size: 0.85rem; color: var(--text-muted); }
+  .meeting-test-block strong { font-family: var(--font-ui); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-faint); display: block; margin-bottom: 0.2rem; }
+
+  /* SVG diagram containers */
+  .diagram-wrap { margin: 1rem 0 0.5rem; overflow-x: auto; }
+  .diagram-wrap svg { display: block; max-width: 100%; }
+
+  /* Top pick callout */
+  .top-pick { background: #FFFBF0; border: 1px solid #E8D87A; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; font-family: var(--font-ui); font-size: 0.85rem; }
+  .top-pick-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #8B6914; margin-bottom: 0.3rem; }
+  .top-pick p { max-width: none; color: var(--text-muted); }
+  .top-pick strong { color: var(--text); }
+
+  /* Rejection table */
+  table.rejection { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  table.rejection th { font-family: var(--font-ui); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); text-align: left; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--border); }
+  table.rejection td { padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--border); color: var(--text-muted); vertical-align: top; }
+  table.rejection tr:last-child td { border-bottom: none; }
+  table.rejection td:first-child { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-faint); white-space: nowrap; }
+  table.rejection td:nth-child(2) { font-weight: 500; color: var(--text); }
+
+  /* Footer */
+  footer.composition-signal { border-top: 1px solid var(--border); padding-top: 1.25rem; margin-top: 4rem; font-family: var(--font-ui); font-size: 0.75rem; color: var(--text-faint); }
+
+  @media (max-width: 640px) {
+    .stats-strip { grid-template-columns: 1fr 1fr; }
+    .grounding-grid { grid-template-columns: 1fr; }
+    .idea-card-body, .idea-detail-content, details.idea-detail summary { padding-left: 1.5rem; }
+    .idea-card-header { gap: 0.75rem; }
+    dl.idea-fields { grid-template-columns: 1fr; }
+    dl.idea-fields dt { padding-bottom: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="doc-header">
+  <div class="doc-eyebrow">Ideation · Elsewhere-Software · Leverage &amp; Compounding</div>
+  <h1 class="doc-title">Athian Compliance — Leverage &amp; Compounding</h1>
+  <div class="doc-meta">
+    <span>Date: <time datetime="2026-06-22">2026-06-22</time></span>
+    <span>Topic: athian-compliance-leverage-compounding</span>
+    <span>Mode: elsewhere-software</span>
+    <span>7 survivors · 26 raw candidates</span>
+  </div>
+</header>
+
+<div class="stats-strip">
+  <div class="stat">
+    <div class="stat-value">7</div>
+    <div class="stat-label">Survivors</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">26</div>
+    <div class="stat-label">Raw candidates</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">5/5</div>
+    <div class="stat-label">Axes covered</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">4</div>
+    <div class="stat-label">Ideation agents</div>
+  </div>
+</div>
+
+<!-- GROUNDING CONTEXT -->
+<section id="grounding">
+  <h2>Topic Context</h2>
+  <div class="grounding-grid">
+    <div class="grounding-block">
+      <h4>Platform shape</h4>
+      <p>AI-native CPG supplier compliance platform. A DSL makes requirements machine-readable — typed with unit, threshold, time period, required data, accepted sources. AI handles evidence collection, pre-review, and report generation; the compliance specialist is reviewer and approver.</p>
+    </div>
+    <div class="grounding-block">
+      <h4>Pain points</h4>
+      <ul>
+        <li>Evidence re-entry across multiple systems — no unified data model</li>
+        <li>Humans re-interpret standards before each audit — time and inconsistency compound per cycle</li>
+        <li>Suppliers manage 15–30 portals; aggregation solutions have failed repeatedly</li>
+        <li>EcoVadis/Sedex: $1.5–5K/supplier/year, human-analyst-mediated, no API surface</li>
+        <li>Batch-mode compliance with no continuous drift detection</li>
+      </ul>
+    </div>
+    <div class="grounding-block">
+      <h4>Institutional context</h4>
+      <ul>
+        <li>Athian owns protocol DSLs: Bovaer, AMMP, Rumensin, Carbon Intensity</li>
+        <li>Protocol schema: name, version, code, attachments, baselineComponents, projectComponents; Component has generic schema field — intentionally sparse</li>
+        <li>Feedback Hub pattern validated: Granola → n8n → Claude → Sheets extraction pipeline</li>
+      </ul>
+    </div>
+    <div class="grounding-block">
+      <h4>External signals</h4>
+      <ul>
+        <li>EcoVadis: 130K members, 500+ analysts, €409+/supplier, 6–10 week cycles</li>
+        <li>Vanta/Drata: $300M ARR via 375–400 API integrations; requires machine-readable API surface</li>
+        <li>Tendify 2024: 2,000+ distinct procurement portals in Europe</li>
+        <li>NIST OSCAL: months to minutes in IT audit; FedRAMP 20x authorization in 119 days</li>
+        <li>EU CS3D Omnibus I (Mar 2026): compliance-by-proxy is where the volume lives</li>
+        <li>SBOM: adoption followed procurement requirements, not spec quality</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- TOPIC AXES -->
+<section id="axes">
+  <h2>Topic Axes</h2>
+  <div class="axis-list">
+    <span class="axis-chip axis-1">1. Standard encoding</span>
+    <span class="axis-chip axis-2">2. Evidence collection</span>
+    <span class="axis-chip axis-3">3. Supplier experience</span>
+    <span class="axis-chip axis-4">4. Review &amp; reporting</span>
+    <span class="axis-chip axis-5">5. Standard lifecycle</span>
+  </div>
+</section>
+
+<!-- RANKED IDEAS -->
+<section id="ideas">
+  <h2>Ranked Ideas</h2>
+
+  <div class="jump-list">
+    <a class="jump-link" href="#idea-1">1. DSL as Supply Chain Propagation Primitive</a>
+    <a class="jump-link" href="#idea-2">2. Specialist as Exception Arbiter</a>
+    <a class="jump-link" href="#idea-3">3. Evidence Shelf-Life Monitoring</a>
+    <a class="jump-link" href="#idea-4">4. DSL-Schema-Aware Certificate Parser</a>
+    <a class="jump-link" href="#idea-5">5. Standard-Version Diff → Portfolio Gap Report</a>
+    <a class="jump-link" href="#idea-6">6. Zero-Standard Onboarding via Gap Detection</a>
+    <a class="jump-link" href="#idea-7">7. Portal-Submission Ghost Writer</a>
+  </div>
+
+  <div class="top-pick">
+    <div class="top-pick-label">Top pick</div>
+    <p><strong>DSL as Supply Chain Propagation Primitive</strong> — the only idea with built-in network effects at the buyer layer. Each CPG customer onboarded propagates compliance demand into their supply chain without Athian selling to suppliers individually. The SBOM analogy is precise: procurement requirements drove adoption, not spec quality. That forcing function is already in motion here via EU CS3D compliance-by-proxy.</p>
+  </div>
+
+  <!-- IDEA 1 -->
+  <article class="idea-card" id="idea-1">
+    <div class="idea-card-header">
+      <span class="idea-rank">I-1.</span>
+      <div class="idea-title-group">
+        <h3>DSL as Supply Chain Propagation Primitive</h3>
+        <div class="idea-chips">
+          <span class="axis-chip axis-1">Standard encoding</span>
+          <span class="chip chip-conf-high">Conf 92%</span>
+          <span class="chip chip-cx-med">Cx Medium</span>
+        </div>
+      </div>
+    </div>
+    <div class="idea-card-body">
+      <p>A Tier-1 CPG customer publishes their compliance requirements as a machine-readable DSL profile. Their direct suppliers automatically receive a compliance brief showing exactly what they need to demonstrate — without re-entry, without a separate portal login, without translation by an analyst. As the CPG's requirements change, the brief updates automatically. Procurement requirement becomes the forcing function, not spec quality.</p>
+
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 620 140" width="620" height="140" font-family="'IBM Plex Mono', monospace" font-size="11">
+          <!-- CPG -->
+          <rect x="20" y="45" width="130" height="50" rx="5" fill="#EAF2F8" stroke="#1B5E8C" stroke-width="1.5"/>
+          <text x="85" y="66" text-anchor="middle" fill="#1B5E8C" font-weight="600" font-size="11">CPG Customer</text>
+          <text x="85" y="82" text-anchor="middle" fill="#1B5E8C" font-size="10">publishes DSL profile</text>
+
+          <!-- Arrow 1 -->
+          <line x1="152" y1="70" x2="205" y2="70" stroke="#C8C0B4" stroke-width="1.5" marker-end="url(#arr)"/>
+          <text x="178" y="63" text-anchor="middle" fill="#9C9590" font-size="10" font-family="'Inter', sans-serif">propagates</text>
+
+          <!-- Platform -->
+          <rect x="207" y="30" width="130" height="80" rx="5" fill="#FFFFFF" stroke="#C8C0B4" stroke-width="1.5"/>
+          <text x="272" y="57" text-anchor="middle" fill="#1A1714" font-weight="600" font-size="11">Athian</text>
+          <text x="272" y="73" text-anchor="middle" fill="#6B6560" font-size="10">maps DSL profile →</text>
+          <text x="272" y="87" text-anchor="middle" fill="#6B6560" font-size="10">supplier brief</text>
+          <text x="272" y="100" text-anchor="middle" fill="#6B6560" font-size="10">auto-updates on change</text>
+
+          <!-- Arrow 2 -->
+          <line x1="339" y1="70" x2="392" y2="55" stroke="#C8C0B4" stroke-width="1.5" marker-end="url(#arr)"/>
+          <line x1="339" y1="70" x2="392" y2="70" stroke="#C8C0B4" stroke-width="1.5" marker-end="url(#arr)"/>
+          <line x1="339" y1="70" x2="392" y2="85" stroke="#C8C0B4" stroke-width="1.5" marker-end="url(#arr)"/>
+
+          <!-- Suppliers -->
+          <rect x="394" y="25" width="110" height="30" rx="4" fill="#EBF5EE" stroke="#2D6A4F" stroke-width="1.2"/>
+          <text x="449" y="45" text-anchor="middle" fill="#2D6A4F" font-size="10">Supplier A</text>
+          <rect x="394" y="62" width="110" height="30" rx="4" fill="#EBF5EE" stroke="#2D6A4F" stroke-width="1.2"/>
+          <text x="449" y="82" text-anchor="middle" fill="#2D6A4F" font-size="10">Supplier B</text>
+          <rect x="394" y="99" width="110" height="30" rx="4" fill="#EBF5EE" stroke="#2D6A4F" stroke-width="1.2"/>
+          <text x="449" y="119" text-anchor="middle" fill="#2D6A4F" font-size="10">Supplier C</text>
+
+          <text x="449" y="16" text-anchor="middle" fill="#9C9590" font-size="10" font-family="'Inter', sans-serif">receive compliance brief</text>
+
+          <!-- Label: no analyst required -->
+          <rect x="520" y="55" width="88" height="30" rx="4" fill="#FBF3E8" stroke="#7B3F00" stroke-width="1"/>
+          <text x="564" y="69" text-anchor="middle" fill="#7B3F00" font-size="9" font-family="'Inter', sans-serif">No analyst</text>
+          <text x="564" y="81" text-anchor="middle" fill="#7B3F00" font-size="9" font-family="'Inter', sans-serif">translation needed</text>
+
+          <defs>
+            <marker id="arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#C8C0B4"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+    </div>
+    <details class="idea-detail">
+      <summary>Basis, rationale, downsides, meeting test</summary>
+      <div class="idea-detail-content">
+        <dl class="idea-fields">
+          <dt>Axis</dt>
+          <dd>Standard encoding (cross-cutting: also Supplier experience)</dd>
+          <dt>Basis</dt>
+          <dd>
+            <span class="basis-tag">external:</span> SBOM adoption (EO 14028) followed procurement requirements, not spec quality — the exact mechanism proposed here.
+            <span class="basis-tag">external:</span> EU CS3D Omnibus I (Mar 2026): companies below the 5,000-employee threshold face contractual assurance demands from in-scope customers; compliance-by-proxy is explicitly where the volume lives.
+            <span class="basis-tag">reasoned:</span> The DSL already decouples requirement definition from evidence collection. Propagation is the natural extension of that decoupling: a profile is just a view over a requirement set, and publishing it downstream is a document-delivery problem, not a data-aggregation problem.
+          </dd>
+          <dt>Rationale</dt>
+          <dd>Network effects accrue at the buyer layer, not the supplier layer. Each CPG customer onboarded propagates compliance demand into their supply chain without Athian needing to sell to suppliers individually. The SBOM precedent is instructive: government mandated a format; the tooling market followed. Here, CPG procurement requirements are the mandate.</dd>
+          <dt>Downsides</dt>
+          <dd>Requires CPG customers to trust Athian as the authoritative requirement publisher, which is a relationship and legal question, not just a product question. Supplier comprehension of a machine-generated brief needs UX work — the brief must be human-readable, not just machine-readable.</dd>
+        </dl>
+        <div class="meeting-test-block">
+          <strong>Meeting test</strong>
+          Creates network effects at the buyer layer — each CPG customer onboarded automatically creates compliance demand in their supply chain without Athian selling to each supplier individually. This is the go-to-market question.
+        </div>
+      </div>
+    </details>
+  </article>
+
+  <!-- IDEA 2 -->
+  <article class="idea-card" id="idea-2">
+    <div class="idea-card-header">
+      <span class="idea-rank">I-2.</span>
+      <div class="idea-title-group">
+        <h3>Specialist as Exception Arbiter</h3>
+        <div class="idea-chips">
+          <span class="axis-chip axis-4">Review &amp; reporting</span>
+          <span class="chip chip-conf-high">Conf 88%</span>
+          <span class="chip chip-cx-low">Cx Low</span>
+        </div>
+      </div>
+    </div>
+    <div class="idea-card-body">
+      <p>AI pre-assesses every supplier continuously. The compliance specialist only reviews exceptions — cases AI flags as uncertain, non-compliant, or at the boundary of a threshold. The specialist's job shifts from running compliance cycles to setting and tuning exception thresholds. This inverts EcoVadis's model where analyst review is the product, not the cost. The structural result: one specialist can cover far more suppliers than the current batch-cycle model allows.</p>
+    </div>
+    <details class="idea-detail">
+      <summary>Basis, rationale, downsides, meeting test</summary>
+      <div class="idea-detail-content">
+        <dl class="idea-fields">
+          <dt>Axis</dt>
+          <dd>Review &amp; reporting</dd>
+          <dt>Basis</dt>
+          <dd>
+            <span class="basis-tag">external:</span> EcoVadis positions its 500+ analyst-mediated review as the defensibility feature — human judgment is the product. Vanta/Drata's mechanic shows the opposite model works at scale: evidence emits continuously, humans review exceptions only. $300M ARR at Vanta (Apr 2026).
+          </dd>
+          <dt>Rationale</dt>
+          <dd>The defensibility claim in compliance is "someone reviewed this." EcoVadis buys defensibility with human analysts at €409+ per assessment. The DSL-plus-AI stack buys the same defensibility with a specialist reviewing the exception set — the difference is cost and cycle time, not auditability. The specialist's exception-approval is auditable and traceable in a way that EcoVadis's analyst judgment is not.</dd>
+          <dt>Downsides</dt>
+          <dd>Requires the AI pre-assessment to be calibrated well enough that the exception rate is manageable — if the exception rate is too high, the specialist bottleneck reappears. Threshold-tuning is a new skill that specialists may not have at first.</dd>
+        </dl>
+        <div class="meeting-test-block">
+          <strong>Meeting test</strong>
+          Directly changes how many suppliers a single specialist can manage — the headcount math for scaling the platform without growing the compliance team linearly.
+        </div>
+      </div>
+    </details>
+  </article>
+
+  <!-- IDEA 3 -->
+  <article class="idea-card" id="idea-3">
+    <div class="idea-card-header">
+      <span class="idea-rank">I-3.</span>
+      <div class="idea-title-group">
+        <h3>Evidence Shelf-Life Monitoring</h3>
+        <div class="idea-chips">
+          <span class="axis-chip axis-2">Evidence collection</span>
+          <span class="chip chip-conf-high">Conf 88%</span>
+          <span class="chip chip-cx-med">Cx Medium</span>
+        </div>
+      </div>
+    </div>
+    <div class="idea-card-body">
+      <p>Every piece of evidence in the system carries an expiry derived from the DSL requirement's time-period field. The system continuously monitors evidence freshness — not just at audit time but as a live state. When evidence is about to expire, the platform proactively triggers collection before the supplier falls into non-compliance. Analogous to aircraft continuing airworthiness directives: each component has a certified life, and the aircraft is never "audited" — it is continuously tracked. Compliance status is a live computation, not a periodic snapshot.</p>
+
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 560 120" width="560" height="120" font-family="'Inter', sans-serif" font-size="11">
+          <!-- Timeline bar -->
+          <rect x="30" y="55" width="500" height="10" rx="5" fill="#E2DDD6"/>
+          <!-- Evidence filed -->
+          <circle cx="30" cy="60" r="7" fill="#2D6A4F"/>
+          <text x="30" y="45" text-anchor="middle" fill="#2D6A4F" font-size="10">Evidence filed</text>
+
+          <!-- Compliant zone -->
+          <rect x="30" y="55" width="260" height="10" rx="0" fill="#2D6A4F" opacity="0.3"/>
+          <text x="155" y="83" text-anchor="middle" fill="#2D6A4F" font-size="10">Compliant window</text>
+
+          <!-- Warning zone -->
+          <rect x="290" y="55" width="80" height="10" rx="0" fill="#E8A320" opacity="0.4"/>
+          <text x="330" y="83" text-anchor="middle" fill="#7B5C00" font-size="10">Alert: 30 days</text>
+
+          <!-- Expiry -->
+          <line x1="370" y1="40" x2="370" y2="75" stroke="#C84B31" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <text x="370" y="33" text-anchor="middle" fill="#C84B31" font-size="10">DSL expiry</text>
+
+          <!-- Non-compliant -->
+          <rect x="370" y="55" width="160" height="10" rx="0" fill="#C84B31" opacity="0.25"/>
+          <text x="450" y="83" text-anchor="middle" fill="#7A2E1A" font-size="10">Non-compliant</text>
+
+          <!-- End -->
+          <circle cx="530" cy="60" r="7" fill="#9C9590"/>
+
+          <!-- Proactive trigger arrow -->
+          <path d="M 330 88 C 330 103 260 103 260 95" stroke="#7B5C00" stroke-width="1.2" fill="none" marker-end="url(#arr2)"/>
+          <text x="290" y="112" text-anchor="middle" fill="#7B5C00" font-size="9">proactive re-collection triggered</text>
+
+          <defs>
+            <marker id="arr2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#7B5C00"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+    </div>
+    <details class="idea-detail">
+      <summary>Basis, rationale, downsides, meeting test</summary>
+      <div class="idea-detail-content">
+        <dl class="idea-fields">
+          <dt>Axis</dt>
+          <dd>Evidence collection</dd>
+          <dt>Basis</dt>
+          <dd>
+            <span class="basis-tag">external:</span> Aircraft continuing airworthiness directives: each component has a certified life tracked continuously — the aircraft is never "reviewed," it is always in a known state relative to its requirements.
+            <span class="basis-tag">reasoned:</span> The DSL already includes a time-period field. Shelf-life computation is structurally implied by the data model — evidence expiry is a function of the requirement's time-period plus the evidence submission date. The batch-mode compliance pain point (evidence ages between cycles, drift goes undetected) is directly solved by this architecture.
+          </dd>
+          <dt>Rationale</dt>
+          <dd>Converts compliance from a periodic project to a continuous state machine. The specialist no longer runs audit cycles — they review exceptions. The platform knows, at any moment, the freshness state of every evidence item across every supplier. This is the most fundamental architectural shift the DSL enables.</dd>
+          <dt>Downsides</dt>
+          <dd>Suppliers must respond to proactive collection requests more frequently than annual audits. Some suppliers may experience higher touchpoints as a cost. The alert window (30 days before expiry) requires calibration per requirement type — food safety certification cycles differ from emissions data cycles.</dd>
+        </dl>
+        <div class="meeting-test-block">
+          <strong>Meeting test</strong>
+          The DSL's time-period field already contains the shelf-life information. This is an architectural decision about whether to activate it continuously or only at audit time — and the answer changes the product category.
+        </div>
+      </div>
+    </details>
+  </article>
+
+  <!-- IDEA 4 -->
+  <article class="idea-card" id="idea-4">
+    <div class="idea-card-header">
+      <span class="idea-rank">I-4.</span>
+      <div class="idea-title-group">
+        <h3>DSL-Schema-Aware Certificate Parser</h3>
+        <div class="idea-chips">
+          <span class="axis-chip axis-2">Evidence collection</span>
+          <span class="chip chip-conf-high">Conf 85%</span>
+          <span class="chip chip-cx-low">Cx Low</span>
+        </div>
+      </div>
+    </div>
+    <div class="idea-card-body">
+      <p>AI extracts fields from PDF certificates — EcoVadis scorecards, SQF, BRC, ISO 22000 — and maps them directly to DSL requirement fields. No supplier re-entry required; the certificate is the evidence submission. Because the parser is schema-aware (it knows exactly which DSL fields each certificate type can satisfy), it validates completeness and flags gaps automatically. The supplier's existing compliance artifacts become the data model, not the starting friction.</p>
+    </div>
+    <details class="idea-detail">
+      <summary>Basis, rationale, downsides, meeting test</summary>
+      <div class="idea-detail-content">
+        <dl class="idea-fields">
+          <dt>Axis</dt>
+          <dd>Evidence collection</dd>
+          <dt>Basis</dt>
+          <dd>
+            <span class="basis-tag">direct:</span> Certificate-as-currency is the stated informal standard: suppliers share PDF certificates (EcoVadis scorecard, SQF, BRC, ISO 22000); manual re-entry per portal is explicitly how compliance actually happens.
+            <span class="basis-tag">reasoned:</span> If the DSL defines which fields are required and which certificate types are accepted sources, the parser's schema can be derived directly from the DSL encoding. Schema-awareness is not a separate build — it's an output of the standard-encoding work.
+          </dd>
+          <dt>Rationale</dt>
+          <dd>Meets suppliers where they are. The certificate is already the artifact they maintain and circulate. Eliminating re-entry is zero behavioral change for the supplier — they share a PDF they already have. The leverage is high: every new standard encoded in the DSL immediately unlocks certificate parsing for that standard's certificate types.</dd>
+          <dt>Downsides</dt>
+          <dd>PDF extraction quality varies significantly by certificate format, scan quality, and version changes by issuing bodies. Schema mapping requires maintenance when EcoVadis or SQF updates their certificate format. Not all evidence can come from certificates — some requirements need supplier-submitted data with no certificate equivalent.</dd>
+        </dl>
+        <div class="meeting-test-block">
+          <strong>Meeting test</strong>
+          Eliminates the most common evidence friction without changing supplier behavior at all — the certificate they already circulate becomes the evidence submission.
+        </div>
+      </div>
+    </details>
+  </article>
+
+  <!-- IDEA 5 -->
+  <article class="idea-card" id="idea-5">
+    <div class="idea-card-header">
+      <span class="idea-rank">I-5.</span>
+      <div class="idea-title-group">
+        <h3>Standard-Version Diff → Portfolio Gap Report</h3>
+        <div class="idea-chips">
+          <span class="axis-chip axis-5">Standard lifecycle</span>
+          <span class="chip chip-conf-high">Conf 85%</span>
+          <span class="chip chip-cx-med">Cx Medium</span>
+        </div>
+      </div>
+    </div>
+    <div class="idea-card-body">
+      <p>When a standard is updated, the DSL diff engine computes which requirements changed and automatically generates a portfolio gap report: every supplier's current compliance status against the new version, before the new version takes effect. Suppliers who were compliant under v1 but would be non-compliant under v2 are surfaced immediately. The specialist never re-reads the full standard — they review the diff and its impact on their supplier portfolio.</p>
+    </div>
+    <details class="idea-detail">
+      <summary>Basis, rationale, downsides, meeting test</summary>
+      <div class="idea-detail-content">
+        <dl class="idea-fields">
+          <dt>Axis</dt>
+          <dd>Standard lifecycle</dd>
+          <dt>Basis</dt>
+          <dd>
+            <span class="basis-tag">external:</span> NIST OSCAL's profile→plan model: a plan is a view of a profile; when the profile changes, the plan's compliance deltas are computable.
+            <span class="basis-tag">reasoned:</span> If requirements are encoded in the DSL as typed, versioned fields, a diff between v1 and v2 is straightforward computation. The gap report is an application of that diff against the current evidence portfolio. The "humans re-interpret standards before each audit" pain point is specifically about standard changes — this removes the re-interpretation step.
+          </dd>
+          <dt>Rationale</dt>
+          <dd>Eliminates the re-interpretation-before-each-audit pain point for the most expensive case: when the standard itself changes. The specialist's value shifts from reading and interpreting the new standard to reviewing the platform's computed impact on their portfolio. This compounds with each standard version — the institutional cost of a standard update drops each time.</dd>
+          <dt>Downsides</dt>
+          <dd>Requires high-quality versioned DSL encoding — if the v1 encoding was imprecise, the diff will produce false positives or miss real changes. Standards bodies don't always publish structured changelogs, so identifying what changed may require AI-assisted standard parsing as a precursor.</dd>
+        </dl>
+        <div class="meeting-test-block">
+          <strong>Meeting test</strong>
+          SQF just released a new version. How long does it currently take the specialist to understand the impact on the supplier portfolio? This idea makes that computation instant.
+        </div>
+      </div>
+    </details>
+  </article>
+
+  <!-- IDEA 6 -->
+  <article class="idea-card" id="idea-6">
+    <div class="idea-card-header">
+      <span class="idea-rank">I-6.</span>
+      <div class="idea-title-group">
+        <h3>Zero-Standard Onboarding via Gap Detection</h3>
+        <div class="idea-chips">
+          <span class="axis-chip axis-1">Standard encoding</span>
+          <span class="chip chip-conf-high">Conf 82%</span>
+          <span class="chip chip-cx-med">Cx Medium</span>
+        </div>
+      </div>
+    </div>
+    <div class="idea-card-body">
+      <p>Rather than requiring standards to be pre-encoded before onboarding a CPG customer, the platform starts with the customer's existing compliance documentation — audit reports, questionnaires, supplier contracts — and uses AI to extract requirements into a draft DSL encoding. The specialist reviews and approves the draft. Encoding is bootstrapped from evidence of what the customer already requires, not from manual standard authorship. Time-to-value compresses from weeks to days.</p>
+    </div>
+    <details class="idea-detail">
+      <summary>Basis, rationale, downsides, meeting test</summary>
+      <div class="idea-detail-content">
+        <dl class="idea-fields">
+          <dt>Axis</dt>
+          <dd>Standard encoding</dd>
+          <dt>Basis</dt>
+          <dd>
+            <span class="basis-tag">direct:</span> Athian's Feedback Hub pattern (Granola → n8n → Claude → Sheets) is a validated extraction pipeline — the mechanic of AI extracting structured fields from unstructured documents is institutionally confirmed.
+            <span class="basis-tag">reasoned:</span> The bottleneck for onboarding new standards is encoding labor. If a CPG customer has audit reports, those reports are evidence of what they require — the requirement is recoverable from the evidence. Reversing the direction (evidence → requirement draft) bootstraps the DSL from what the customer already has rather than from a blank standard-authoring exercise.
+          </dd>
+          <dt>Rationale</dt>
+          <dd>Changes the sales motion. A new CPG customer can be onboarded without a pre-encoding sprint — the platform generates a draft DSL from their existing documentation, and the specialist approves it. This removes the "we need weeks to encode your standards before we can start" blocker that slows enterprise sales. Each successful onboarding also improves the encoding model.</dd>
+          <dt>Downsides</dt>
+          <dd>AI-extracted DSL drafts may be incomplete or imprecise — the specialist approval step is load-bearing, not optional. Customers with poorly-documented compliance requirements will produce poor drafts. The quality of the extracted encoding affects everything downstream, so the specialist review needs to be rigorous.</dd>
+        </dl>
+        <div class="meeting-test-block">
+          <strong>Meeting test</strong>
+          A new CPG prospect says "we can't start until you've encoded our three standards." This idea changes that answer — onboarding starts immediately from their existing documentation.
+        </div>
+      </div>
+    </details>
+  </article>
+
+  <!-- IDEA 7 -->
+  <article class="idea-card" id="idea-7">
+    <div class="idea-card-header">
+      <span class="idea-rank">I-7.</span>
+      <div class="idea-title-group">
+        <h3>Portal-Submission Ghost Writer</h3>
+        <div class="idea-chips">
+          <span class="axis-chip axis-3">Supplier experience</span>
+          <span class="chip chip-conf-med">Conf 75%</span>
+          <span class="chip chip-cx-high">Cx High</span>
+        </div>
+      </div>
+    </div>
+    <div class="idea-card-body">
+      <p>The platform generates pre-filled compliance submissions for other portals on the supplier's behalf, using evidence already in the Athian system. Suppliers manage 15–30 portals; aggregation has failed repeatedly because it requires buyer cooperation. Ghost-writing does not — it only requires Athian's evidence data and knowledge of each portal's submission format. The supplier's Athian profile becomes the single source that feeds all their other portal obligations.</p>
+    </div>
+    <details class="idea-detail">
+      <summary>Basis, rationale, downsides, meeting test</summary>
+      <div class="idea-detail-content">
+        <dl class="idea-fields">
+          <dt>Axis</dt>
+          <dd>Supplier experience</dd>
+          <dt>Basis</dt>
+          <dd>
+            <span class="basis-tag">direct:</span> Suppliers manage 15–30 portals; aggregation solutions have failed repeatedly (stated pain point). Certificate-as-currency: manual re-entry per portal is how compliance actually happens.
+            <span class="basis-tag">reasoned:</span> Aggregation fails because it requires buyer portals to become data repositories they are not designed to be (Tendify 2024: 2,000+ portals, all purpose-built for buyers). Ghost-writing inverts the direction: instead of pulling from portals, push pre-filled submissions to them. This only requires Athian's evidence data and a library of portal submission formats — no buyer cooperation needed.
+          </dd>
+          <dt>Rationale</dt>
+          <dd>If aggregation keeps failing because the data flow direction is wrong, invert it. The supplier's Athian-held evidence is the source of truth; every other portal is a consumer. The supplier reviews and submits the pre-filled draft — one interaction instead of 15–30 separate data entry sessions. Athian's value to suppliers becomes "we eliminate your portal burden," which is the strongest possible supplier-side adoption argument.</dd>
+          <dt>Downsides</dt>
+          <dd>High complexity: requires maintaining a library of portal submission formats, which change without notice. Liability exposure: if a ghost-written submission contains errors, the supplier submitted it and bears the consequence, but Athian may face reputational risk. Each new portal format requires reverse-engineering the submission schema, which is ongoing maintenance.</dd>
+        </dl>
+        <div class="meeting-test-block">
+          <strong>Meeting test</strong>
+          If this works, it's the strongest supplier adoption argument possible: Athian eliminates the 15–30 portal burden entirely. Worth discussing whether the maintenance and liability surface is manageable.
+        </div>
+      </div>
+    </details>
+  </article>
+
+</section>
+
+<!-- REJECTION SUMMARY -->
+<section id="rejection">
+  <h2>Rejection Summary</h2>
+  <table class="rejection">
+    <thead>
+      <tr><th>#</th><th>Idea</th><th>Reason rejected</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>R-1</td>
+        <td>Supplier Evidence Wallet (W3C VC 2.0)</td>
+        <td>Weak basis: aggregation-failure evidence partially self-refutes the wallet premise — wallets require even broader ecosystem buy-in than aggregation does. No adoption signal grounded in the stated context.</td>
+      </tr>
+      <tr>
+        <td>R-2</td>
+        <td>Continuous Compliance Score with Decay</td>
+        <td>Fabricated basis citation ("evidence drift detection listed as DSL advantage" — not in stated context). Procurement-integration claim has no grounding. Core mechanic covered by Evidence Shelf-Life Monitoring.</td>
+      </tr>
+      <tr>
+        <td>R-3</td>
+        <td>Meta-Schema from Shared Primitives</td>
+        <td>Weak: primitive recurrence across standards is the load-bearing claim and it is asserted, not evidenced. OSCAL catalog model (better basis) was not used. Warrants investigation before being treated as a product direction.</td>
+      </tr>
+      <tr>
+        <td>R-4</td>
+        <td>Confidence-Threshold Review Routing</td>
+        <td>Tumor board analogy is loose (complexity routing ≠ AI confidence routing). Core defensibility mechanic merged into Specialist as Exception Arbiter, which is the stronger framing.</td>
+      </tr>
+      <tr>
+        <td>R-5</td>
+        <td>Pharmacovigilance Signal Detection</td>
+        <td>Duplicate angle: overlap with Standard-Version Diff → Portfolio Gap Report; analogy framing weaker than the OSCAL-basis version.</td>
+      </tr>
+      <tr>
+        <td>R-6</td>
+        <td>DSL Version Migration as First-Class Feature</td>
+        <td>Duplicate: merged into Standard-Version Diff → Portfolio Gap Report.</td>
+      </tr>
+      <tr>
+        <td>R-7</td>
+        <td>Compliance as Live Signal, Not Project</td>
+        <td>Duplicate: the architectural thesis is the same as Evidence Shelf-Life Monitoring; the framing is weaker.</td>
+      </tr>
+      <tr>
+        <td>R-8</td>
+        <td>GAAP–IFRS Bridge Schedules (multi-standard mapping)</td>
+        <td>Below ambition floor: would appear in a generic listicle about multi-standard compliance; no specificity from the grounding.</td>
+      </tr>
+      <tr>
+        <td>R-9</td>
+        <td>AML Source-of-Funds Tracing (evidence chain-of-custody)</td>
+        <td>Below meeting-test floor at current product stage; evidence chain-of-custody is a useful concept but not a near-term product decision.</td>
+      </tr>
+      <tr>
+        <td>R-10</td>
+        <td>DSL as Published Writable Standard</td>
+        <td>Interesting but better handled as a brainstorm variant; requires standards-body relationships with no grounding signal here.</td>
+      </tr>
+      <tr>
+        <td>R-11</td>
+        <td>Passport Biometric Binding (supplier identity layer)</td>
+        <td>Dropped: supplier identity layer is the right frame but the W3C VC wallet premise applies — same refutation as R-1.</td>
+      </tr>
+      <tr>
+        <td>R-12</td>
+        <td>Clinical Trial Master Protocol (gap detection variant)</td>
+        <td>Duplicate angle on Zero-Standard Onboarding via Gap Detection; weaker basis.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<footer class="composition-signal">
+  Composed <time datetime="2026-06-22">2026-06-22</time> by <code>ce-ideate</code> · Run <code>a3f7b2d1</code> · 4 ideation agents, 1 basis verifier · Focus: leverage &amp; compounding
+</footer>
+
+</body>
+</html>

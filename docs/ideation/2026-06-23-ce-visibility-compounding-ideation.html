@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ideation: CE Visibility Compounding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap">
+<style>
+  :root {
+    --ground:       #F0EEE8;
+    --ground-mid:   #E4E1D8;
+    --ground-dark:  #D4D0C5;
+    --text:         #1C1F1A;
+    --text-muted:   #5C6059;
+    --text-faint:   #8A9087;
+    --accent:       #C4903A;
+    --accent-soft:  #F5EADB;
+    --accent-dim:   #8A6228;
+    --accent2:      #3A6B8A;
+    --accent2-soft: #DDE8EF;
+    --accent2-dim:  #2A4D65;
+    --green:        #3A8A5C;
+    --green-soft:   #DDF0E8;
+    --green-dim:    #2A6A42;
+    --border:       #C8C4B8;
+    --border-strong:#9A9690;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 15px; scroll-behavior: smooth; }
+  body {
+    background-color: var(--ground);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    font-weight: 300;
+    line-height: 1.65;
+    padding: 0;
+  }
+
+  /* ── MASTHEAD ── */
+  .masthead {
+    border-bottom: 2px solid var(--text);
+    padding: 2.5rem 0 1.75rem;
+    margin-bottom: 0;
+  }
+  .masthead-inner {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 0 2.5rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    align-items: end;
+  }
+  .masthead-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .masthead-eyebrow::after {
+    content: '';
+    display: inline-block;
+    height: 1px;
+    width: 3rem;
+    background: var(--border-strong);
+  }
+  .masthead h1 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.9rem;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    max-width: 46ch;
+  }
+  .masthead-meta {
+    text-align: right;
+  }
+  .meta-item {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+  }
+  .meta-label { color: var(--text-faint); margin-right: 0.3em; }
+
+  /* ── AXIS CHIPS ── */
+  .axis-chips {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 1rem 2.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .axis-chip {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid;
+    border-radius: 2px;
+    padding: 0.15em 0.6em;
+  }
+  .axis-chip.a1 { border-color: var(--accent); color: var(--accent); }
+  .axis-chip.a2 { border-color: var(--accent2); color: var(--accent2); }
+  .axis-chip.a3 { border-color: var(--green); color: var(--green); }
+  .axis-chip.a4 { border-color: var(--border-strong); color: var(--text-muted); }
+  .axis-chip.a5 { border-color: var(--border-strong); color: var(--text-muted); }
+
+  /* ── PAGE BODY ── */
+  .page-body {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 2.5rem 2.5rem 4rem;
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 3rem;
+    align-items: start;
+  }
+  .main-col { min-width: 0; }
+  .side-col { position: sticky; top: 2rem; }
+
+  /* ── SECTIONS ── */
+  .section { margin-bottom: 3rem; }
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-body { font-size: 0.9rem; color: var(--text); }
+  .section-body p { margin-bottom: 0.75rem; }
+  .section-body p:last-child { margin-bottom: 0; }
+
+  /* ── AXES LIST ── */
+  .axes-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+  }
+  .axes-list li { color: var(--text-muted); display: flex; align-items: center; gap: 0.6rem; }
+  .axes-list li::before { content: '–'; color: var(--border-strong); }
+
+  /* ── JUMP LIST ── */
+  .jump-list {
+    background: var(--ground-mid);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1rem 1.2rem;
+  }
+  .jump-list-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 0.75rem;
+  }
+  .jump-list ol {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .jump-list a {
+    display: grid;
+    grid-template-columns: 1.4rem 1fr auto;
+    gap: 0.4rem;
+    align-items: baseline;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    line-height: 1.4;
+    transition: color 0.15s;
+  }
+  .jump-list a:hover { color: var(--text); }
+  .jump-rank {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-faint);
+  }
+  .jump-title { font-weight: 400; }
+  .jump-axis-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.58rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    white-space: nowrap;
+  }
+
+  /* ── IDEA CARDS ── */
+  .idea-cards { display: flex; flex-direction: column; gap: 2rem; }
+  article.idea-card {
+    background: var(--ground-mid);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--border-strong);
+    border-radius: 0 3px 3px 0;
+    padding: 1.5rem 1.75rem;
+  }
+  .idea-card.ax1 { border-left-color: var(--accent); }
+  .idea-card.ax2 { border-left-color: var(--accent2); }
+  .idea-card.ax3 { border-left-color: var(--green); }
+  .idea-card.ax4 { border-left-color: var(--border-strong); }
+  .idea-card.ax5 { border-left-color: var(--border-strong); }
+
+  .idea-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .idea-id {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    background: var(--text-faint);
+    color: #fff;
+    border-radius: 2px;
+    padding: 0.15em 0.5em;
+    white-space: nowrap;
+    margin-top: 0.2rem;
+    flex-shrink: 0;
+  }
+  .ax1 .idea-id { background: var(--accent-dim); }
+  .ax2 .idea-id { background: var(--accent2-dim); }
+  .ax3 .idea-id { background: var(--green-dim); }
+
+  .idea-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--text);
+  }
+
+  .idea-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.1rem;
+  }
+  .axis-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 0.1em 0.5em;
+    color: var(--text-muted);
+  }
+  .ax1 .axis-tag { border-color: var(--accent); color: var(--accent); }
+  .ax2 .axis-tag { border-color: var(--accent2); color: var(--accent2); }
+  .ax3 .axis-tag { border-color: var(--green); color: var(--green); }
+
+  .conf-badge, .cx-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.1em 0.5em;
+    border-radius: 2px;
+    background: var(--ground-dark);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+
+  .idea-body { font-size: 0.88rem; }
+  .idea-body p { margin-bottom: 0.7rem; }
+  .idea-body p:last-child { margin-bottom: 0; }
+
+  .field-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 0.2rem;
+    margin-top: 0.85rem;
+    display: block;
+  }
+  .field-label:first-child { margin-top: 0; }
+
+  code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.82em;
+    background: var(--ground-dark);
+    border-radius: 2px;
+    padding: 0.1em 0.35em;
+    color: var(--text);
+  }
+
+  /* ── DIAGRAM ── */
+  .diagram-wrap {
+    margin: 1rem 0;
+    overflow-x: auto;
+  }
+  .diagram-wrap svg { display: block; max-width: 100%; height: auto; }
+
+  /* ── REJECTION TABLE ── */
+  .rejection-section { margin-top: 3rem; }
+  .rejection-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    margin-top: 0.75rem;
+  }
+  .rejection-table th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    text-align: left;
+    padding: 0.4rem 0.75rem;
+    border-bottom: 1px solid var(--border-strong);
+  }
+  .rejection-table td {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--text-muted);
+  }
+  .rejection-table tr:last-child td { border-bottom: none; }
+  .rejection-table td:first-child {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--text-faint);
+  }
+  .rejection-table td:nth-child(2) { color: var(--text); font-weight: 400; }
+
+  /* ── FOOTER ── */
+  .composition-signal {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 1.25rem 2.5rem;
+    border-top: 1px solid var(--border);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-faint);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 840px) {
+    .page-body { grid-template-columns: 1fr; }
+    .side-col { position: static; }
+    .masthead-inner { grid-template-columns: 1fr; }
+    .masthead-meta { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div>
+      <div class="masthead-eyebrow">ce-ideate &nbsp;·&nbsp; Athian Engineering &nbsp;·&nbsp; repo-grounded</div>
+      <h1>CE Visibility Compounding</h1>
+    </div>
+    <div class="masthead-meta">
+      <div class="meta-item"><span class="meta-label">date</span>2026-06-23</div>
+      <div class="meta-item"><span class="meta-label">topic</span>ce-visibility-compounding</div>
+      <div class="meta-item"><span class="meta-label">frame</span>culture &amp; visibility</div>
+      <div class="meta-item"><span class="meta-label">mode</span>repo-grounded</div>
+    </div>
+  </div>
+</header>
+
+<div class="axis-chips" aria-label="Topic axes">
+  <span class="axis-chip a1">A1: storage location</span>
+  <span class="axis-chip a2">A2: CLAUDE.md / context hierarchy</span>
+  <span class="axis-chip a3">A3: session continuity</span>
+  <span class="axis-chip a4">A4: discoverability</span>
+  <span class="axis-chip a5">A5: artifact lifecycle</span>
+</div>
+
+<div class="page-body">
+  <main class="main-col">
+
+    <!-- GROUNDING CONTEXT -->
+    <section class="section" aria-labelledby="grounding-label">
+      <div class="section-label" id="grounding-label">Codebase Context</div>
+      <div class="section-body">
+        <p>18 CE output files in <code>/Users/doryweiss/Athian/docs/{ideation,plans,brainstorms}/</code> — not git-tracked, not shared, not discoverable. The workspace sits outside any active repo. A prior ideation (2026-06-23-ce-planning-storage-ideation.html) covered storage structure, git init, CLAUDE.md splitting, cross-repo manifest, and Linear issue generation from frontmatter.</p>
+        <p>This frame is narrower: <strong>where does the team already look?</strong> Slack (#engineering, #granola-integration), Linear (Compliance work), Granola (meeting notes), and GitHub PRs. The Feedback Hub Slice 5 weekly digest is a live proof that n8n + Claude + Slack works at Athian — that architecture is available to clone. The Linear MCP server is wired. The team is small (~10 engineers) and AI adoption is a live cultural initiative weighted more heavily on the cultural piece than the technical piece.</p>
+        <p>The constraint: ideas in this frame must make CE work land somewhere engineers already check — not create a new surface they'd have to learn to look at.</p>
+      </div>
+    </section>
+
+    <!-- TOPIC AXES -->
+    <section class="section" aria-labelledby="axes-label">
+      <div class="section-label" id="axes-label">Topic Axes</div>
+      <ul class="axes-list">
+        <li>A1: storage location — where CE outputs physically live and how they get there</li>
+        <li>A2: CLAUDE.md / context hierarchy — how AI context composes across repos and sessions</li>
+        <li>A3: session continuity — how planning artifacts survive session and engineer boundaries</li>
+        <li>A4: discoverability — how team members find and reference CE outputs without going looking</li>
+        <li>A5: artifact lifecycle — how CE outputs transition into issues, decisions, and running code</li>
+      </ul>
+    </section>
+
+    <!-- RANKED IDEAS -->
+    <section class="section" aria-labelledby="ideas-label">
+      <div class="section-label" id="ideas-label">Ranked Ideas</div>
+
+      <div class="idea-cards">
+
+        <!-- IDEA 1 -->
+        <article class="idea-card ax3" id="idea-1">
+          <div class="idea-card-header">
+            <span class="idea-id">I1</span>
+            <h2 class="idea-title">HANDOFF.md → #ce-handoffs Slack post via Claude Code hook</h2>
+          </div>
+          <div class="idea-meta">
+            <span class="axis-tag">A3: session continuity</span>
+            <span class="conf-badge">Conf 88%</span>
+            <span class="cx-badge">Cx Low</span>
+          </div>
+          <div class="idea-body">
+            <span class="field-label">Description</span>
+            <p>Wire a Claude Code <code>PostToolUse</code> hook on the <code>Write</code> tool: when the target path matches <code>HANDOFF.md</code>, send the file's content to Slack via a Slack webhook or the Slack MCP tool. A new <code>#ce-handoffs</code> channel (or <code>#engineering</code> thread) receives the session summary — Active Decisions, Key Files, Next Steps — without anyone going to look for it. Engineers picking up work see what the previous session decided. New engineers on a feature see the full context stack before writing a line.</p>
+
+            <div class="diagram-wrap">
+              <svg viewBox="0 0 520 120" xmlns="http://www.w3.org/2000/svg" aria-label="HANDOFF.md to Slack flow" style="font-family:'IBM Plex Mono',monospace;">
+                <rect x="10" y="35" width="130" height="50" rx="3" fill="#E4E1D8" stroke="#9A9690" stroke-width="1"/>
+                <text x="75" y="58" text-anchor="middle" font-size="10" fill="#5C6059">Claude Code</text>
+                <text x="75" y="73" text-anchor="middle" font-size="10" fill="#1C1F1A">Write HANDOFF.md</text>
+
+                <rect x="195" y="35" width="130" height="50" rx="3" fill="#E4E1D8" stroke="#9A9690" stroke-width="1"/>
+                <text x="260" y="58" text-anchor="middle" font-size="10" fill="#5C6059">PostToolUse hook</text>
+                <text x="260" y="73" text-anchor="middle" font-size="10" fill="#1C1F1A">matches HANDOFF.md</text>
+
+                <rect x="380" y="35" width="130" height="50" rx="3" fill="#DDE8EF" stroke="#2A4D65" stroke-width="1"/>
+                <text x="445" y="58" text-anchor="middle" font-size="10" fill="#2A4D65">#ce-handoffs</text>
+                <text x="445" y="73" text-anchor="middle" font-size="10" fill="#1C1F1A">Slack post</text>
+
+                <line x1="140" y1="60" x2="195" y2="60" stroke="#9A9690" stroke-width="1.5" marker-end="url(#arr)"/>
+                <line x1="325" y1="60" x2="380" y2="60" stroke="#9A9690" stroke-width="1.5" marker-end="url(#arr)"/>
+
+                <defs>
+                  <marker id="arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                    <path d="M0,0 L6,3 L0,6 Z" fill="#9A9690"/>
+                  </marker>
+                </defs>
+              </svg>
+            </div>
+
+            <span class="field-label">Basis</span>
+            <p><code>direct:</code> HANDOFF.md exists at <code>/Users/doryweiss/Athian/HANDOFF.md</code> and already contains the exact fields that benefit a team member picking up work (Active Decisions, Key Files, Next Steps, Context). The Claude Code hook system supports <code>PostToolUse</code> hooks that fire on specific tool + path combinations — this is the same mechanism that would support ce-commit notifications. The Slack MCP tool is already wired in this session.</p>
+
+            <span class="field-label">Why it matters</span>
+            <p>Cold-start is the primary failure mode of AI-assisted engineering on a small team. Every new session starts without the previous session's context. Posting HANDOFF.md to Slack makes session continuity an ambient team artifact, not a private document nobody finds. It also makes AI work visible by default — engineers see "Dory's Claude session decided X" in the same channel where they see deployment notifications.</p>
+
+            <span class="field-label">Downsides</span>
+            <p>HANDOFF.md currently gets written with free-form content — if its structure is inconsistent, the Slack posts will be inconsistent. Requires either standardizing the HANDOFF format (already partially the case) or doing light Claude-side summarization before posting. A <code>#ce-handoffs</code> channel creates a new destination engineers would need to know exists, though routing to an existing channel like <code>#engineering</code> as a thread sidesteps this.</p>
+
+            <span class="field-label">Meeting test</span>
+            <p>Yes — "do we want CE session summaries showing up in Slack automatically?" is a real team conversation with a clear answer either direction.</p>
+          </div>
+        </article>
+
+        <!-- IDEA 2 -->
+        <article class="idea-card ax4" id="idea-2">
+          <div class="idea-card-header">
+            <span class="idea-id">I2</span>
+            <h2 class="idea-title">Weekly CE digest to Slack — clone of Feedback Hub Slice 5</h2>
+          </div>
+          <div class="idea-meta">
+            <span class="axis-tag">A4: discoverability</span>
+            <span class="conf-badge">Conf 85%</span>
+            <span class="cx-badge">Cx Low</span>
+          </div>
+          <div class="idea-body">
+            <span class="field-label">Description</span>
+            <p>An n8n workflow runs every Monday morning. It reads <code>docs/ideation/</code>, <code>docs/plans/</code>, and <code>docs/brainstorms/</code> (or their git-tracked equivalents once the workspace is git-initialized), collects files created or modified in the past 7 days, sends them to Claude for a structured summary, and posts to <code>#engineering</code> (or <code>#product-engineering</code>): "This week in CE: 2 ideation sessions on compliance DSL, 1 plan for Nestlé POC. Top idea: [title]. Active plan: [plan title] — status [status]." The architecture is identical to Feedback Hub Slice 5, which is already live and tested.</p>
+
+            <span class="field-label">Basis</span>
+            <p><code>direct:</code> Feedback Hub Slice 5 is "Built, imported, and end-to-end tested (2026-04-15). Digest quality is strong." (project_feedback_hub.md). The workflow architecture — n8n schedule trigger → read sources → Claude summarization → Slack post — is proven. The CE digest is a structural clone with different source files and a different Claude prompt. No new infrastructure is required.</p>
+
+            <span class="field-label">Why it matters</span>
+            <p>A weekly digest is the lowest-friction way to make CE work visible across the full team, not just engineers who happen to see individual Slack posts. Product, Sales, and leadership see what's being planned without needing access to the docs directory. It also creates a lightweight accountability signal — if nothing shows up in the digest, the team notices.</p>
+
+            <span class="field-label">Downsides</span>
+            <p>Requires the CE output files to be accessible to n8n (either via filesystem access, a git remote the n8n machine can reach, or a Google Drive sync). Currently the docs/ directory is local to Dory's machine, so this is blocked until the workspace is git-tracked and pushed to a remote or otherwise shared. Also depends on consistent CE output file creation — a week with no CE work produces a digest with nothing to say.</p>
+
+            <span class="field-label">Meeting test</span>
+            <p>Yes — "should we get a weekly summary of AI planning work in Slack?" is a clear opt-in/opt-out conversation, and the answer likely yes.</p>
+          </div>
+        </article>
+
+        <!-- IDEA 3 -->
+        <article class="idea-card ax5" id="idea-3">
+          <div class="idea-card-header">
+            <span class="idea-id">I3</span>
+            <h2 class="idea-title">ce-commit hook posts a one-liner to Slack on every CE commit</h2>
+          </div>
+          <div class="idea-meta">
+            <span class="axis-tag">A5: artifact lifecycle</span>
+            <span class="conf-badge">Conf 82%</span>
+            <span class="cx-badge">Cx Low</span>
+          </div>
+          <div class="idea-body">
+            <span class="field-label">Description</span>
+            <p>When the ce-commit skill fires (which commits CE planning artifacts to git), wire a <code>PostToolUse</code> hook that posts a single line to Slack: <em>"[ce-commit] Dory committed: Compliance DSL ideation → docs/ideation/2026-06-23-compliance-dsl.html"</em>. No summary, no elaboration — just the fact. Engineers see AI-assisted commits the same way they'd see a CI notification. The hook reads the commit message (already formatted by ce-commit) and the file path, formats a Slack message, and fires the Slack MCP tool. Implementation is under 30 lines of hook configuration.</p>
+
+            <span class="field-label">Basis</span>
+            <p><code>reasoned:</code> The cultural argument for AI adoption at Athian weights the cultural piece more heavily than the technical piece (CLAUDE.md: "this is a live challenge with both cultural and practical dimensions, and I weight the cultural piece more heavily"). The most direct way to normalize AI-assisted engineering is to make it visible in the team's ambient feed at the moment it happens — not in a weekly digest, not in a special channel, but in the same place where deployment events and PR merges appear. A one-liner has near-zero noise cost and high cultural signal value.</p>
+
+            <span class="field-label">Why it matters</span>
+            <p>This is the "makes it feel normal" move. AI adoption doesn't compound from mandates — it compounds from visibility, from engineers noticing that AI-assisted work is a routine part of how their colleagues operate. A commit notification does that without any new process.</p>
+
+            <span class="field-label">Downsides</span>
+            <p>Requires ce-commit to actually be in use (currently it's a skill that exists but may not be consistently used). If CE outputs aren't being committed, the hook never fires. Also: Slack notification volume — if CE commit cadence is high, the feed gets noisy. Mitigation: route to a low-traffic channel or use Slack's thread pattern to keep notifications collapsed.</p>
+
+            <span class="field-label">Meeting test</span>
+            <p>Yes — "do we want Slack notifications for AI-assisted commits?" surfaces a real team preference about ambient visibility vs. noise.</p>
+          </div>
+        </article>
+
+        <!-- IDEA 4 -->
+        <article class="idea-card ax5" id="idea-4">
+          <div class="idea-card-header">
+            <span class="idea-id">I4</span>
+            <h2 class="idea-title">Plan frontmatter → Linear issue comment on plan creation</h2>
+          </div>
+          <div class="idea-meta">
+            <span class="axis-tag">A5: artifact lifecycle</span>
+            <span class="conf-badge">Conf 80%</span>
+            <span class="cx-badge">Cx Low</span>
+          </div>
+          <div class="idea-body">
+            <span class="field-label">Description</span>
+            <p>When ce-plan writes a plan .md file with YAML frontmatter that includes a <code>linear_issue: LIN-123</code> field, a <code>PostToolUse</code> hook fires the Linear MCP tool to add a comment on that issue: "CE plan written: [plan title] — [2-sentence summary from the plan's abstract]. Full plan: [file path or link]." Engineers who open the Linear issue see the planning artifact that preceded it, directly in the ticket thread. No separate lookup, no separate channel — the artifact surfaces where the work is tracked.</p>
+
+            <span class="field-label">Basis</span>
+            <p><code>direct:</code> The Linear MCP server is already wired (docs/solutions/tooling-decisions/linear-mcp-compound-engineering-skills.md confirms the full setup). The Linear MCP's <code>save_comment</code> tool is already available in this session. The docs/solutions file notes that compound-engineering skills "file tickets in whichever issue tracker they detect at runtime" — the reverse direction (plan → issue comment) is the same MCP tool, different direction. Frontmatter discipline is already practiced in docs/solutions/ with module, tags, and problem_type fields.</p>
+
+            <span class="field-label">Why it matters</span>
+            <p>This closes the loop between planning and execution. A Linear issue that has a CE plan comment is self-documenting — any engineer who picks it up sees the reasoning, the tradeoffs, and the implementation approach without asking anyone. It also makes planning work show up in Linear's activity feed, which is where the Compliance team tracks work.</p>
+
+            <span class="field-label">Downsides</span>
+            <p>Requires consistent use of <code>linear_issue:</code> in plan frontmatter — if it's missing, the hook doesn't fire. Creating the convention is low friction but depends on the engineer (currently Dory) remembering to add it. Could produce duplicate comments if the hook fires multiple times on the same plan file. Mitigation: check for existing comment with matching title before posting.</p>
+
+            <span class="field-label">Meeting test</span>
+            <p>Yes — "should planning docs automatically comment on the Linear issue they belong to?" is a concrete team norm question.</p>
+          </div>
+        </article>
+
+        <!-- IDEA 5 -->
+        <article class="idea-card ax2" id="idea-5">
+          <div class="idea-card-header">
+            <span class="idea-id">I5</span>
+            <h2 class="idea-title">Plan frontmatter auto-updates the target repo's CLAUDE.md</h2>
+          </div>
+          <div class="idea-meta">
+            <span class="axis-tag">A2: CLAUDE.md / context hierarchy</span>
+            <span class="conf-badge">Conf 78%</span>
+            <span class="cx-badge">Cx Medium</span>
+          </div>
+          <div class="idea-body">
+            <span class="field-label">Description</span>
+            <p>When ce-plan writes a plan with frontmatter declaring <code>repos: [sus-plat]</code>, a <code>PostToolUse</code> hook reads the plan's key decisions and appends or updates a <em>"Current Active Plan"</em> block in <code>sus-plat/CLAUDE.md</code>. The block contains: plan title, date, summary (2 sentences), and a link to the full plan file. When Claude Code opens a session in sus-plat, it loads CLAUDE.md and immediately has planning context for the current work — without the engineer manually copying anything. The plan frontmatter is the trigger; CLAUDE.md is the propagation mechanism.</p>
+
+            <div class="diagram-wrap">
+              <svg viewBox="0 0 560 150" xmlns="http://www.w3.org/2000/svg" aria-label="Plan frontmatter propagates to repo CLAUDE.md" style="font-family:'IBM Plex Mono',monospace;">
+                <rect x="10" y="50" width="160" height="50" rx="3" fill="#E4E1D8" stroke="#9A9690" stroke-width="1"/>
+                <text x="90" y="71" text-anchor="middle" font-size="9" fill="#5C6059">docs/plans/</text>
+                <text x="90" y="84" text-anchor="middle" font-size="9.5" fill="#1C1F1A">plan.md</text>
+                <text x="90" y="97" text-anchor="middle" font-size="8.5" fill="#8A6228">repos: [sus-plat]</text>
+
+                <rect x="220" y="50" width="130" height="50" rx="3" fill="#E4E1D8" stroke="#9A9690" stroke-width="1"/>
+                <text x="285" y="71" text-anchor="middle" font-size="9" fill="#5C6059">PostToolUse hook</text>
+                <text x="285" y="86" text-anchor="middle" font-size="9" fill="#1C1F1A">reads frontmatter</text>
+
+                <rect x="400" y="35" width="150" height="80" rx="3" fill="#DDE8EF" stroke="#2A4D65" stroke-width="1"/>
+                <text x="475" y="58" text-anchor="middle" font-size="9" fill="#2A4D65">sus-plat/CLAUDE.md</text>
+                <text x="475" y="74" text-anchor="middle" font-size="9" fill="#1C1F1A">## Current Active Plan</text>
+                <text x="475" y="87" text-anchor="middle" font-size="8.5" fill="#5C6059">Nestlé POC — 2026-06-23</text>
+                <text x="475" y="100" text-anchor="middle" font-size="8.5" fill="#5C6059">Assessment workflow…</text>
+
+                <line x1="170" y1="75" x2="220" y2="75" stroke="#9A9690" stroke-width="1.5" marker-end="url(#arr2)"/>
+                <line x1="350" y1="75" x2="400" y2="75" stroke="#9A9690" stroke-width="1.5" marker-end="url(#arr2)"/>
+
+                <defs>
+                  <marker id="arr2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                    <path d="M0,0 L6,3 L0,6 Z" fill="#9A9690"/>
+                  </marker>
+                </defs>
+              </svg>
+            </div>
+
+            <span class="field-label">Basis</span>
+            <p><code>direct:</code> CLAUDE.md at <code>/Users/doryweiss/Athian/CLAUDE.md</code> already contains rich per-repo context. The docs/solutions file confirms CLAUDE.md is the primary signal that compound-engineering skills read to detect tracker and architecture context. Plans span repos (noted in the focus hint: "platform + sus-plat for Nestlé pilot — cross-repo awareness is a recurring need"). The frontmatter <code>repos:</code> field is already proposed in today's storage ideation — this idea activates it as a propagation trigger rather than just a routing tag.</p>
+
+            <span class="field-label">Why it matters</span>
+            <p>This is the highest-leverage compounding mechanism: every time a plan is written, it automatically enriches the context for every future Claude Code session in the affected repos. No manual copy-paste. No cold-start. The AI adoption argument compounds because the AI gets better — and visibly so — as CE work accumulates.</p>
+
+            <span class="field-label">Downsides</span>
+            <p>Medium complexity: the hook needs to write to a different repo's CLAUDE.md, which may be in a separate directory or git repo. Requires the workspace to have write access to the affected repos. The "Current Active Plan" block needs a defined format so subsequent updates replace rather than append indefinitely. Risk of CLAUDE.md bloat if plans aren't cleaned up — needs a "completed" state in frontmatter that triggers removal of the block.</p>
+
+            <span class="field-label">Meeting test</span>
+            <p>Yes — "should planning context automatically propagate into the repo's CLAUDE.md?" is a meaningful architectural choice about how the team manages AI context.</p>
+          </div>
+        </article>
+
+        <!-- IDEA 6 -->
+        <article class="idea-card ax4" id="idea-6">
+          <div class="idea-card-header">
+            <span class="idea-id">I6</span>
+            <h2 class="idea-title">Running CE index as a Linear Document — auto-appended on file creation</h2>
+          </div>
+          <div class="idea-meta">
+            <span class="axis-tag">A4: discoverability</span>
+            <span class="conf-badge">Conf 75%</span>
+            <span class="cx-badge">Cx Low</span>
+          </div>
+          <div class="idea-body">
+            <span class="field-label">Description</span>
+            <p>Maintain a single Linear Document titled "CE Planning Index" in the Athian Compliance team (or a shared workspace). When ce-plan or ce-ideate writes a file, a <code>PostToolUse</code> hook appends one line to the document: <em>"2026-06-23 · [type: ideation] · Compliance DSL — three frames · docs/ideation/2026-06-23-compliance-dsl.html"</em>. Engineers who want to find prior CE work open the Linear document — it's a running log, not a search problem. New team members have a single "what has been planned" reference on their first day.</p>
+
+            <span class="field-label">Basis</span>
+            <p><code>direct:</code> Linear Documents are persistent, linked to a team, and appear in Linear's sidebar — exactly where Compliance engineers already look. The Linear MCP's <code>save_document</code> tool is available. The Compliance team is the primary user of Linear at Athian (per CLAUDE.md: "Linear (linear.app) for Athian Compliance — piloting a migration from Jira. All new Compliance work is filed in Linear."). Unlike a Slack post (ephemeral) or a file index (requires filesystem access), a Linear Document is discoverable to anyone with Linear access, persists indefinitely, and can be linked from issue descriptions.</p>
+
+            <span class="field-label">Why it matters</span>
+            <p>Discoverability for CE outputs currently requires knowing to look in <code>docs/ideation/</code> — a directory that doesn't show up in any tool the team uses. A Linear Document is a persistent, team-visible index that requires no new habit: engineers already have Linear open. It also makes CE work visible to Product (Jess) and Customer Success (Daniel, Chelsea) who may not be in the codebase but are in Linear.</p>
+
+            <span class="field-label">Downsides</span>
+            <p>A flat log document gets unwieldy past ~50 entries — would benefit from periodic archiving or topic-based organization. Also creates a dependency on the Linear MCP being available in every session where CE outputs are written. The value is cumulative: at 3 entries it looks sparse; at 50 it becomes genuinely useful. Requires consistent use to build the index.</p>
+
+            <span class="field-label">Meeting test</span>
+            <p>Yes — "should we maintain a shared planning index in Linear?" is a concrete team norm question that Jess and Daniel would have opinions about.</p>
+          </div>
+        </article>
+
+      </div><!-- /idea-cards -->
+    </section>
+
+    <!-- REJECTION SUMMARY -->
+    <section class="rejection-section" aria-labelledby="rejection-label">
+      <div class="section-label" id="rejection-label">Rejection Summary</div>
+      <table class="rejection-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Idea</th>
+            <th>Reason rejected</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>R1</td>
+            <td>Linear attachments from docs/ideation/ files</td>
+            <td>Duplicates a stronger idea (I4 — Linear comments are more discoverable and richer than attachments)</td>
+          </tr>
+          <tr>
+            <td>R2</td>
+            <td>Granola meeting context injection — lookup matching CE plans during meeting note processing</td>
+            <td>Too speculative: requires NLP topic-matching between meeting content and CE file titles; not grounded in current n8n capabilities; complexity too high for uncertain payoff at this team size</td>
+          </tr>
+          <tr>
+            <td>R3</td>
+            <td>CLAUDE.md → Linear project descriptions</td>
+            <td>Low discoverability payoff — Linear project descriptions are rarely read; wrong destination for the mechanism</td>
+          </tr>
+          <tr>
+            <td>R4</td>
+            <td>GitHub PR body auto-enrichment from CE plan files</td>
+            <td>Medium-high complexity; depends on consistent file naming convention alignment with branch names; payoff only on PRs, not at planning time; weaker than I4 for the same lifecycle outcome</td>
+          </tr>
+          <tr>
+            <td>R5</td>
+            <td>"What's cooking" Granola auto-note before standups</td>
+            <td>Requires Google Calendar integration in n8n (not currently wired); triggering mechanism adds friction; better as a manual habit until calendar integration is in place</td>
+          </tr>
+          <tr>
+            <td>R6</td>
+            <td>Frontmatter topic cross-matching — flag when a plan and a Linear issue touch the same module</td>
+            <td>Strong conceptually but complexity is higher than competitors; payoff is more speculative at current CE output volume (18 files); better revisited when CE output corpus is larger</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="side-col" aria-label="Navigation">
+    <nav class="jump-list" aria-label="Ranked ideas navigation">
+      <div class="jump-list-label">Ranked Ideas</div>
+      <ol>
+        <li>
+          <a href="#idea-1">
+            <span class="jump-rank">1</span>
+            <span class="jump-title">HANDOFF.md → Slack hook</span>
+            <span class="jump-axis-tag">continuity</span>
+          </a>
+        </li>
+        <li>
+          <a href="#idea-2">
+            <span class="jump-rank">2</span>
+            <span class="jump-title">Weekly CE digest to Slack</span>
+            <span class="jump-axis-tag">discoverability</span>
+          </a>
+        </li>
+        <li>
+          <a href="#idea-3">
+            <span class="jump-rank">3</span>
+            <span class="jump-title">ce-commit → Slack one-liner</span>
+            <span class="jump-axis-tag">lifecycle</span>
+          </a>
+        </li>
+        <li>
+          <a href="#idea-4">
+            <span class="jump-rank">4</span>
+            <span class="jump-title">Plan frontmatter → Linear comment</span>
+            <span class="jump-axis-tag">lifecycle</span>
+          </a>
+        </li>
+        <li>
+          <a href="#idea-5">
+            <span class="jump-rank">5</span>
+            <span class="jump-title">Plan → CLAUDE.md propagation</span>
+            <span class="jump-axis-tag">context</span>
+          </a>
+        </li>
+        <li>
+          <a href="#idea-6">
+            <span class="jump-rank">6</span>
+            <span class="jump-title">Linear Document CE index</span>
+            <span class="jump-axis-tag">discoverability</span>
+          </a>
+        </li>
+      </ol>
+    </nav>
+  </aside>
+</div>
+
+<footer class="composition-signal">
+  Composed 2026-06-23T by ce-ideate · frame: culture &amp; visibility compounding · 12 raw candidates → 6 cut → 6 survivors across 5 axes
+</footer>
+
+</body>
+</html>

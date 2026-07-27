@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ideation: Compliance Standard Lifecycle & Network Effects</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=DM+Serif+Display:ital@0;1&display=swap">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f8f7f4;
+  --surface: #ffffff;
+  --surface-alt: #f2f0eb;
+  --border: #e0ddd6;
+  --text: #1a1917;
+  --text-muted: #6b6860;
+  --text-meta: #9a9790;
+  --accent: #2d5a3d;
+  --accent-soft: #e8f0ea;
+  --accent-text: #1e4029;
+  --warn: #7a4f1a;
+  --warn-soft: #fdf3e7;
+  --info: #1a3a5c;
+  --info-soft: #e8eef6;
+  --chip-bg: #eceae5;
+  --chip-text: #4a4843;
+  --axis-1: #2d5a3d; /* standard encoding */
+  --axis-2: #1a3a5c; /* evidence collection */
+  --axis-3: #5a2d4f; /* supplier experience */
+  --axis-4: #5a3d2d; /* review and reporting */
+  --axis-5: #3d3d2d; /* standard lifecycle */
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  padding: 2rem 1rem 4rem;
+}
+
+.container {
+  max-width: 900px;
+  margin-inline: auto;
+}
+
+/* Header */
+.doc-header {
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.doc-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-meta);
+  margin-bottom: 0.5rem;
+}
+
+.doc-title {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 2rem;
+  line-height: 1.2;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+.doc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.doc-meta span strong {
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* Stats strip */
+.stats-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 2.5rem;
+}
+
+.stat-cell {
+  background: var(--surface);
+  padding: 1rem 1.25rem;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-meta);
+  font-weight: 500;
+}
+
+/* Sections */
+section {
+  margin-bottom: 2.5rem;
+}
+
+section > h2 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 1.2rem;
+  color: var(--text);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Grounding context */
+.grounding-body {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.grounding-body p + p { margin-top: 0.75rem; }
+
+/* Topic axes */
+.axes-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+}
+
+.axis-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid;
+}
+
+.axis-pill[data-axis="standard-encoding"] { background: #e8f4ec; color: var(--axis-1); border-color: #b8d9c2; }
+.axis-pill[data-axis="evidence-collection"] { background: #e8eef6; color: var(--axis-2); border-color: #b8cce0; }
+.axis-pill[data-axis="supplier-experience"] { background: #f4e8f2; color: var(--axis-3); border-color: #d8b8d4; }
+.axis-pill[data-axis="review-reporting"] { background: #f4ede8; color: var(--axis-4); border-color: #d9c4b4; }
+.axis-pill[data-axis="standard-lifecycle"] { background: #f0f0e8; color: var(--axis-5); border-color: #d0d0b8; }
+
+.axis-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* Jump list */
+.jump-list {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.jump-list-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-meta);
+  margin-bottom: 0.6rem;
+}
+
+.jump-list ol {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.jump-list ol li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 13px;
+}
+
+.jump-list ol li .jump-num {
+  font-weight: 600;
+  color: var(--text-meta);
+  min-width: 1.5rem;
+  font-size: 11px;
+}
+
+.jump-list ol li a {
+  color: var(--accent-text);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.jump-list ol li a:hover { text-decoration: underline; }
+
+.jump-axis-pill {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 0.1rem 0.5rem;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+/* Idea cards */
+article.idea-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 1.25rem;
+  overflow: hidden;
+}
+
+.idea-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.idea-rank {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-meta);
+  min-width: 1.75rem;
+  padding-top: 0.1rem;
+}
+
+.idea-title-block { flex: 1; }
+
+.idea-title {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 1.05rem;
+  line-height: 1.3;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+}
+
+.idea-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.4rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 0.15rem 0.55rem;
+  border-radius: 12px;
+  border: 1px solid;
+}
+
+.chip-axis[data-axis="standard-encoding"] { background: #e8f4ec; color: var(--axis-1); border-color: #b8d9c2; }
+.chip-axis[data-axis="evidence-collection"] { background: #e8eef6; color: var(--axis-2); border-color: #b8cce0; }
+.chip-axis[data-axis="supplier-experience"] { background: #f4e8f2; color: var(--axis-3); border-color: #d8b8d4; }
+.chip-axis[data-axis="review-reporting"] { background: #f4ede8; color: var(--axis-4); border-color: #d9c4b4; }
+.chip-axis[data-axis="standard-lifecycle"] { background: #f0f0e8; color: var(--axis-5); border-color: #d0d0b8; }
+
+.chip-conf-high { background: #e8f4ec; color: var(--accent-text); border-color: #b8d9c2; }
+.chip-conf-med { background: var(--warn-soft); color: var(--warn); border-color: #e8c99a; }
+.chip-conf-low { background: #f4e8e8; color: #7a2d2d; border-color: #d9b8b8; }
+.chip-cx-low { background: #eceae5; color: var(--chip-text); border-color: #d0cdc7; }
+.chip-cx-med { background: var(--warn-soft); color: var(--warn); border-color: #e8c99a; }
+.chip-cx-high { background: #f4e8e8; color: #7a2d2d; border-color: #d9b8b8; }
+.chip-basis-direct { background: var(--accent-soft); color: var(--accent-text); border-color: #a8c8b4; }
+.chip-basis-external { background: var(--info-soft); color: var(--info); border-color: #a8bcd4; }
+.chip-basis-reasoned { background: #eceae5; color: var(--chip-text); border-color: #d0cdc7; }
+
+.idea-card-body {
+  padding: 1.25rem 1.5rem;
+}
+
+.idea-summary {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+.idea-fields {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.idea-field-row {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: 0.5rem;
+  font-size: 13px;
+  align-items: baseline;
+}
+
+.field-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-meta);
+  padding-top: 0.1rem;
+}
+
+.field-value {
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.field-value code {
+  font-family: ui-monospace, 'Cascadia Code', monospace;
+  font-size: 11px;
+  background: var(--chip-bg);
+  padding: 0.1em 0.4em;
+  border-radius: 3px;
+  color: var(--text);
+}
+
+/* Diagram containers */
+.idea-diagram {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.diagram-caption {
+  font-size: 11px;
+  color: var(--text-meta);
+  text-align: center;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+/* Rejection table */
+.rejection-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.rejection-table thead th {
+  background: var(--surface-alt);
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-meta);
+  border-bottom: 2px solid var(--border);
+}
+
+.rejection-table tbody tr:nth-child(even) td { background: var(--surface-alt); }
+.rejection-table tbody td {
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+  vertical-align: top;
+}
+
+.rejection-table tbody td:first-child {
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+footer.composition-signal {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-meta);
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .doc-title { font-size: 1.5rem; }
+  .idea-field-row { grid-template-columns: 1fr; gap: 0.25rem; }
+  .stats-strip { grid-template-columns: 1fr 1fr; }
+  .idea-card-header { flex-direction: column; gap: 0.5rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="doc-header">
+    <p class="doc-eyebrow">Ideation · Elsewhere-Software · 2026-06-22</p>
+    <h1 class="doc-title">Compliance Standard Lifecycle &amp; Network Effects</h1>
+    <dl class="doc-meta">
+      <div><dt><strong>Focus</strong></dt> <dd>Standard lifecycle, version propagation, and network effects</dd></div>
+      <div><dt><strong>Mode</strong></dt> <dd>Elsewhere-software</dd></div>
+      <div><dt><strong>Product</strong></dt> <dd>Athian Compliance</dd></div>
+    </dl>
+  </header>
+
+  <div class="stats-strip">
+    <div class="stat-cell">
+      <div class="stat-value">12</div>
+      <div class="stat-label">Ranked Ideas</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-value">22</div>
+      <div class="stat-label">Candidates Filtered</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-value">5</div>
+      <div class="stat-label">Axes Covered</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-value">5</div>
+      <div class="stat-label">Ideation Agents</div>
+    </div>
+  </div>
+
+  <!-- Grounding Context -->
+  <section id="grounding-context">
+    <h2>Grounding Context</h2>
+    <div class="grounding-body">
+      <p><strong>Product:</strong> Athian Compliance — AI-native compliance platform for CPG companies managing supplier compliance against shared specs (SQF Code 9.0, retailer private-label requirements). One compliance specialist evaluates many suppliers. Requirements have units, thresholds, and time windows; they expire, renew, and escalate. Evidence arrives heterogeneous: PDFs, certificates, audit reports, lab results.</p>
+      <p><strong>Internal architecture:</strong> DUITA DSL with component-level <code>renderPrompt</code> fields and a confirmed/inferred gap analysis pattern. Platform monorepo backend + sustainability-platform frontend.</p>
+      <p><strong>Key structural problem:</strong> When a standard version updates, every existing supplier evaluation is potentially stale. Approval decisions ("this evidence satisfies this requirement") are siloed per evaluation and never compound. Supplier A certified for Buyer 1 — Buyer 2 needs the same standard; the evidence and rationale already exist but cannot be reused. The multi-buyer platform's overlapping supplier pools are an underexploited network asset.</p>
+      <p><strong>External grounding:</strong> EcoVadis (3M supplier multi-buyer model), NIST OSCAL (machine-readable catalog versioning), W3C Verifiable Credentials 2.0 (2025), GS1 supply chain traceability working group (Feb 2026), EPA Title V permit modification taxonomy, PCAOB AS 2105 materiality thresholds, SOC 2 continuous monitoring patterns.</p>
+    </div>
+  </section>
+
+  <!-- Topic Axes -->
+  <section id="topic-axes">
+    <h2>Topic Axes</h2>
+    <ul class="axes-list">
+      <li><span class="axis-pill" data-axis="standard-encoding"><span class="axis-dot"></span>Standard encoding — how compliance requirements get modeled as machine-readable specs</span></li>
+      <li><span class="axis-pill" data-axis="evidence-collection"><span class="axis-dot"></span>Evidence collection — how evidence gets gathered</span></li>
+      <li><span class="axis-pill" data-axis="supplier-experience"><span class="axis-dot"></span>Supplier experience — how suppliers interact with the platform</span></li>
+      <li><span class="axis-pill" data-axis="review-reporting"><span class="axis-dot"></span>Review and reporting — how the compliance specialist reviews AI pre-assessments</span></li>
+      <li><span class="axis-pill" data-axis="standard-lifecycle"><span class="axis-dot"></span>Standard lifecycle — how the platform handles standard changes, versioning, multi-standard complexity</span></li>
+    </ul>
+  </section>
+
+  <!-- Ranked Ideas -->
+  <section id="ranked-ideas">
+    <h2>Ranked Ideas</h2>
+
+    <nav class="jump-list">
+      <p class="jump-list-label">Jump to</p>
+      <ol>
+        <li><span class="jump-num">1.</span><a href="#idea-1">Standard Version Diff Propagation</a> <span class="chip chip-axis jump-axis-pill" data-axis="standard-lifecycle">Standard lifecycle</span></li>
+        <li><span class="jump-num">2.</span><a href="#idea-2">Quantitative Requirement Auto-Disposition</a> <span class="chip chip-axis jump-axis-pill" data-axis="review-reporting">Review &amp; reporting</span></li>
+        <li><span class="jump-num">3.</span><a href="#idea-3">Pre-populated Gap Brief</a> <span class="chip chip-axis jump-axis-pill" data-axis="supplier-experience">Supplier experience</span></li>
+        <li><span class="jump-num">4.</span><a href="#idea-4">Approval Rationale Capture</a> <span class="chip chip-axis jump-axis-pill" data-axis="review-reporting">Review &amp; reporting</span></li>
+        <li><span class="jump-num">5.</span><a href="#idea-5">Supplier Portable Compliance Record</a> <span class="chip chip-axis jump-axis-pill" data-axis="supplier-experience">Supplier experience</span></li>
+        <li><span class="jump-num">6.</span><a href="#idea-6">Multi-Buyer Evidence Consent Network</a> <span class="chip chip-axis jump-axis-pill" data-axis="evidence-collection">Evidence collection</span></li>
+        <li><span class="jump-num">7.</span><a href="#idea-7">Permit-Tier Version Classification</a> <span class="chip chip-axis jump-axis-pill" data-axis="standard-lifecycle">Standard lifecycle</span></li>
+        <li><span class="jump-num">8.</span><a href="#idea-8">Materiality-Weighted Review Routing</a> <span class="chip chip-axis jump-axis-pill" data-axis="review-reporting">Review &amp; reporting</span></li>
+        <li><span class="jump-num">9.</span><a href="#idea-9">Requirement-Clause Semantic Versioning</a> <span class="chip chip-axis jump-axis-pill" data-axis="standard-encoding">Standard encoding</span></li>
+        <li><span class="jump-num">10.</span><a href="#idea-10">Process vs Outcome Requirement Distinction</a> <span class="chip chip-axis jump-axis-pill" data-axis="standard-encoding">Standard encoding</span></li>
+        <li><span class="jump-num">11.</span><a href="#idea-11">Policy-Authored Specialist Architecture</a> <span class="chip chip-axis jump-axis-pill" data-axis="review-reporting">Review &amp; reporting</span></li>
+        <li><span class="jump-num">12.</span><a href="#idea-12">Applicability Rules Engine</a> <span class="chip chip-axis jump-axis-pill" data-axis="standard-lifecycle">Standard lifecycle</span></li>
+      </ol>
+    </nav>
+
+    <!-- Idea 1 -->
+    <article class="idea-card" id="idea-1">
+      <div class="idea-card-header">
+        <span class="idea-rank">#1</span>
+        <div class="idea-title-block">
+          <h3 class="idea-title">Standard Version Diff Propagation</h3>
+          <div class="idea-chips">
+            <span class="chip chip-axis" data-axis="standard-lifecycle">Standard lifecycle</span>
+            <span class="chip chip-conf-high">Conf 91%</span>
+            <span class="chip chip-cx-high">Cx High</span>
+            <span class="chip chip-basis-external">external:</span>
+          </div>
+        </div>
+      </div>
+      <div class="idea-card-body">
+        <p class="idea-summary">When a new standard version is published, the platform computes a machine-readable diff of the DSL encoding (version N vs N+1), classifies each changed clause as BREAKING / MINOR / PATCH, and propagates the impact to all supplier evaluations using that standard — surfacing only the suppliers whose current evidence would fail the new version, before the go-live date. The specialist receives a prioritized burn-down list rather than a full re-audit queue. This is the compliance equivalent of a dependency graph notifying you which packages break when a library upgrades.</p>
+        <div class="idea-fields">
+          <div class="idea-field-row">
+            <dt class="field-label">Basis</dt>
+            <dd class="field-value"><code>external:</code> NIST OSCAL three-layer model (catalog/profile/plan) directly supports version-diffed machine-readable compliance catalogs; deployed in production to reduce IT audit duration from months to minutes. The aviation AD analogy — applicability rules propagating fleet-wide without human triage — is the structural match for the burn-down prioritization layer.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Why it matters</dt>
+            <dd class="field-value">Standard bodies update major protocols every 3-7 years. Without automated diff propagation, every version update triggers a manual re-audit of every supplier — the compliance equivalent of running <code>npm audit</code> by hand, file by file. Automated propagation converts a project-level effort into a triage queue resolved in hours.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Downsides</dt>
+            <dd class="field-value">Requires DSL encodings of both standard versions to already exist — the platform is dependent on encoding quality and completeness. BREAKING vs MINOR classification for qualitative process clauses requires judgment the DSL encoding must capture in advance.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Meeting test</dt>
+            <dd class="field-value">"When SQF Code 10.0 drops, we want to tell every CPG buyer within 24 hours which of their suppliers need action — and which don't — before any human opens a file."</dd>
+          </div>
+        </div>
+        <div class="idea-diagram">
+          <svg viewBox="0 0 620 180" width="100%" style="max-width:620px;display:block;margin:0 auto;" aria-label="Version diff propagation flow: standard version N and N+1 feed into DSL diff engine, which produces BREAKING/MINOR/PATCH classification, which feeds into supplier impact scoring, which surfaces only affected suppliers to the specialist">
+            <defs>
+              <marker id="arr1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L8,3 z" fill="#6b6860"/>
+              </marker>
+            </defs>
+            <!-- SQF N box -->
+            <rect x="10" y="65" width="90" height="50" rx="6" fill="#f0f0e8" stroke="#d0d0b8" stroke-width="1.5"/>
+            <text x="55" y="85" text-anchor="middle" font-size="10" font-weight="600" fill="#3d3d2d">SQF v9.0</text>
+            <text x="55" y="100" text-anchor="middle" font-size="9" fill="#6b6860">DSL encoding</text>
+            <!-- SQF N+1 box -->
+            <rect x="10" y="125" width="90" height="50" rx="6" fill="#f0f0e8" stroke="#d0d0b8" stroke-width="1.5"/>
+            <text x="55" y="145" text-anchor="middle" font-size="10" font-weight="600" fill="#3d3d2d">SQF v10.0</text>
+            <text x="55" y="160" text-anchor="middle" font-size="9" fill="#6b6860">DSL encoding</text>
+            <!-- Arrows to diff engine -->
+            <line x1="100" y1="90" x2="155" y2="110" stroke="#6b6860" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <line x1="100" y1="150" x2="155" y2="130" stroke="#6b6860" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <!-- Diff engine -->
+            <rect x="158" y="95" width="110" height="50" rx="6" fill="#e8f4ec" stroke="#b8d9c2" stroke-width="1.5"/>
+            <text x="213" y="115" text-anchor="middle" font-size="10" font-weight="600" fill="#1e4029">DSL Diff Engine</text>
+            <text x="213" y="130" text-anchor="middle" font-size="9" fill="#2d5a3d">clause delta → tier</text>
+            <!-- Arrow to classification -->
+            <line x1="268" y1="120" x2="310" y2="120" stroke="#6b6860" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <!-- Classification box -->
+            <rect x="313" y="75" width="105" height="90" rx="6" fill="#ffffff" stroke="#e0ddd6" stroke-width="1.5"/>
+            <text x="365" y="95" text-anchor="middle" font-size="10" font-weight="600" fill="#1a1917">Classification</text>
+            <rect x="323" y="102" width="85" height="16" rx="3" fill="#f4e8e8" stroke="#d9b8b8" stroke-width="1"/>
+            <text x="365" y="114" text-anchor="middle" font-size="9" font-weight="600" fill="#7a2d2d">BREAKING</text>
+            <rect x="323" y="122" width="85" height="16" rx="3" fill="#fdf3e7" stroke="#e8c99a" stroke-width="1"/>
+            <text x="365" y="134" text-anchor="middle" font-size="9" font-weight="600" fill="#7a4f1a">MINOR</text>
+            <rect x="323" y="142" width="85" height="16" rx="3" fill="#eceae5" stroke="#d0cdc7" stroke-width="1"/>
+            <text x="365" y="154" text-anchor="middle" font-size="9" font-weight="600" fill="#4a4843">PATCH</text>
+            <!-- Arrow to impact -->
+            <line x1="418" y1="120" x2="460" y2="120" stroke="#6b6860" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <!-- Supplier impact -->
+            <rect x="463" y="95" width="110" height="50" rx="6" fill="#e8eef6" stroke="#b8cce0" stroke-width="1.5"/>
+            <text x="518" y="115" text-anchor="middle" font-size="10" font-weight="600" fill="#1a3a5c">Supplier Impact</text>
+            <text x="518" y="130" text-anchor="middle" font-size="9" fill="#1a3a5c">affected-only queue</text>
+            <!-- Label: standard body publishes -->
+            <text x="55" y="57" text-anchor="middle" font-size="9" fill="#9a9790" font-style="italic">published versions</text>
+          </svg>
+          <p class="diagram-caption">Directional sketch — DSL diff engine classifies changed clauses; only BREAKING-affected suppliers surface in the specialist queue.</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Idea 2 -->
+    <article class="idea-card" id="idea-2">
+      <div class="idea-card-header">
+        <span class="idea-rank">#2</span>
+        <div class="idea-title-block">
+          <h3 class="idea-title">Quantitative Requirement Auto-Disposition</h3>
+          <div class="idea-chips">
+            <span class="chip chip-axis" data-axis="review-reporting">Review &amp; reporting</span>
+            <span class="chip chip-conf-high">Conf 92%</span>
+            <span class="chip chip-cx-med">Cx Medium</span>
+            <span class="chip chip-basis-direct">direct:</span>
+          </div>
+        </div>
+      </div>
+      <div class="idea-card-body">
+        <p class="idea-summary">When a requirement has a structured threshold encoded in the DUITA DSL (e.g., sodium &lt; 800mg/serving, HACCP plan review within 12 months), the platform auto-extracts the value from submitted evidence, computes PASS/FAIL, and routes the evaluation to the specialist only if extraction confidence falls below threshold or the result is FAIL. Clean PASS cases are auto-disposed without human review. The specialist's queue shrinks to the genuinely ambiguous and the genuinely failing.</p>
+        <div class="idea-fields">
+          <div class="idea-field-row">
+            <dt class="field-label">Basis</dt>
+            <dd class="field-value"><code>direct:</code> DUITA DSL encodes thresholds per requirement component; <code>renderPrompt</code> fields and the confirmed/inferred gap analysis pattern already structure reasoning over evidence against those thresholds. Threshold evaluation is arithmetic once extraction succeeds — the decision logic is already there.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Why it matters</dt>
+            <dd class="field-value">A compliance specialist reviewing a supplier against SQF may evaluate 200+ requirements. A significant fraction are quantitative with determinate thresholds. Auto-disposition of clean passes returns specialist time to the ambiguous qualitative requirements where judgment actually matters — and creates the precondition for Idea 4 (rationale capture compounds only where ambiguity exists).</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Downsides</dt>
+            <dd class="field-value">Extraction confidence must be calibrated carefully — false confidence in a PASS is worse than routing to specialist. Requires evidence document quality good enough to reliably extract structured values (lab reports, certs are strong; PDFs with hand-entered tables are weak).</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Meeting test</dt>
+            <dd class="field-value">"We want the specialist to open only the cases where a human judgment call is actually necessary — everything with a determinate answer should resolve before they touch it."</dd>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Idea 3 -->
+    <article class="idea-card" id="idea-3">
+      <div class="idea-card-header">
+        <span class="idea-rank">#3</span>
+        <div class="idea-title-block">
+          <h3 class="idea-title">Pre-populated Gap Brief</h3>
+          <div class="idea-chips">
+            <span class="chip chip-axis" data-axis="supplier-experience">Supplier experience</span>
+            <span class="chip chip-conf-high">Conf 88%</span>
+            <span class="chip chip-cx-med">Cx Medium</span>
+            <span class="chip chip-basis-direct">direct:</span>
+          </div>
+        </div>
+      </div>
+      <div class="idea-card-body">
+        <p class="idea-summary">When a standard version updates, each affected supplier receives a pre-populated gap brief: the specific clauses that changed, the evidence they previously submitted for those clauses, and an AI-generated assessment of whether prior evidence still satisfies the new wording — with explicit gap flagging where it doesn't. The supplier sees exactly what to resubmit and why. They don't receive a new blank compliance checklist; they receive a delta against what they already did.</p>
+        <div class="idea-fields">
+          <div class="idea-field-row">
+            <dt class="field-label">Basis</dt>
+            <dd class="field-value"><code>direct:</code> DUITA DSL <code>renderPrompt</code> fields and the confirmed/inferred gap analysis pattern are already the infrastructure for generating per-clause gap assessments. Generating a supplier-facing diff brief is a natural extension of what the DSL can already do when applied to version-changed clauses.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Why it matters</dt>
+            <dd class="field-value">Suppliers managing 15-30 compliance portals (PwC 2025) experience version updates as a demand to start from scratch. A pre-populated gap brief converts re-evaluation from a project into a targeted patch. Supplier response time drops; specialist receives targeted evidence rather than a complete resubmission.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Downsides</dt>
+            <dd class="field-value">AI gap assessment quality depends on how well the new version's clause wording is encoded — ambiguous wording in the standard itself makes this unreliable. Risk of false "no gap" assessments that give suppliers false confidence.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Meeting test</dt>
+            <dd class="field-value">"When SQF 10.0 drops, every supplier should know exactly what changed, whether their existing evidence still covers it, and what they need to submit — without opening a compliance document."</dd>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Idea 4 -->
+    <article class="idea-card" id="idea-4">
+      <div class="idea-card-header">
+        <span class="idea-rank">#4</span>
+        <div class="idea-title-block">
+          <h3 class="idea-title">Approval Rationale Capture</h3>
+          <div class="idea-chips">
+            <span class="chip chip-axis" data-axis="review-reporting">Review &amp; reporting</span>
+            <span class="chip chip-conf-high">Conf 87%</span>
+            <span class="chip chip-cx-low">Cx Low</span>
+            <span class="chip chip-basis-direct">direct:</span>
+          </div>
+        </div>
+      </div>
+      <div class="idea-card-body">
+        <p class="idea-summary">Every time a specialist marks evidence as satisfying a requirement, the system prompts for a structured rationale — template-guided, 2-3 sentences — capturing why this evidence type, quality level, and scope are sufficient for this clause. Rationales are attached to the requirement clause, versioned alongside the standard, and reused as few-shot examples for AI pre-assessments on future submissions of the same evidence type. The specialist's judgment becomes training data rather than ephemeral workflow.</p>
+        <div class="idea-fields">
+          <div class="idea-field-row">
+            <dt class="field-label">Basis</dt>
+            <dd class="field-value"><code>direct:</code> DUITA DSL <code>renderPrompt</code> fields provide the infrastructure for structured judgment capture. The confirmed/inferred gap analysis pattern shows the platform already reasons about evidence sufficiency in a structured way — rationale capture surfaces and persists that reasoning.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Why it matters</dt>
+            <dd class="field-value">Currently, specialist judgment is consumed at evaluation time and discarded. Over thousands of decisions, the platform accumulates no institutional knowledge about what evidence quality actually means for each requirement type. Rationale capture converts every approval into a durable signal that improves AI pre-assessment accuracy and makes specialist decisions auditable and explainable.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Downsides</dt>
+            <dd class="field-value">Adds friction to the specialist workflow — rationale prompts must be lightweight enough not to slow review. Risk of rationales becoming perfunctory ("evidence meets requirement") if template quality is low. Requires careful UX design to feel like a useful log, not a compliance tax on the specialist themselves.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Meeting test</dt>
+            <dd class="field-value">"Every specialist decision should teach the system something — right now we're training a person in a room and throwing away the transcript."</dd>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Idea 5 -->
+    <article class="idea-card" id="idea-5">
+      <div class="idea-card-header">
+        <span class="idea-rank">#5</span>
+        <div class="idea-title-block">
+          <h3 class="idea-title">Supplier Portable Compliance Record</h3>
+          <div class="idea-chips">
+            <span class="chip chip-axis" data-axis="supplier-experience">Supplier experience</span>
+            <span class="chip chip-conf-high">Conf 85%</span>
+            <span class="chip chip-cx-high">Cx High</span>
+            <span class="chip chip-basis-external">external:</span>
+          </div>
+        </div>
+      </div>
+      <div class="idea-card-body">
+        <p class="idea-summary">Suppliers own their compliance credentials as W3C Verifiable Credentials — the credential is not held by the CPG buyer, it belongs to the supplier. When a supplier enters a new buyer relationship on the platform, their existing validated claims surface automatically, reducing first-evaluation time from weeks to hours. The supplier's compliance history travels with them across buyer relationships rather than being re-collected from scratch by each buyer. This flips the acquisition dynamic: suppliers on the platform bring value to new buyer relationships, making the platform sticky for both sides.</p>
+        <div class="idea-fields">
+          <div class="idea-field-row">
+            <dt class="field-label">Basis</dt>
+            <dd class="field-value"><code>external:</code> W3C Verifiable Credentials 2.0 published 2025; GS1 supply chain traceability working group using VCs for end-to-end traceability launched February 2026. These are not analogies — they are the active technical substrate for this exact use case in the adjacent supply chain domain.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Why it matters</dt>
+            <dd class="field-value">The current model has no network effect for suppliers: each new buyer relationship re-collects the same evidence from scratch. The portable record converts the supplier into a node in a compliance network rather than a data subject in each buyer's silo — EcoVadis captures 3M suppliers at $1,500-$5,000+/year partly because they aggregate this institutional history. Athian can provide the same benefit without the per-supplier fee friction.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Downsides</dt>
+            <dd class="field-value">Buyers must accept credentials issued under another buyer's evaluation scope — a trust and legal liability question. Credential validity is tied to the standard version under which it was issued; version updates may invalidate or partially invalidate claims. Requires legal framework for credential portability that Athian would need to author.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Meeting test</dt>
+            <dd class="field-value">"A supplier who's already compliant for one of our customers shouldn't have to prove it again for the next — and we should be the platform where that portability lives."</dd>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Idea 6 -->
+    <article class="idea-card" id="idea-6">
+      <div class="idea-card-header">
+        <span class="idea-rank">#6</span>
+        <div class="idea-title-block">
+          <h3 class="idea-title">Multi-Buyer Evidence Consent Network</h3>
+          <div class="idea-chips">
+            <span class="chip chip-axis" data-axis="evidence-collection">Evidence collection</span>
+            <span class="chip chip-conf-high">Conf 84%</span>
+            <span class="chip chip-cx-med">Cx Medium</span>
+            <span class="chip chip-basis-external">external:</span>
+          </div>
+        </div>
+      </div>
+      <div class="idea-card-body">
+        <p class="idea-summary">Suppliers opt into a consent framework: evidence validated for Buyer A can be made available to other buyers on the platform evaluating the same supplier against the same standard. When Buyer B opens a new evaluation for a supplier who already has validated evidence on the platform, the relevant evidence surfaces automatically — with consent flags and version provenance clearly attached. Evidence collection effort is divided across buyers rather than duplicated by each.</p>
+        <div class="idea-fields">
+          <div class="idea-field-row">
+            <dt class="field-label">Basis</dt>
+            <dd class="field-value"><code>external:</code> EcoVadis profiles 3M suppliers at $1,500-$5,000+/supplier/year and allows buyers to access pre-existing supplier ratings — not just raw evidence, but validated assessments. The multi-buyer aggregation model is deployed at scale in supplier sustainability ratings. The consent-gated evidence layer applies the same mechanism at the evidence level rather than the rating level.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Why it matters</dt>
+            <dd class="field-value">82% of compliance teams plan to invest in automation (PwC 2025) — but the current model re-collects evidence from every supplier for every buyer relationship independently. The platform already has overlapping supplier pools across CPG buyers. This is a pure network-effect capture: value compounds as buyer count grows, with no incremental evidence collection cost for shared suppliers.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Downsides</dt>
+            <dd class="field-value">Buyers may have divergent evidence standards for the same requirement — one buyer's "acceptable" lab report may not satisfy another's scope. Competitive sensitivity: buyers may not want competitors to benefit from their evaluation work. Requires careful consent UX and clear data sharing agreements.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Meeting test</dt>
+            <dd class="field-value">"Our suppliers are getting compliance requests from five of our customers for the same SQF clauses — we should be able to stop making them answer the same questions over and over."</dd>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Idea 7 -->
+    <article class="idea-card" id="idea-7">
+      <div class="idea-card-header">
+        <span class="idea-rank">#7</span>
+        <div class="idea-title-block">
+          <h3 class="idea-title">Permit-Tier Version Classification</h3>
+          <div class="idea-chips">
+            <span class="chip chip-axis" data-axis="standard-lifecycle">Standard lifecycle</span>
+            <span class="chip chip-conf-high">Conf 83%</span>
+            <span class="chip chip-cx-med">Cx Medium</span>
+            <span class="chip chip-basis-external">external:</span>
+          </div>
+        </div>
+      </div>
+      <div class="idea-card-body">
+        <p class="idea-summary">When a standard version updates, each changed clause is classified at three tiers — MAJOR, SIGNIFICANT, MINOR — borrowed from EPA Title V permit modification taxonomy. Only MAJOR-classified changes trigger mandatory re-attestation; SIGNIFICANT changes require a targeted re-check against prior evidence; MINOR changes require no supplier action and the existing evidence carries over automatically. This eliminates the false equivalence between an editorial wording change and a threshold tightening — both currently trigger the same full-resubmission response.</p>
+        <div class="idea-fields">
+          <div class="idea-field-row">
+            <dt class="field-label">Basis</dt>
+            <dd class="field-value"><code>external:</code> EPA Title V permit modification taxonomy (minor/significant/major) is a deployed, legally-established framework for scoping re-permitting obligations to the modified conditions only. The structural fit is precise: both problems require determining which affected parties need to act on which changed regulatory conditions, and at what level of effort.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Why it matters</dt>
+            <dd class="field-value">Standard version updates currently trigger a binary response: full re-evaluation or ignore. A three-tier classification makes re-evaluation scope computable from the classification rather than requiring specialist judgment on every clause update — and provides a defensible audit rationale for why certain prior evidence was carried over.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Downsides</dt>
+            <dd class="field-value">Classification must be authored per clause per version update — unless the DSL diff engine (Idea 1) computes it automatically. If manual, this is a labor-intensive encoding task. The MAJOR/SIGNIFICANT/MINOR taxonomy may not map cleanly to food safety regulatory norms.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Meeting test</dt>
+            <dd class="field-value">"We can't treat every word change in SQF as a full re-audit trigger — we need a defensible way to scope what actually requires new evidence."</dd>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Idea 8 -->
+    <article class="idea-card" id="idea-8">
+      <div class="idea-card-header">
+        <span class="idea-rank">#8</span>
+        <div class="idea-title-block">
+          <h3 class="idea-title">Materiality-Weighted Review Routing</h3>
+          <div class="idea-chips">
+            <span class="chip chip-axis" data-axis="review-reporting">Review &amp; reporting</span>
+            <span class="chip chip-conf-high">Conf 82%</span>
+            <span class="chip chip-cx-med">Cx Medium</span>
+            <span class="chip chip-basis-external">external:</span>
+          </div>
+        </div>
+      </div>
+      <div class="idea-card-body">
+        <p class="idea-summary">Each requirement clause is assigned a risk weight based on food safety criticality and regulatory exposure. Evidence for high-weight clauses receives substantive specialist review. Evidence for low-weight clauses receives AI-only analytical review unless the AI flags an anomaly. The specialist's time is allocated proportionally to risk — the same model PCAOB AS 2105 uses to justify differential audit procedures for material vs non-material line items.</p>
+        <div class="idea-fields">
+          <div class="idea-field-row">
+            <dt class="field-label">Basis</dt>
+            <dd class="field-value"><code>external:</code> PCAOB AS 2105 proportionality framework: substantive evidence review above materiality threshold, analytical review procedures below. Deployed in public company auditing; the methodology is legally defensible and well-documented. The CPG compliance analogue: food safety criticality and regulatory exposure as materiality proxies.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Why it matters</dt>
+            <dd class="field-value">Without risk-weighted routing, a specialist reviewing 200 requirements allocates equal time to a HACCP critical control point and a supplier record retention policy. Risk weighting multiplies specialist capacity without adding headcount — and the PCAOB analogy provides an audit-defensible methodology for why AI-only review was applied to low-risk clauses.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Downsides</dt>
+            <dd class="field-value">Risk weights must be authored and maintained — who decides, and what's the basis? CPG buyers may have divergent risk models. An incorrect low-risk classification for a clause that later becomes a regulatory focus creates liability exposure.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Meeting test</dt>
+            <dd class="field-value">"We need a defensible way to say 'we applied human review where it mattered and AI review where it didn't' — right now we can't say that."</dd>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Idea 9 -->
+    <article class="idea-card" id="idea-9">
+      <div class="idea-card-header">
+        <span class="idea-rank">#9</span>
+        <div class="idea-title-block">
+          <h3 class="idea-title">Requirement-Clause Semantic Versioning</h3>
+          <div class="idea-chips">
+            <span class="chip chip-axis" data-axis="standard-encoding">Standard encoding</span>
+            <span class="chip chip-conf-high">Conf 80%</span>
+            <span class="chip chip-cx-med">Cx Medium</span>
+            <span class="chip chip-basis-external">external: + reasoned:</span>
+          </div>
+        </div>
+      </div>
+      <div class="idea-card-body">
+        <p class="idea-summary">Each requirement clause in the DSL encoding carries a semantic version tag at the clause level: BREAKING (evidence structure changes, threshold tightens, or new evidence type required — re-evaluation mandatory), MINOR (wording change, same intent, same evidence structure — AI re-check only), or PATCH (editorial change — no supplier action). This makes "does this change break my supplier's compliance?" computable from the clause tag alone, without requiring specialist judgment on each updated clause.</p>
+        <div class="idea-fields">
+          <div class="idea-field-row">
+            <dt class="field-label">Basis</dt>
+            <dd class="field-value"><code>external:</code> Software semantic versioning (semver) — BREAKING/MINOR/PATCH classifies whether an upgrade is backward-compatible. The structural fit is precise: both problems require determining whether a downstream consumer (a package / a supplier evaluation) needs to change behavior when an upstream dependency (a library / a standard clause) updates. <code>reasoned:</code> For quantitative clauses with thresholds, BREAKING vs MINOR is arithmetic (threshold delta). For qualitative clauses, it requires encoding judgment at authoring time — feasible for known standards, harder for novel ones.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Why it matters</dt>
+            <dd class="field-value">This is the encoding infrastructure that Idea 1 (Diff Propagation) and Idea 7 (Permit-Tier Classification) both depend on. Building it as a first-class DSL concept rather than inferring it at evaluation time makes version propagation fully computable and auditable — the classification lives in the standard encoding, not in ad-hoc specialist judgment at update time.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Downsides</dt>
+            <dd class="field-value">Classification must be authored at DSL encoding time — the quality of version propagation is limited by the quality of the semver tags. Qualitative clauses require encoding judgment that may itself require specialist review.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Meeting test</dt>
+            <dd class="field-value">"We want to be able to look at any two versions of SQF and know — computationally, not by reading every clause — which changes are breaking for which suppliers."</dd>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Idea 10 -->
+    <article class="idea-card" id="idea-10">
+      <div class="idea-card-header">
+        <span class="idea-rank">#10</span>
+        <div class="idea-title-block">
+          <h3 class="idea-title">Process vs Outcome Requirement Distinction</h3>
+          <div class="idea-chips">
+            <span class="chip chip-axis" data-axis="standard-encoding">Standard encoding</span>
+            <span class="chip chip-conf-high">Conf 79%</span>
+            <span class="chip chip-cx-low">Cx Low</span>
+            <span class="chip chip-basis-external">external:</span>
+          </div>
+        </div>
+      </div>
+      <div class="idea-card-body">
+        <p class="idea-summary">The DSL encoding distinguishes two requirement types that SQF conflates in its human-readable document: process requirements (was the training conducted, was the SOP followed, was the review performed?) and outcome requirements (did the test result meet the numeric threshold?). These have fundamentally different evidence structures, evidence source types, expiry logic, and AI extraction approaches. Currently, the platform treats them identically — limiting automation and making version-change classification harder.</p>
+        <div class="idea-fields">
+          <div class="idea-field-row">
+            <dt class="field-label">Basis</dt>
+            <dd class="field-value"><code>external:</code> McDonald's and Hilton franchise brand standards operations audit frameworks explicitly distinguish process requirements (training logs, operational checklists, procedural SOPs) from outcome requirements (mystery shopper scores, measurable product specs). These have different evidence structures, accepted-source definitions, and audit sampling approaches — the franchise industry developed this distinction because conflating them produces broken audit logic for the process side.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Why it matters</dt>
+            <dd class="field-value">Auto-disposition (Idea 2) and materiality weighting (Idea 8) both behave differently for process vs outcome requirements. Without the distinction, the DSL is missing a load-bearing structural fact about SQF requirements — and version-change classification becomes harder because a threshold change in an outcome requirement is clearly BREAKING while a frequency change in a process requirement may be MINOR or MAJOR depending on the process type.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Downsides</dt>
+            <dd class="field-value">Requires re-encoding existing DSL entries to carry the type tag — a one-time migration cost for each standard in the catalog. Some clauses are genuinely hybrid (a process requirement with an outcome threshold embedded) and may require human judgment to classify.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Meeting test</dt>
+            <dd class="field-value">"A training record and a lab result are not the same kind of evidence — our DSL shouldn't pretend they are."</dd>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Idea 11 -->
+    <article class="idea-card" id="idea-11">
+      <div class="idea-card-header">
+        <span class="idea-rank">#11</span>
+        <div class="idea-title-block">
+          <h3 class="idea-title">Policy-Authored Specialist Architecture</h3>
+          <div class="idea-chips">
+            <span class="chip chip-axis" data-axis="review-reporting">Review &amp; reporting</span>
+            <span class="chip chip-conf-high">Conf 78%</span>
+            <span class="chip chip-cx-high">Cx High</span>
+            <span class="chip chip-basis-external">reasoned:</span>
+          </div>
+        </div>
+      </div>
+      <div class="idea-card-body">
+        <p class="idea-summary">The constraint flip: instead of a specialist reviewing every submission, the specialist authors policies — structured rules like "any ISO 22000 certificate issued by an accredited body within the last 24 months is auto-approved for clauses 2.1.1 through 2.1.4" — and the platform applies them at scale. Specialist review is reserved for submissions that no policy covers (novel evidence types, edge cases, ambiguous scope). The specialist's job shifts from reviewer to policy author and exception handler.</p>
+        <div class="idea-fields">
+          <div class="idea-field-row">
+            <dt class="field-label">Basis</dt>
+            <dd class="field-value"><code>reasoned:</code> The constraint flip — fixed specialist headcount, unbounded supplier volume — is the forcing function used in fraud detection, content moderation at scale, and rules-based underwriting. In each domain, human judgment is captured as policy rather than exercised per-case. The DUITA DSL already encodes requirement structure; policy authoring is the natural next layer, turning specialist judgment into a reusable execution rule rather than a per-submission event.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Why it matters</dt>
+            <dd class="field-value">At current scale, specialist headcount must grow with supplier volume. The policy-authored architecture decouples them: one specialist's policy covers thousands of equivalent cases. This is the architectural move that makes the platform viable at enterprise CPG scale — the difference between a compliance review tool and a compliance operating system.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Downsides</dt>
+            <dd class="field-value">Policy authoring is a new UX surface that doesn't exist yet — designing it well enough that specialists can write reliable rules (rather than over-broad or over-narrow ones) is a hard product problem. Policy conflicts and edge cases require careful resolution logic. A bad policy applied at scale causes systematic errors.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Meeting test</dt>
+            <dd class="field-value">"We should never need to hire a compliance specialist just because we added 100 suppliers — one specialist's judgment should be able to cover 10,000 submissions."</dd>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Idea 12 -->
+    <article class="idea-card" id="idea-12">
+      <div class="idea-card-header">
+        <span class="idea-rank">#12</span>
+        <div class="idea-title-block">
+          <h3 class="idea-title">Applicability Rules Engine</h3>
+          <div class="idea-chips">
+            <span class="chip chip-axis" data-axis="standard-lifecycle">Standard lifecycle</span>
+            <span class="chip chip-conf-high">Conf 77%</span>
+            <span class="chip chip-cx-med">Cx Medium</span>
+            <span class="chip chip-basis-external">external:</span>
+          </div>
+        </div>
+      </div>
+      <div class="idea-card-body">
+        <p class="idea-summary">Each requirement clause in the DSL carries applicability rules: the facility types, production volume ranges, and product categories for which the clause applies. When a new standard version publishes or a new supplier is evaluated, the applicability rules engine evaluates which clauses actually apply to that supplier before any evidence review begins. Suppliers are never presented with requirements that don't apply to their facility type — and version updates that change applicability rules (not just clause wording) are automatically handled.</p>
+        <div class="idea-fields">
+          <div class="idea-field-row">
+            <dt class="field-label">Basis</dt>
+            <dd class="field-value"><code>external:</code> Aviation Airworthiness Directives — the FAA encodes applicability rules per AD (aircraft type, engine model, serial number range). When an AD is issued, the system evaluates which registered aircraft are in-scope without human triage. The structural fit: both problems require matching a changed regulatory requirement against a population of affected entities using structured applicability metadata.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Why it matters</dt>
+            <dd class="field-value">Without an applicability engine, version-delta burn-downs (Idea 1) generate false positives: suppliers flagged for clauses that don't apply to their facility type. The applicability layer is the filter that makes the burn-down list credible. It also prevents the specialist from wasting review time on inapplicable clauses.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Downsides</dt>
+            <dd class="field-value">Applicability rules must be encoded per clause — this is encoding labor that must happen before the engine provides value. Supplier facility metadata must be accurate and current; stale metadata produces incorrect applicability determinations.</dd>
+          </div>
+          <div class="idea-field-row">
+            <dt class="field-label">Meeting test</dt>
+            <dd class="field-value">"We shouldn't be asking a small pasture-based producer to respond to a requirement written for a 50,000-head feedlot operation — the system should know the difference before it asks."</dd>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- Rejection Summary -->
+  <section id="rejection-summary">
+    <h2>Rejection Summary</h2>
+    <table class="rejection-table">
+      <thead>
+        <tr>
+          <th>Idea</th>
+          <th>Reason Rejected</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Evidence Passport (I-02)</td>
+          <td>Weaker formulation of #5 (Supplier Portable Compliance Record). Doesn't address buyer trust and legal liability for third-party-issued credentials; AC-006 does.</td>
+        </tr>
+        <tr>
+          <td>Live Compliance State (I-04)</td>
+          <td>Evidence ingestion precondition unresolved. SOC 2 continuous monitoring works because evidence is machine-readable and auto-collected; food/ag compliance evidence is heterogeneous and human-submitted. Analogy stretches past its breaking point.</td>
+        </tr>
+        <tr>
+          <td>Standard Bodies as Encoding Partners (I-05)</td>
+          <td>Business development bet, not a product mechanism. The DSL moat argument proves encoding has value; it doesn't support co-publishing as an achievable outcome. Standard bodies are slow-moving with existing IP concerns.</td>
+        </tr>
+        <tr>
+          <td>Version-Scoped Compliance History (I-06)</td>
+          <td>The mechanism (attach evaluations to standard version at assessment time) is subsumed by Idea 1 (Diff Propagation), which builds version history as a byproduct of its core functionality.</td>
+        </tr>
+        <tr>
+          <td>Evidence Provenance Graph (LC-03)</td>
+          <td>Cross-buyer evidence reuse requires buyers to accept evidence validated under a competitor's evaluation. Consent and competitive sensitivity unresolved. Idea 6 (Multi-Buyer Evidence Consent Network) handles this more rigorously with the EcoVadis basis.</td>
+        </tr>
+        <tr>
+          <td>Specialist Decision Corpus (LC-04)</td>
+          <td>Too vague — "ML flywheel" reasoning applies to every domain. No mechanism for how the corpus is used, no external anchor, no argument for Athian-specificity. The compounding benefit is partially captured by Idea 4 (Rationale Capture) with a direct basis.</td>
+        </tr>
+        <tr>
+          <td>Tax Code Grandfathering Rules (CD-06)</td>
+          <td>Analogy is imprecise: IRS grandfathering windows are set by statute, not computed from evidence strength. Who sets the grandfathering window in compliance and by what authority is unresolved. Idea 7 (Permit-Tier Classification) covers the same scope-limiting territory more rigorously.</td>
+        </tr>
+        <tr>
+          <td>Compliance Delta Budget (AC-002)</td>
+          <td>Underspecified preconditions. Requires a working evidence quality scoring model not yet established. Conflates evidence quality assessment with version impact tolerance without resolving either. Overlaps with LC-02 (Semantic Versioning) without adding a sound mechanism.</td>
+        </tr>
+        <tr>
+          <td>Continuous Compliance Signal with Drift Detection (AC-007)</td>
+          <td>Same evidence ingestion problem as I-04. "Standard version proximity" signal is interesting but draft publication timelines are not machine-readable for most standards bodies. Describes a desirable end state without resolving the preconditions.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer class="composition-signal">
+    Composed 2026-06-22T by ce-ideate · Athian Compliance · Standard lifecycle, version propagation, and network effects · Run a7f3b2e1
+  </footer>
+
+</div>
+</body>
+</html>

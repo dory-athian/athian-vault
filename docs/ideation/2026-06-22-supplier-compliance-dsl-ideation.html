@@ -1,0 +1,1163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ideation: Supplier Compliance DSL Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;450;500&display=swap" rel="stylesheet" />
+<style>
+/* ── Token system ──────────────────────────────────────────── */
+:root {
+  --ground:        #F0F2F7;
+  --ground-2:      #E2E6EF;
+  --ground-3:      #C8CEDC;
+  --ground-deep:   #1C2340;
+  --text:          #1C2340;
+  --text-mid:      #4A5270;
+  --text-dim:      #7880A0;
+  --accent:        #A05C1A;
+  --accent-light:  #F2E3D0;
+  --accent-warm:   #E08030;
+  --accent-2:      #2B7A6F;
+  --accent-2-light:#D4EDEA;
+  --border:        #CDD2E4;
+  --border-mid:    #9BA6C0;
+  --serif:         'Source Serif 4', Georgia, serif;
+  --mono:          'IBM Plex Mono', 'Fira Mono', monospace;
+  --sans:          'Inter', system-ui, sans-serif;
+  --radius-sm:     3px;
+  --radius:        6px;
+}
+
+/* ── Reset ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  background: var(--ground);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+strong { font-weight: 500; }
+
+/* ── Layout ────────────────────────────────────────────────── */
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 32px 80px;
+}
+
+/* ── Header ────────────────────────────────────────────────── */
+.doc-header {
+  padding: 56px 0 40px;
+  border-bottom: 2px solid var(--ground-deep);
+  margin-bottom: 0;
+}
+.header-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.meta-chip {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  background: var(--ground-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 3px 8px;
+}
+.meta-chip.accent { background: var(--accent-light); color: var(--accent); border-color: #D4A87A; }
+.meta-chip.teal   { background: var(--accent-2-light); color: var(--accent-2); border-color: #8FBFBA; }
+
+.doc-title {
+  font-family: var(--serif);
+  font-size: 2.5rem;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--text);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin-bottom: 10px;
+}
+.doc-subtitle {
+  font-family: var(--sans);
+  font-size: 0.975rem;
+  color: var(--text-mid);
+  max-width: 68ch;
+  line-height: 1.6;
+}
+
+/* Stats strip */
+.stats-strip {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-top: 32px;
+  overflow: hidden;
+  background: white;
+}
+.stat-cell {
+  padding: 16px 20px;
+  border-right: 1px solid var(--border);
+}
+.stat-cell:last-child { border-right: none; }
+.stat-num {
+  font-family: var(--mono);
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-num.copper { color: var(--accent); }
+.stat-num.teal   { color: var(--accent-2); }
+.stat-label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* ── Section chrome ────────────────────────────────────────── */
+section { margin-top: 52px; }
+
+.section-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-eyebrow::after {
+  content: '';
+  display: block;
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.section-title {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1.3;
+  margin-bottom: 20px;
+}
+
+/* ── Grounding Context ─────────────────────────────────────── */
+.grounding-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.ground-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+}
+.ground-card-title {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.ground-card p {
+  font-size: 0.875rem;
+  color: var(--text-mid);
+  line-height: 1.6;
+}
+.ground-card ul {
+  list-style: none;
+  padding: 0;
+}
+.ground-card ul li {
+  font-size: 0.875rem;
+  color: var(--text-mid);
+  line-height: 1.6;
+  padding-left: 14px;
+  position: relative;
+}
+.ground-card ul li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--border-mid);
+  font-size: 0.8rem;
+}
+
+.ground-card.full-width {
+  grid-column: 1 / -1;
+}
+
+/* ── Axes ──────────────────────────────────────────────────── */
+.axes-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+.axis-tag {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  padding: 5px 12px;
+  background: var(--ground-2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--text-mid);
+}
+.axis-tag[data-id="A1"] { background: #EBF3F1; color: var(--accent-2); border-color: #8FBFBA; }
+.axis-tag[data-id="A2"] { background: var(--accent-light); color: var(--accent); border-color: #D4A87A; }
+.axis-tag[data-id="A3"] { background: #E8EBF4; color: #3D4B80; border-color: #A0AACC; }
+.axis-tag[data-id="A4"] { background: #F0EBE8; color: #7A4020; border-color: #C0906A; }
+.axis-tag[data-id="A5"] { background: #E8F0EC; color: #2A5C40; border-color: #7AAFA0; }
+
+/* ── Jump list ─────────────────────────────────────────────── */
+.jump-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 32px;
+}
+.jump-item {
+  display: grid;
+  grid-template-columns: 2.4rem 1fr auto auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 14px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--text);
+  font-size: 0.875rem;
+  transition: border-color 0.12s, background 0.12s;
+}
+.jump-item:hover {
+  border-color: var(--border-mid);
+  background: var(--ground);
+  text-decoration: none;
+}
+.jump-rank {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  text-align: right;
+}
+.jump-title { font-weight: 500; color: var(--text); }
+.jump-axis {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+.jump-conf {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.conf-high   { color: var(--accent-2); }
+.conf-med    { color: var(--accent); }
+.conf-low    { color: var(--text-dim); }
+.cx-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  background: var(--ground-2);
+  color: var(--text-mid);
+  border: 1px solid var(--border);
+  margin-left: 4px;
+}
+
+/* ── Idea cards ────────────────────────────────────────────── */
+.idea-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 20px;
+  position: relative;
+}
+.card-header {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  gap: 0;
+  align-items: stretch;
+  border-bottom: 1px solid var(--border);
+}
+.card-rank-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ground-deep);
+  padding: 18px 0;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.55);
+}
+.card-title-col {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+.card-title {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1.25;
+}
+.card-axis-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-meta-col {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+  justify-content: center;
+  border-left: 1px solid var(--border);
+  min-width: 100px;
+}
+.conf-ring {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.conf-label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.conf-pct {
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+.cx-row {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+}
+
+/* Confidence bar */
+.conf-bar-track {
+  width: 72px;
+  height: 4px;
+  background: var(--ground-3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.conf-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--accent);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .conf-bar-fill { transition: none; }
+}
+
+.card-body {
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Field rows */
+.field-label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 5px;
+}
+.field-value {
+  font-size: 0.9rem;
+  color: var(--text-mid);
+  line-height: 1.6;
+  max-width: 78ch;
+}
+
+/* Basis tag */
+.basis-type {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  margin-right: 8px;
+}
+.basis-external { background: #E8F0EC; color: #2A5C40; border: 1px solid #8FBFBA; }
+.basis-reasoned { background: #EBF0F8; color: #2A3C7A; border: 1px solid #8A9ACC; }
+.basis-direct   { background: var(--accent-light); color: var(--accent); border: 1px solid #D4A87A; }
+
+/* Downside / Rationale layout */
+.two-col-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Diagram area */
+.diagram-area {
+  background: var(--ground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 20px 24px;
+  overflow-x: auto;
+}
+
+/* ── Rejection table ───────────────────────────────────────── */
+.rejection-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.rejection-table thead tr {
+  border-bottom: 2px solid var(--ground-deep);
+}
+.rejection-table th {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-align: left;
+  padding: 8px 12px 10px;
+}
+.rejection-table td {
+  padding: 10px 12px;
+  vertical-align: top;
+  color: var(--text-mid);
+  border-bottom: 1px solid var(--border);
+}
+.rejection-table tr:last-child td { border-bottom: none; }
+.rejected-title { font-weight: 500; color: var(--text); }
+.rejected-reason { font-size: 0.82rem; color: var(--text-dim); }
+
+/* ── Footer ────────────────────────────────────────────────── */
+.composition-signal {
+  margin-top: 60px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  letter-spacing: 0.03em;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .page { padding: 0 20px 60px; }
+  .doc-title { font-size: 1.9rem; }
+  .grounding-grid { grid-template-columns: 1fr; }
+  .grounding-grid .full-width { grid-column: 1; }
+  .stats-strip { grid-template-columns: repeat(3, 1fr); }
+  .stats-strip .stat-cell:nth-child(4),
+  .stats-strip .stat-cell:nth-child(5) { border-top: 1px solid var(--border); }
+  .two-col-fields { grid-template-columns: 1fr; }
+  .card-header { grid-template-columns: 40px 1fr; }
+  .card-meta-col { display: none; }
+  .jump-item { grid-template-columns: 2rem 1fr auto; }
+  .jump-conf { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── Header ── -->
+  <header class="doc-header">
+    <div class="header-meta">
+      <span class="meta-chip">Ideation</span>
+      <span class="meta-chip">2026-06-22</span>
+      <span class="meta-chip accent">elsewhere-software</span>
+      <span class="meta-chip teal">7 survivors</span>
+    </div>
+    <h1 class="doc-title">Supplier Compliance, inverted</h1>
+    <p class="doc-subtitle">Research digest and ranked idea set for Athian's CPG supplier compliance platform — focused on removing the most painful steps from the current workflow: evidence re-entry, human standard interpretation, 15–30 portals per supplier, and 6–10 week assessment cycles.</p>
+
+    <div class="stats-strip">
+      <div class="stat-cell">
+        <div class="stat-num copper">19</div>
+        <div class="stat-label">Raw candidates</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">7</div>
+        <div class="stat-label">Survivors</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num teal">5</div>
+        <div class="stat-label">Topic axes</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">$300M</div>
+        <div class="stat-label">Vanta ARR (Apr 2026)</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num copper">0</div>
+        <div class="stat-label">OSCAL submissions despite 100+ FedRAMP Rev5 in 2025</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Grounding Context ── -->
+  <section id="grounding" aria-labelledby="grounding-title">
+    <div class="section-eyebrow">Topic Context</div>
+    <h2 class="section-title" id="grounding-title">What the research found</h2>
+
+    <div class="grounding-grid">
+      <div class="ground-card">
+        <div class="ground-card-title">Machine-readable standards (OSCAL + ESG)</div>
+        <p>OSCAL is the clearest precedent: machine-readable JSON/XML/YAML replacing Word SSPs. FedRAMP RFC-0024 (Jan 2026) now mandates OSCAL for all providers by Sept 2027. Critical counter-signal: 100+ Rev5 authorizations in 2025 with zero OSCAL submissions — mandates without tooling don't move behavior. ESG/food safety has no equivalent standard yet. RegScale donated OSCAL Hub open-source in Dec 2025; compliance-as-code is a phrase but not yet a market category outside IT security.</p>
+      </div>
+      <div class="ground-card">
+        <div class="ground-card-title">Continuous compliance mechanics (Vanta / Drata)</div>
+        <p>Vanta hit $300M ARR in April 2026 (69% YoY, up from $250M end-2025). The architectural pattern: 400+ API integrations pull evidence continuously; hourly tests detect drift; AI agent handles end-to-end GRC workflows. The $65B GRC market is the addressable context. Vanta's 95% acceptance rate on AI-generated questionnaire responses reveals the real moat: a rich knowledge base of prior answers, not the questionnaire UX itself.</p>
+      </div>
+      <div class="ground-card">
+        <div class="ground-card-title">Certificate-as-currency problem</div>
+        <p>EcoVadis distributes scorecards as PDF, secure-link, or platform share — no machine-readable export for buyers. Assent's answer to portal fatigue: one supplier response, shared to multiple buyers via their network. IntegrityNext: AI pre-fills questionnaire responses from prior data, bi-directional APIs connect to SAP Ariba/Coupa. The fundamental issue is identity: the supplier has no persistent, machine-readable credential that any buyer can consume without re-triggering assessment.</p>
+      </div>
+      <div class="ground-card">
+        <div class="ground-card-title">CS3D / regulatory proxy compliance</div>
+        <p>Omnibus I (Dec 2025) raised CSDDD threshold to 5,000 employees / €1.5B turnover; compliance deadline July 2029. SMEs not directly in scope, but face termination risk if in-scope customers can't get contractual assurance. EU model contract clauses due July 2027. Key gap: no defined technical mechanism for how a sub-threshold supplier satisfies assurance demands — the contractual requirement exists but the infrastructure doesn't.</p>
+      </div>
+      <div class="ground-card">
+        <div class="ground-card-title">Cross-domain analogies (SBOM, AATP/UNTP)</div>
+        <p>SBOM solved certificate-as-currency for software supply chains: one SPDX/CycloneDX file, consumed by every buyer. Critical lesson: format fragmentation (SPDX vs CycloneDX) delayed adoption. UNTP (UN Transparency Protocol) extends W3C Verifiable Credentials 2.0 to supply chain; livestock extension is the Australian Agriculture Traceability Protocol (AATP), which defines a Digital Livestock Passport extending UNTP for bovine-specific health and intervention data. UNTP targets 1M passports/day by 2030; W3C launched a Verifiable Supply Chain Community Group in Feb 2026.</p>
+      </div>
+      <div class="ground-card">
+        <div class="ground-card-title">Athian's position</div>
+        <p>Protocol DSLs already in production for livestock interventions (Bovaer, AMMP, Rumensin, Carbon Intensity). This is the structural advantage no competitor in the ESG platform space has: the DSL grammar exists, not as a concept but as running code. The question is whether that grammar can be extended to generate evidence schemas, assessment questionnaires, and verifiable credentials — eliminating the human translation layer that currently sits between protocol and evidence.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Topic Axes ── -->
+  <section id="axes" aria-labelledby="axes-title">
+    <div class="section-eyebrow">Topic Axes</div>
+    <h2 class="section-title" id="axes-title">Five surfaces for ideation</h2>
+    <div class="axes-list">
+      <span class="axis-tag" data-id="A1">A1 · Evidence collection &amp; re-entry elimination</span>
+      <span class="axis-tag" data-id="A2">A2 · Standard machine-readability &amp; DSL design</span>
+      <span class="axis-tag" data-id="A3">A3 · Continuous vs. batch compliance mechanics</span>
+      <span class="axis-tag" data-id="A4">A4 · Certificate interoperability &amp; network effects</span>
+      <span class="axis-tag" data-id="A5">A5 · CS3D / regulatory proxy compliance</span>
+    </div>
+  </section>
+
+  <!-- ── Ranked Ideas ── -->
+  <section id="ranked-ideas" aria-labelledby="ranked-title">
+    <div class="section-eyebrow">Ranked Ideas</div>
+    <h2 class="section-title" id="ranked-title">Seven candidates, ranked</h2>
+
+    <!-- Jump list -->
+    <nav aria-label="Idea index" class="jump-list">
+      <a class="jump-item" href="#idea-1">
+        <span class="jump-rank">01</span>
+        <span class="jump-title">DSL-as-questionnaire generator</span>
+        <span class="jump-axis">A2 · DSL design</span>
+        <span class="jump-conf conf-high">88%<span class="cx-badge">M</span></span>
+      </a>
+      <a class="jump-item" href="#idea-2">
+        <span class="jump-rank">02</span>
+        <span class="jump-title">Evidence Pull Request model</span>
+        <span class="jump-axis">A1 · Evidence collection</span>
+        <span class="jump-conf conf-high">85%<span class="cx-badge">M</span></span>
+      </a>
+      <a class="jump-item" href="#idea-3">
+        <span class="jump-rank">03</span>
+        <span class="jump-title">Digital Intervention Credential (UNTP extension)</span>
+        <span class="jump-axis">A4 · Certificate interop</span>
+        <span class="jump-conf conf-med">82%<span class="cx-badge">H</span></span>
+      </a>
+      <a class="jump-item" href="#idea-4">
+        <span class="jump-rank">04</span>
+        <span class="jump-title">Event-driven continuous compliance engine</span>
+        <span class="jump-axis">A3 · Continuous compliance</span>
+        <span class="jump-conf conf-med">80%<span class="cx-badge">H</span></span>
+      </a>
+      <a class="jump-item" href="#idea-5">
+        <span class="jump-rank">05</span>
+        <span class="jump-title">CS3D Assurance-as-a-Service</span>
+        <span class="jump-axis">A5 · CS3D proxy</span>
+        <span class="jump-conf conf-med">75%<span class="cx-badge">M</span></span>
+      </a>
+      <a class="jump-item" href="#idea-6">
+        <span class="jump-rank">06</span>
+        <span class="jump-title">Livestock Sustainability Bill of Materials (L-SBoM)</span>
+        <span class="jump-axis">A4 · Certificate interop</span>
+        <span class="jump-conf conf-med">78%<span class="cx-badge">M</span></span>
+      </a>
+      <a class="jump-item" href="#idea-7">
+        <span class="jump-rank">07</span>
+        <span class="jump-title">Cross-buyer credential network effect</span>
+        <span class="jump-axis">A4 · Certificate interop</span>
+        <span class="jump-conf conf-low">72%<span class="cx-badge">L</span></span>
+      </a>
+    </nav>
+
+    <!-- ── Idea 1 ── -->
+    <article class="idea-card" id="idea-1">
+      <div class="card-header">
+        <div class="card-rank-col">01</div>
+        <div class="card-title-col">
+          <div class="card-title">DSL-as-questionnaire generator</div>
+          <div class="card-axis-row">
+            <span class="axis-tag" data-id="A2">A2 · Standard machine-readability &amp; DSL design</span>
+          </div>
+        </div>
+        <div class="card-meta-col">
+          <div class="conf-label">Confidence</div>
+          <div class="conf-pct conf-high">88%</div>
+          <div class="conf-bar-track"><div class="conf-bar-fill" style="width:88%"></div></div>
+          <div class="cx-row">Complexity: <strong>Medium</strong></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="field-label">Description</div>
+          <div class="field-value">
+            Athian's protocol DSLs already encode the precise logical structure of a compliance standard — what conditions must hold, what evidence is required, what thresholds define success. The move: make the DSL the single authoritative source that auto-generates both the evidence schema <em>and</em> the assessment questionnaire. A reviewer writing or updating a DSL rule simultaneously produces the buyer-facing question and the machine-readable evidence contract that answers it. Adding a new standard (say, a new scope 3 reduction protocol) costs near-zero questionnaire design time once the DSL grammar is established.
+          </div>
+        </div>
+
+        <!-- Diagram: DSL → dual output -->
+        <div class="diagram-area">
+          <svg viewBox="0 0 680 160" width="100%" style="max-width:680px; display:block; margin:0 auto;" aria-label="DSL generates both evidence schema and assessment questionnaire">
+            <!-- DSL box -->
+            <rect x="20" y="50" width="140" height="60" rx="5" fill="#1C2340" />
+            <text x="90" y="74" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" fill="rgba(255,255,255,0.9)" font-weight="500">Protocol DSL</text>
+            <text x="90" y="88" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9" fill="rgba(255,255,255,0.55)">(already in prod)</text>
+            <text x="90" y="102" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9" fill="rgba(255,255,255,0.55)">bovaer · ammp · etc</text>
+
+            <!-- arrow fork -->
+            <line x1="160" y1="80" x2="220" y2="80" stroke="#C8CEDC" stroke-width="1.5" />
+            <line x1="220" y1="80" x2="220" y2="45" stroke="#C8CEDC" stroke-width="1.5" />
+            <line x1="220" y1="80" x2="220" y2="115" stroke="#C8CEDC" stroke-width="1.5" />
+            <line x1="220" y1="45" x2="280" y2="45" stroke="#C8CEDC" stroke-width="1.5" />
+            <line x1="220" y1="115" x2="280" y2="115" stroke="#C8CEDC" stroke-width="1.5" />
+            <!-- arrow tips -->
+            <polygon points="278,41 286,45 278,49" fill="#C8CEDC" />
+            <polygon points="278,111 286,115 278,119" fill="#C8CEDC" />
+
+            <!-- Evidence schema box -->
+            <rect x="286" y="22" width="160" height="46" rx="5" fill="#EBF0F8" stroke="#A0AACC" stroke-width="1" />
+            <text x="366" y="42" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" fill="#2A3C7A" font-weight="500">Evidence Schema</text>
+            <text x="366" y="57" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4A5A9A">JSON / structured fields</text>
+
+            <!-- Questionnaire box -->
+            <rect x="286" y="92" width="160" height="46" rx="5" fill="#EBF3F1" stroke="#8FBFBA" stroke-width="1" />
+            <text x="366" y="112" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" fill="#2A5C40" font-weight="500">Assessment Questions</text>
+            <text x="366" y="127" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#3A7A60">buyer-facing survey</text>
+
+            <!-- arrow right side -->
+            <line x1="446" y1="45" x2="510" y2="80" stroke="#C8CEDC" stroke-width="1.5" />
+            <line x1="446" y1="115" x2="510" y2="80" stroke="#C8CEDC" stroke-width="1.5" />
+            <line x1="510" y1="80" x2="570" y2="80" stroke="#C8CEDC" stroke-width="1.5" />
+            <polygon points="568,76 576,80 568,84" fill="#C8CEDC" />
+
+            <!-- Output -->
+            <rect x="576" y="56" width="90" height="48" rx="5" fill="#F2E3D0" stroke="#D4A87A" stroke-width="1" />
+            <text x="621" y="76" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" fill="#A05C1A" font-weight="500">Compliance</text>
+            <text x="621" y="90" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" fill="#A05C1A" font-weight="500">record</text>
+          </svg>
+          <p style="font-size:0.75rem; color:var(--text-dim); margin-top:10px; font-family:var(--mono);">Directional sketch — the DSL rule is the single source that generates both the machine-readable evidence contract and the human-facing assessment question.</p>
+        </div>
+
+        <div class="two-col-fields">
+          <div>
+            <div class="field-label">Basis</div>
+            <div class="field-value">
+              <span class="basis-type basis-external">external:</span>
+              FedRAMP OSCAL and RegScale compliance-as-code show this pattern working for IT security: the OSCAL catalog <em>is</em> the questionnaire generator. Athian's production DSLs for Bovaer/AMMP/Rumensin are the ESG equivalent of an OSCAL catalog — the grammar already exists. RegScale reports 90% faster certifications once the machine-readable source of truth is in place.
+            </div>
+          </div>
+          <div>
+            <div class="field-label">Rationale</div>
+            <div class="field-value">
+              Human translation from standard to questionnaire is where interpretation drift and cycle time accumulate. Eliminating that translation step doesn't just save time — it removes the class of compliance disputes that arise when two parties read the same standard differently. The DSL becomes a shared contract both Athian and the supplier's systems can reason against.
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="field-label">Downsides</div>
+          <div class="field-value">
+            DSL grammar must be expressive enough to encode all relevant protocol conditions, including edge cases that today live in reviewer judgment. DSL maintenance becomes a critical dependency — a grammar bug silently corrupts every generated questionnaire. Requires significant investment in DSL authoring tooling so protocol scientists (not engineers) can write and test rules.
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 2 ── -->
+    <article class="idea-card" id="idea-2">
+      <div class="card-header">
+        <div class="card-rank-col">02</div>
+        <div class="card-title-col">
+          <div class="card-title">Evidence Pull Request model</div>
+          <div class="card-axis-row">
+            <span class="axis-tag" data-id="A1">A1 · Evidence collection &amp; re-entry elimination</span>
+          </div>
+        </div>
+        <div class="card-meta-col">
+          <div class="conf-label">Confidence</div>
+          <div class="conf-pct conf-high">85%</div>
+          <div class="conf-bar-track"><div class="conf-bar-fill" style="width:85%"></div></div>
+          <div class="cx-row">Complexity: <strong>Medium</strong></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="field-label">Description</div>
+          <div class="field-value">
+            Today's compliance workflow starts from the buyer side: a questionnaire is issued, the supplier fills it out manually. Invert the model. Athian issues a structured, machine-readable <em>evidence pull request</em> — a document that precisely specifies what data fields are needed, in what schema, with what validation rules — and publishes it to the supplier's preferred endpoint (API, farm management system webhook, or even a structured form pre-mapped to their system's fields). Suppliers with instrumented systems can fulfill it programmatically; others get a pre-filled form where each field knows exactly where in their system the answer lives.
+          </div>
+        </div>
+
+        <div class="two-col-fields">
+          <div>
+            <div class="field-label">Basis</div>
+            <div class="field-value">
+              <span class="basis-type basis-reasoned">reasoned:</span>
+              The questionnaire model is push-structured: the buyer describes what it wants in human language, and the supplier translates their system's data into that language manually. A pull request inverts this: the buyer expresses its need in a machine-readable schema, and the supplier's system can match fields algorithmically. This is how API integrations work; the compliance world hasn't adopted it because standards aren't machine-readable yet. Athian's DSL closes that gap.
+            </div>
+          </div>
+          <div>
+            <div class="field-label">Rationale</div>
+            <div class="field-value">
+              The re-entry problem is not caused by the volume of questions; it's caused by the semantic gap between what the question asks and what the system stores. A machine-readable pull request eliminates that gap for instrumented suppliers, and dramatically narrows it for others by pre-mapping fields. The 15–30 portal problem becomes: one pull request format, fulfilled once, consumed by many buyers.
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="field-label">Downsides</div>
+          <div class="field-value">
+            Requires suppliers to have systems with API access or structured export — significant portion of livestock producers won't qualify immediately. The pull request schema must be stable and versioned, or every schema update triggers re-integration work on the supplier side. Adoption requires buyers to also accept pull-request-fulfilled evidence, not just questionnaire responses.
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 3 ── -->
+    <article class="idea-card" id="idea-3">
+      <div class="card-header">
+        <div class="card-rank-col">03</div>
+        <div class="card-title-col">
+          <div class="card-title">Digital Intervention Credential (UNTP extension)</div>
+          <div class="card-axis-row">
+            <span class="axis-tag" data-id="A4">A4 · Certificate interoperability &amp; network effects</span>
+          </div>
+        </div>
+        <div class="card-meta-col">
+          <div class="conf-label">Confidence</div>
+          <div class="conf-pct conf-med">82%</div>
+          <div class="conf-bar-track"><div class="conf-bar-fill" style="width:82%"></div></div>
+          <div class="cx-row">Complexity: <strong>High</strong></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="field-label">Description</div>
+          <div class="field-value">
+            Athian issues W3C Verifiable Credentials (v2.0) typed to specific livestock intervention events — a Bovaer dose administered, an AMMP measurement recorded, a Rumensin program completed. Each credential is cryptographically signed, tamper-evident, and independently verifiable by any buyer without contacting Athian. Structurally, this extends the UNTP/AATP framework already being piloted for livestock in Australia, making Athian's credential format interoperable with the emerging global digital product passport ecosystem. A supplier earns a credential once; every CPG buyer of that supplier can consume it directly.
+          </div>
+        </div>
+
+        <!-- Diagram: credential issuance and multi-buyer consumption -->
+        <div class="diagram-area">
+          <svg viewBox="0 0 680 190" width="100%" style="max-width:680px; display:block; margin:0 auto;" aria-label="Athian issues one verifiable credential per intervention; multiple buyers consume it">
+            <!-- Supplier / intervention event -->
+            <rect x="20" y="70" width="130" height="50" rx="5" fill="#1C2340" />
+            <text x="85" y="91" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9.5" fill="rgba(255,255,255,0.9)" font-weight="500">Farm intervention</text>
+            <text x="85" y="105" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8.5" fill="rgba(255,255,255,0.5)">Bovaer · AMMP · etc</text>
+
+            <!-- Athian issuer -->
+            <line x1="150" y1="95" x2="220" y2="95" stroke="#C8CEDC" stroke-width="1.5" />
+            <polygon points="218,91 226,95 218,99" fill="#C8CEDC" />
+            <rect x="226" y="68" width="140" height="54" rx="5" fill="#F2E3D0" stroke="#D4A87A" stroke-width="1.5" />
+            <text x="296" y="89" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9.5" fill="#A05C1A" font-weight="500">Athian issues</text>
+            <text x="296" y="103" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8.5" fill="#A05C1A">VC · signed · UNTP</text>
+            <text x="296" y="117" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="#C07030">once per intervention</text>
+
+            <!-- arrow right from credential -->
+            <line x1="366" y1="95" x2="420" y2="95" stroke="#C8CEDC" stroke-width="1.5" />
+            <line x1="420" y1="95" x2="420" y2="45" stroke="#C8CEDC" stroke-width="1.5" />
+            <line x1="420" y1="95" x2="420" y2="145" stroke="#C8CEDC" stroke-width="1.5" />
+            <line x1="420" y1="45" x2="460" y2="45" stroke="#C8CEDC" stroke-width="1.5" />
+            <line x1="420" y1="95" x2="460" y2="95" stroke="#C8CEDC" stroke-width="1.5" />
+            <line x1="420" y1="145" x2="460" y2="145" stroke="#C8CEDC" stroke-width="1.5" />
+            <polygon points="458,41 466,45 458,49" fill="#C8CEDC" />
+            <polygon points="458,91 466,95 458,99" fill="#C8CEDC" />
+            <polygon points="458,141 466,145 458,149" fill="#C8CEDC" />
+
+            <!-- Buyer boxes -->
+            <rect x="466" y="24" width="110" height="42" rx="5" fill="#E8F0EC" stroke="#8FBFBA" stroke-width="1" />
+            <text x="521" y="43" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#2A5C40" font-weight="500">CPG Buyer A</text>
+            <text x="521" y="58" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="#3A7A60">verifies directly</text>
+
+            <rect x="466" y="74" width="110" height="42" rx="5" fill="#E8F0EC" stroke="#8FBFBA" stroke-width="1" />
+            <text x="521" y="93" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#2A5C40" font-weight="500">CPG Buyer B</text>
+            <text x="521" y="108" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="#3A7A60">verifies directly</text>
+
+            <rect x="466" y="124" width="110" height="42" rx="5" fill="#E8F0EC" stroke="#8FBFBA" stroke-width="1" />
+            <text x="521" y="143" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#2A5C40" font-weight="500">Retailer</text>
+            <text x="521" y="158" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="#3A7A60">verifies directly</text>
+
+            <!-- "no re-assessment" label -->
+            <text x="610" y="95" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="#A05C1A">no re-assessment</text>
+            <text x="610" y="108" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="#A05C1A">per buyer</text>
+          </svg>
+          <p style="font-size:0.75rem; color:var(--text-dim); margin-top:10px; font-family:var(--mono);">One credential per intervention event, consumed by N buyers — the certificate-as-currency problem solved by cryptographic portability.</p>
+        </div>
+
+        <div class="two-col-fields">
+          <div>
+            <div class="field-label">Basis</div>
+            <div class="field-value">
+              <span class="basis-type basis-external">external:</span>
+              Australian Agriculture Traceability Protocol (AATP) already extends UNTP for Digital Livestock Passports covering bovine health and intervention data. W3C published VC 2.0 as a full standard in 2025; the W3C Verifiable Supply Chain Community Group launched Feb 2026 specifically to apply VCs to supply chain compliance. GS1 published a VC data model and validation white paper. UNTP targets 1M passports/day by 2030 with livestock as one of the active domains.
+            </div>
+          </div>
+          <div>
+            <div class="field-label">Rationale</div>
+            <div class="field-value">
+              Athian's intervention protocols map directly onto AATP's Digital Livestock Passport credential types. Becoming an UNTP extension rather than a proprietary credential issuer means Athian's credentials are interoperable with the emerging global DPP ecosystem — a network Athian does not have to build alone. The cryptographic portability eliminates the PDF-re-entry problem by design: there is no PDF to re-enter.
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="field-label">Downsides</div>
+          <div class="field-value">
+            UNTP/AATP is still pre-1.0 (targeting mid-2026); building on a draft standard carries risk of protocol changes. Verifiable credential infrastructure (DID resolution, revocation registries) requires operational investment Athian doesn't currently have. Buyer-side tooling to consume VCs doesn't exist in CPG procurement systems yet — Athian would be ahead of market infrastructure.
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 4 ── -->
+    <article class="idea-card" id="idea-4">
+      <div class="card-header">
+        <div class="card-rank-col">04</div>
+        <div class="card-title-col">
+          <div class="card-title">Event-driven continuous compliance engine</div>
+          <div class="card-axis-row">
+            <span class="axis-tag" data-id="A3">A3 · Continuous vs. batch compliance mechanics</span>
+          </div>
+        </div>
+        <div class="card-meta-col">
+          <div class="conf-label">Confidence</div>
+          <div class="conf-pct conf-med">80%</div>
+          <div class="conf-bar-track"><div class="conf-bar-fill" style="width:80%"></div></div>
+          <div class="cx-row">Complexity: <strong>High</strong></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="field-label">Description</div>
+          <div class="field-value">
+            Replace the 6–10 week batch assessment cycle with a DSL-evaluated state machine that updates compliance status in real time as farm events arrive. Each farm management system event (an AMMP reading, a dosing record, a measurement upload) is pushed via webhook or API; the DSL evaluates the event against protocol rules and updates the supplier's compliance state immediately. Assessment is no longer a periodic activity — it is a continuous property of the farm's data stream. Buyers get a live compliance status, not a 6-month-old scorecard.
+          </div>
+        </div>
+        <div class="two-col-fields">
+          <div>
+            <div class="field-label">Basis</div>
+            <div class="field-value">
+              <span class="basis-type basis-external">external:</span>
+              Vanta's architecture is the direct precedent: 400+ API integrations, hourly control tests, real-time compliance state. Vanta went from $10M to $300M ARR in ~2 years by making continuous compliance the default rather than the premium. The structural difference for Athian: Vanta pulls evidence from SaaS APIs; Athian would receive pushes from farm management systems. The DSL already encodes what a compliant event looks like — the remaining engineering is the event ingestion and state machine layer.
+            </div>
+          </div>
+          <div>
+            <div class="field-label">Rationale</div>
+            <div class="field-value">
+              The 6–10 week assessment cycle is an artifact of manual review latency, not inherent to the compliance logic itself. Once the DSL formalizes the rules, the cycle time is bounded only by data freshness. The business model shift is significant: from per-assessment fees to continuous monitoring subscriptions — a higher-value, stickier relationship. Buyers who currently wait months for updated supplier status can act on near-real-time signals.
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="field-label">Downsides</div>
+          <div class="field-value">
+            Most livestock producers don't have instrumented farm management systems with API-accessible event streams — adoption requires a supply-side technology shift Athian can't control. Partial compliance (a supplier instrumenting some activities but not others) creates ambiguous state that continuous models handle poorly. False-positive compliance signals from noisy sensor data could undermine trust in the system.
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 5 ── -->
+    <article class="idea-card" id="idea-5">
+      <div class="card-header">
+        <div class="card-rank-col">05</div>
+        <div class="card-title-col">
+          <div class="card-title">CS3D Assurance-as-a-Service for sub-threshold suppliers</div>
+          <div class="card-axis-row">
+            <span class="axis-tag" data-id="A5">A5 · CS3D / regulatory proxy compliance</span>
+          </div>
+        </div>
+        <div class="card-meta-col">
+          <div class="conf-label">Confidence</div>
+          <div class="conf-pct conf-med">75%</div>
+          <div class="conf-bar-track"><div class="conf-bar-fill" style="width:75%"></div></div>
+          <div class="cx-row">Complexity: <strong>Medium</strong></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="field-label">Description</div>
+          <div class="field-value">
+            CS3D (CSDDD Omnibus, compliance deadline July 2029) creates a structural gap: companies above 5,000 employees / €1.5B turnover must obtain contractual assurance from their suppliers, but those suppliers have no defined technical mechanism for providing it. Athian positions itself as that mechanism — a compliance infrastructure product that livestock suppliers use to generate the contractual assurance artifacts their in-scope CPG customers need. The supplier's Athian record (DSL-evaluated, continuously monitored) becomes the source of truth for the EU model contract clauses due July 2027. Athian is the proxy compliance layer, not another questionnaire.
+          </div>
+        </div>
+        <div class="two-col-fields">
+          <div>
+            <div class="field-label">Basis</div>
+            <div class="field-value">
+              <span class="basis-type basis-external">external:</span>
+              CS3D Omnibus I (Dec 2025) raises threshold to 5,000 employees / €1.5B — most livestock producers are far below. EU model contract clauses due July 2027 will define what contractual assurance looks like technically, creating a window for Athian to become the implementation layer before that window closes. SMEs "face termination of business relationships if they cannot demonstrate compliance" (Normative/CSDDD research). No platform currently fills this infrastructure gap specifically for livestock/agriculture.
+            </div>
+          </div>
+          <div>
+            <div class="field-label">Rationale</div>
+            <div class="field-value">
+              The CS3D assurance gap is not a questionnaire problem — it's an infrastructure problem. A sub-threshold supplier can't satisfy a contractual assurance demand by filling out a form; they need a system that generates a legally defensible, auditable record. Athian already builds that system for emissions interventions. The move is to surface the CS3D assurance artifact as a first-class output alongside the emissions record.
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="field-label">Downsides</div>
+          <div class="field-value">
+            EU model contract clause language (due July 2027) is not yet defined — Athian would be building toward a moving target. CS3D enforcement doesn't begin until July 2029, making this a long-horizon play. Legal interpretation of what constitutes adequate contractual assurance will vary by jurisdiction and buyer's legal counsel, creating compliance uncertainty around the product's guarantees.
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 6 ── -->
+    <article class="idea-card" id="idea-6">
+      <div class="card-header">
+        <div class="card-rank-col">06</div>
+        <div class="card-title-col">
+          <div class="card-title">Livestock Sustainability Bill of Materials (L-SBoM)</div>
+          <div class="card-axis-row">
+            <span class="axis-tag" data-id="A4">A4 · Certificate interoperability &amp; network effects</span>
+          </div>
+        </div>
+        <div class="card-meta-col">
+          <div class="conf-label">Confidence</div>
+          <div class="conf-pct conf-med">78%</div>
+          <div class="conf-bar-track"><div class="conf-bar-fill" style="width:78%"></div></div>
+          <div class="cx-row">Complexity: <strong>Medium</strong></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="field-label">Description</div>
+          <div class="field-value">
+            Draw the SBOM analogy directly. A Livestock Sustainability Bill of Materials is a structured, versioned, machine-readable record of every emissions-reduction intervention applied to a production batch — organized by protocol, evidence type, and outcome — shareable across multiple buyers without re-entry. Like a software SBOM, it is generated once by the producer and consumed by any buyer's compliance system. Unlike a PDF scorecard, it carries a schema version, can be diffed against prior submissions, and can be verified programmatically. Athian generates the L-SBoM as an output of its existing protocol tracking.
+          </div>
+        </div>
+        <div class="two-col-fields">
+          <div>
+            <div class="field-label">Basis</div>
+            <div class="field-value">
+              <span class="basis-type basis-external">external:</span>
+              Software SBOM adoption (SPDX / CycloneDX) shows that a machine-readable manifest shared once and consumed by many buyers is a viable model — once mandated. The SBOM lesson: format fragmentation delayed adoption; Athian controls its own format and doesn't face competing schemas in the livestock space. GS1 and UNTP are both working on versioned, machine-readable supply chain manifests aligned to this pattern.
+            </div>
+          </div>
+          <div>
+            <div class="field-label">Rationale</div>
+            <div class="field-value">
+              The EcoVadis-scorecard-as-PDF is the exact problem SBOM was designed to solve in software: a compliance artifact that's generated once but re-entered many times because it's not machine-readable. L-SBoM reframes Athian's output from "a report the buyer reads" to "a structured record the buyer's system consumes." This is a product positioning shift as much as a technical one.
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="field-label">Downsides</div>
+          <div class="field-value">
+            "Bill of Materials" framing may not land with CPG procurement teams unfamiliar with software supply chain concepts. Buyers need tooling to consume L-SBoMs — without buyer-side adoption, the format value is unrealized. SBOM adoption was driven by government mandate (US EO 14028); L-SBoM may need a similar push to achieve critical mass. Format proliferation risk if other livestock platforms create competing schemas.
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 7 ── -->
+    <article class="idea-card" id="idea-7">
+      <div class="card-header">
+        <div class="card-rank-col">07</div>
+        <div class="card-title-col">
+          <div class="card-title">Cross-buyer credential network effect</div>
+          <div class="card-axis-row">
+            <span class="axis-tag" data-id="A4">A4 · Certificate interoperability &amp; network effects</span>
+          </div>
+        </div>
+        <div class="card-meta-col">
+          <div class="conf-label">Confidence</div>
+          <div class="conf-pct conf-low">72%</div>
+          <div class="conf-bar-track"><div class="conf-bar-fill" style="width:72%"></div></div>
+          <div class="cx-row">Complexity: <strong>Low</strong></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="field-label">Description</div>
+          <div class="field-value">
+            Once a supplier's compliance data exists in Athian's structured format, every CPG buyer of that supplier can consume it without re-triggering a full assessment. The network value compounds with each additional buyer relationship: a supplier assessed once for Buyer A is pre-assessed for Buyers B, C, and D. Athian captures the network value by charging buyers for access to the supplier's existing record, rather than charging only the supplier. This is the Assent model (one survey, shared to multiple clients) applied at the credential layer rather than the questionnaire layer — and it positions the supplier's compliance investment as a reusable asset rather than a one-time cost per buyer.
+          </div>
+        </div>
+        <div class="two-col-fields">
+          <div>
+            <div class="field-label">Basis</div>
+            <div class="field-value">
+              <span class="basis-type basis-external">external:</span>
+              Assent explicitly runs this model: "a single survey can provide answers to each of their clients." EcoVadis runs a premium version: suppliers pay to share their scorecard with unlimited trading partners. The difference is that both operate at the questionnaire/scorecard layer — Athian would operate at the verified, DSL-evaluated credential layer, where the evidence is more defensible and the re-assessment risk is lower.
+            </div>
+          </div>
+          <div>
+            <div class="field-label">Rationale</div>
+            <div class="field-value">
+              The 15–30 portal problem is fundamentally a network problem: each buyer operates an independent compliance workflow with no shared infrastructure. This idea addresses the network layer directly, converting Athian from a bilateral compliance tool (one supplier, one buyer) into a multilateral credential network (one supplier, many buyers). The flywheel: more buyers make the supplier's Athian investment more valuable, driving supplier adoption.
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="field-label">Downsides</div>
+          <div class="field-value">
+            Network effects take time to materialize — the value proposition is weak when Athian has few buyers on the platform. Buyers may be reluctant to rely on an assessment commissioned by or for a competing buyer. Pricing model complexity: charging suppliers for assessment and buyers for access creates conflicting incentives around what level of rigor benefits whom.
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- ── Rejection Summary ── -->
+  <section id="rejection-summary" aria-labelledby="rejection-title">
+    <div class="section-eyebrow">Rejection Summary</div>
+    <h2 class="section-title" id="rejection-title">What was cut and why</h2>
+
+    <table class="rejection-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Idea</th>
+          <th>Reason rejected</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td class="rejected-title">Standard interpretation drift (buyer-side ambiguity)</td>
+          <td class="rejected-reason">Real pain, but no clear product move attached — subsumed by idea #1 (DSL eliminates drift by design).</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td class="rejected-title">Standard changes as typed Airworthiness Directives</td>
+          <td class="rejected-reason">Strong analogy but already explored in the June 22 cross-domain analogy doc; better as a brainstorm variant of idea #1 than a standalone idea.</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td class="rejected-title">Compliance certificates that expire daily</td>
+          <td class="rejected-reason">Useful thought experiment (motivates continuous compliance), not a product idea. No actionable design surfaces.</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td class="rejected-title">Buyers and suppliers as co-authors of the compliance DSL</td>
+          <td class="rejected-reason">Directional aspiration with no handle — too vague for a team meeting test. The governance model for multi-party DSL authorship is a dissertation, not an idea.</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td class="rejected-title">Remove assessment cycle for rules-expressible standards</td>
+          <td class="rejected-reason">Subsumed by idea #4 (event-driven continuous compliance engine), which is the mechanism that achieves this.</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td class="rejected-title">Compliance at the intervention event (not supplier entity)</td>
+          <td class="rejected-reason">Interesting reframe, absorbed into idea #3 (Digital Intervention Credential), where it becomes the structural basis rather than a standalone idea.</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td class="rejected-title">Athian as a standard-setter (1000x supplier constraint flip)</td>
+          <td class="rejected-reason">Too abstract — the constraint flip is a useful pressure test but not a discrete product direction. The network effect idea (#7) and UNTP extension idea (#3) capture the actionable outputs.</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td class="rejected-title">Buyer's compliance knowledge base as Vanta-style AI responder</td>
+          <td class="rejected-reason">Addresses the wrong end — automates the buyer's questionnaire review, not the supplier's evidence burden. Vanta-adjacent and not differentiated for livestock.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer class="composition-signal">
+    Composed <time datetime="2026-06-22">2026-06-22</time> by ce-ideate · run a3f8c2d1 · /Users/doryweiss/Athian/docs/ideation/2026-06-22-supplier-compliance-dsl-ideation.html
+  </footer>
+
+</div>
+
+<script>
+  // Animate confidence bars on first visibility
+  if (typeof IntersectionObserver !== 'undefined' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const fills = document.querySelectorAll('.conf-bar-fill');
+    fills.forEach(el => {
+      const target = el.style.width;
+      el.style.width = '0%';
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.style.width = target;
+            obs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.5 });
+      obs.observe(el);
+    });
+  }
+</script>
+
+</body>
+</html>

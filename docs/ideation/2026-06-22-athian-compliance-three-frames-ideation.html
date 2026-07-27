@@ -1,0 +1,1159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ideation: Athian Compliance — Three Frames</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── Token layer ────────────────────────────────────────────────────────── */
+:root {
+  --ground:        #F5F2ED;
+  --ground-2:      #EDE9E2;
+  --ground-3:      #E3DDD4;
+  --ground-ink:    #D4CFC7;
+  --text:          #1C2128;
+  --text-mid:      #4A5568;
+  --text-dim:      #8A93A0;
+  --accent:        #1B5E6B;
+  --accent-mid:    #2A7D8E;
+  --accent-faint:  rgba(27,94,107,0.09);
+  --accent-rule:   rgba(27,94,107,0.22);
+  --accent2:       #C4783A;
+  --accent2-faint: rgba(196,120,58,0.10);
+  --accent2-mid:   #9A5B26;
+  --warn:          #7A4F2A;
+  --display:       'DM Serif Display', Georgia, serif;
+  --body:          'DM Sans', system-ui, sans-serif;
+  --mono:          'JetBrains Mono', 'Fira Mono', monospace;
+  --radius:        4px;
+  --radius-lg:     8px;
+}
+
+/* ── Reset ──────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  background: var(--ground);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 0.9375rem;
+  line-height: 1.68;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+strong { font-weight: 600; color: inherit; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+/* ── Page shell ─────────────────────────────────────────────────────────── */
+.page {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 32px 120px;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+.doc-header {
+  padding: 52px 0 44px;
+  border-bottom: 1.5px solid var(--ground-3);
+  margin-bottom: 48px;
+}
+.doc-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--accent);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.doc-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent-rule) 0%, transparent 70%);
+}
+.doc-title {
+  font-family: var(--display);
+  font-size: 2.6rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+.doc-title em {
+  font-style: italic;
+  color: var(--accent);
+}
+.doc-subtitle {
+  font-size: 0.9375rem;
+  color: var(--text-mid);
+  font-weight: 300;
+  max-width: 62ch;
+  line-height: 1.6;
+}
+.doc-meta {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.doc-meta-item {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+}
+.doc-meta-item span {
+  color: var(--text-mid);
+}
+
+/* ── Stats strip ────────────────────────────────────────────────────────── */
+.stats-strip {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--ground-3);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 52px;
+}
+.stat-cell {
+  flex: 1;
+  padding: 20px 24px;
+  border-right: 1px solid var(--ground-3);
+  background: var(--ground-2);
+}
+.stat-cell:last-child { border-right: none; }
+.stat-num {
+  font-family: var(--display);
+  font-size: 2rem;
+  font-weight: 400;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-label {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ── Frame legend ───────────────────────────────────────────────────────── */
+.frame-legend {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 48px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--ground-3);
+}
+.frame-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 11px;
+  border-radius: var(--radius);
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+.chip-analogy {
+  background: var(--accent-faint);
+  color: var(--accent);
+  border: 1px solid var(--accent-rule);
+}
+.chip-assumption {
+  background: var(--accent2-faint);
+  color: var(--accent2-mid);
+  border: 1px solid rgba(196,120,58,0.28);
+}
+.chip-constraint {
+  background: rgba(27,94,107,0.05);
+  color: var(--accent-mid);
+  border: 1px solid rgba(43,125,142,0.25);
+}
+.chip-inversion {
+  background: rgba(122,79,42,0.07);
+  color: var(--warn);
+  border: 1px solid rgba(122,79,42,0.22);
+}
+.chip-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+/* ── Section headings ───────────────────────────────────────────────────── */
+.section {
+  margin-bottom: 64px;
+}
+.section-label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+.section-heading {
+  font-family: var(--display);
+  font-size: 1.6rem;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  color: var(--text);
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--ground-3);
+}
+
+/* ── Jump list ──────────────────────────────────────────────────────────── */
+.jump-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 24px;
+  margin-bottom: 40px;
+  padding: 20px 24px;
+  background: var(--ground-2);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--ground-3);
+}
+.jump-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.jump-rank {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  color: var(--text-dim);
+  flex-shrink: 0;
+  width: 18px;
+}
+.jump-list a {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--accent);
+  line-height: 1.4;
+}
+
+/* ── Idea cards ─────────────────────────────────────────────────────────── */
+.idea-card {
+  border: 1px solid var(--ground-3);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 28px;
+  background: #FDFBF8;
+}
+.idea-card-header {
+  padding: 22px 28px 18px;
+  border-bottom: 1px solid var(--ground-3);
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.idea-rank-badge {
+  font-family: var(--display);
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: var(--ground-ink);
+  line-height: 1;
+  flex-shrink: 0;
+  min-width: 36px;
+  margin-top: 2px;
+}
+.idea-header-content {
+  flex: 1;
+  min-width: 0;
+}
+.idea-tags {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-bottom: 9px;
+  align-items: center;
+}
+.axis-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: var(--radius);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+  text-transform: uppercase;
+  background: var(--ground-2);
+  color: var(--text-mid);
+  border: 1px solid var(--ground-3);
+}
+.idea-title {
+  font-family: var(--display);
+  font-size: 1.2rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: var(--text);
+}
+.idea-card-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  padding-top: 4px;
+}
+.conf-badge, .cx-badge {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+.badge-label {
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.badge-value {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+.conf-high  { color: var(--accent); }
+.conf-med   { color: var(--accent2-mid); }
+.conf-low   { color: var(--text-dim); }
+.cx-low     { color: var(--accent); }
+.cx-med     { color: var(--accent2-mid); }
+.cx-high    { color: var(--warn); }
+
+.idea-card-body {
+  padding: 22px 28px;
+}
+.idea-description {
+  font-size: 0.9375rem;
+  color: var(--text-mid);
+  line-height: 1.7;
+  max-width: 72ch;
+  margin-bottom: 20px;
+}
+.idea-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 0;
+}
+.idea-field {
+  padding: 14px 16px;
+  background: var(--ground-2);
+  border-radius: var(--radius);
+  border: 1px solid var(--ground-3);
+}
+.idea-field-full {
+  grid-column: 1 / -1;
+}
+.field-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  display: block;
+}
+.field-value {
+  font-size: 0.875rem;
+  color: var(--text);
+  line-height: 1.55;
+  font-weight: 300;
+}
+.field-value.basis {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: var(--text-mid);
+}
+.basis-tag {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 0.65rem;
+  font-weight: 500;
+  margin-right: 4px;
+  letter-spacing: 0.04em;
+  vertical-align: 2px;
+}
+.tag-reasoned {
+  background: var(--accent-faint);
+  color: var(--accent);
+  border: 1px solid var(--accent-rule);
+}
+.tag-external {
+  background: var(--accent2-faint);
+  color: var(--accent2-mid);
+  border: 1px solid rgba(196,120,58,0.25);
+}
+
+.meeting-test {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-faint);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: 0.85rem;
+  color: var(--accent);
+  font-style: italic;
+}
+
+/* ── Diagram container ──────────────────────────────────────────────────── */
+.diagram-wrap {
+  margin: 20px 0;
+  border: 1px solid var(--ground-3);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--ground-2);
+}
+.diagram-caption {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  padding: 8px 16px;
+  border-top: 1px solid var(--ground-3);
+  letter-spacing: 0.06em;
+}
+
+/* ── Grounding Context ──────────────────────────────────────────────────── */
+.context-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.context-cell {
+  padding: 16px 18px;
+  background: var(--ground-2);
+  border-radius: var(--radius);
+  border: 1px solid var(--ground-3);
+}
+.context-cell-full {
+  grid-column: 1 / -1;
+}
+
+/* ── Topic Axes ─────────────────────────────────────────────────────────── */
+.axes-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.axis-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--ground-2);
+  border-radius: var(--radius);
+  border: 1px solid var(--ground-3);
+}
+.axis-num {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.axis-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text);
+}
+.axis-desc {
+  font-size: 0.83rem;
+  color: var(--text-dim);
+  flex: 1;
+}
+
+/* ── Rejection table ────────────────────────────────────────────────────── */
+.rejection-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.825rem;
+}
+.rejection-table thead th {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-align: left;
+  padding: 8px 14px 10px;
+  border-bottom: 1.5px solid var(--ground-3);
+  font-weight: 500;
+  background: var(--ground-2);
+}
+.rejection-table tbody td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--ground-3);
+  vertical-align: top;
+  color: var(--text-mid);
+  line-height: 1.5;
+  font-weight: 300;
+}
+.rejection-table tbody tr:last-child td { border-bottom: none; }
+.rejection-table tbody tr:hover td { background: var(--ground-2); }
+.idea-name-cell { font-weight: 400; color: var(--text); }
+.rejection-reason { font-size: 0.8rem; color: var(--text-dim); }
+
+/* ── Footer ─────────────────────────────────────────────────────────────── */
+footer.composition-signal {
+  margin-top: 80px;
+  padding-top: 24px;
+  border-top: 1px solid var(--ground-3);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .doc-title { font-size: 1.9rem; }
+  .stats-strip { flex-wrap: wrap; }
+  .stat-cell { min-width: 45%; border-bottom: 1px solid var(--ground-3); }
+  .jump-list { grid-template-columns: 1fr; }
+  .idea-fields { grid-template-columns: 1fr; }
+  .context-grid { grid-template-columns: 1fr; }
+  .idea-card-header { flex-wrap: wrap; }
+}
+
+/* ── Reduced motion ─────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ─── Document Header ─────────────────────────────────────────────── -->
+  <header class="doc-header">
+    <p class="doc-eyebrow">Athian Compliance · Ideation · 2026-06-22</p>
+    <h1 class="doc-title">Ten directions worth<br><em>building</em></h1>
+    <p class="doc-subtitle">Cross-domain analogy, assumption-breaking, and constraint-flipping applied to Athian Compliance — a DSL-first platform for CPG supplier compliance at Scope 3 scale. One evaluator. Many suppliers. Machine-readable requirements. These are the ideas that survived.</p>
+    <div class="doc-meta">
+      <span class="doc-meta-item">DATE <span>2026-06-22</span></span>
+      <span class="doc-meta-item">MODE <span>Elsewhere-software</span></span>
+      <span class="doc-meta-item">TOPIC <span>athian-compliance-three-frames</span></span>
+      <span class="doc-meta-item">FRAMES <span>Cross-domain analogy · Assumption-breaking · Constraint-flipping</span></span>
+    </div>
+  </header>
+
+  <!-- ─── Stats strip ──────────────────────────────────────────────────── -->
+  <div class="stats-strip" role="region" aria-label="Run statistics">
+    <div class="stat-cell">
+      <div class="stat-num">10</div>
+      <div class="stat-label">Survivors</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num">~34</div>
+      <div class="stat-label">Raw candidates</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num">5</div>
+      <div class="stat-label">Axes covered</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num">3</div>
+      <div class="stat-label">Frames</div>
+    </div>
+  </div>
+
+  <!-- ─── Frame legend ─────────────────────────────────────────────────── -->
+  <div class="frame-legend" aria-label="Frame key">
+    <span class="frame-chip chip-analogy"><span class="chip-dot"></span>Cross-domain analogy</span>
+    <span class="frame-chip chip-assumption"><span class="chip-dot"></span>Assumption-breaking</span>
+    <span class="frame-chip chip-constraint"><span class="chip-dot"></span>Constraint-flipping</span>
+    <span class="frame-chip chip-inversion"><span class="chip-dot"></span>Inversion / automation</span>
+  </div>
+
+  <!-- ─── Grounding Context ────────────────────────────────────────────── -->
+  <section class="section" aria-labelledby="grounding-heading">
+    <p class="section-label">Grounding Context</p>
+    <h2 class="section-heading" id="grounding-heading">Topic Context</h2>
+    <div class="context-grid">
+      <div class="context-cell">
+        <span class="field-label">Platform</span>
+        <div class="field-value">Athian Compliance — AI-native, DSL-first compliance platform. Compliance requirements are machine-readable: typed with unit, threshold, time window, required data, and accepted sources.</div>
+      </div>
+      <div class="context-cell">
+        <span class="field-label">Structural problem</span>
+        <div class="field-value">One evaluator assessing many suppliers against a shared spec. Evidence arrives heterogeneous (PDFs, certificates, lab results, audit reports). The spec changes over time and must be re-applied to existing entities.</div>
+      </div>
+      <div class="context-cell">
+        <span class="field-label">Key assumptions broken</span>
+        <div class="field-value">Push model (suppliers submit). Specialist reviews each supplier. Standards defined externally. Compliance assessed periodically. Suppliers are passive actors.</div>
+      </div>
+      <div class="context-cell">
+        <span class="field-label">External anchors</span>
+        <div class="field-value">NIST OSCAL, SBOM/EO 14028, Vanta/Drata, EcoVadis, SOC 2 continuous monitoring, W3C Verifiable Credentials 2.0, Aviation ADs, Nuclear reactor tech specs, CSDDD/EU DPP 2026–2030.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Topic Axes ────────────────────────────────────────────────────── -->
+  <section class="section" aria-labelledby="axes-heading">
+    <p class="section-label">Topic Axes</p>
+    <h2 class="section-heading" id="axes-heading">Five surfaces covered</h2>
+    <ul class="axes-list">
+      <li class="axis-row"><span class="axis-num">01</span><span class="axis-name">Standard encoding</span><span class="axis-desc">How compliance requirements get modeled as machine-readable specs</span></li>
+      <li class="axis-row"><span class="axis-num">02</span><span class="axis-name">Evidence collection</span><span class="axis-desc">How evidence is gathered from suppliers and third-party documents</span></li>
+      <li class="axis-row"><span class="axis-num">03</span><span class="axis-name">Supplier experience</span><span class="axis-desc">How suppliers interact with the platform</span></li>
+      <li class="axis-row"><span class="axis-num">04</span><span class="axis-name">Review and reporting</span><span class="axis-desc">How compliance specialists review AI pre-assessments and generate reports</span></li>
+      <li class="axis-row"><span class="axis-num">05</span><span class="axis-name">Standard lifecycle</span><span class="axis-desc">How the platform handles standard changes, versioning, multi-standard complexity</span></li>
+    </ul>
+  </section>
+
+  <!-- ─── Ranked Ideas ──────────────────────────────────────────────────── -->
+  <section class="section" aria-labelledby="ranked-heading">
+    <p class="section-label">Ranked Ideas</p>
+    <h2 class="section-heading" id="ranked-heading">Ten survivors</h2>
+
+    <!-- Jump list -->
+    <ul class="jump-list" aria-label="Jump to idea">
+      <li><span class="jump-rank">01</span><a href="#idea-1">Compliance Specialist as Author, AI as Assessor</a></li>
+      <li><span class="jump-rank">02</span><a href="#idea-2">Package Manifest Model for Standard Composition</a></li>
+      <li><span class="jump-rank">03</span><a href="#idea-3">Zero-Submission Evidence Architecture</a></li>
+      <li><span class="jump-rank">04</span><a href="#idea-4">Ambient Attestation (Email-Native Compliance)</a></li>
+      <li><span class="jump-rank">05</span><a href="#idea-5">Supplier-Authored Compliance Profile with AI Verification</a></li>
+      <li><span class="jump-rank">06</span><a href="#idea-6">DSL as Exportable Compliance Passport</a></li>
+      <li><span class="jump-rank">07</span><a href="#idea-7">Threshold-as-Trip-Wire</a></li>
+      <li><span class="jump-rank">08</span><a href="#idea-8">Qualitative Review Rubric Engine</a></li>
+      <li><span class="jump-rank">09</span><a href="#idea-9">Epidemiological Surveillance Model for Compliance Risk</a></li>
+      <li><span class="jump-rank">10</span><a href="#idea-10">Weekly Standard Versioning</a></li>
+    </ul>
+
+    <!-- ── Idea 1 ────────────────────────────────────────────────────────── -->
+    <article class="idea-card" id="idea-1">
+      <div class="idea-card-header">
+        <div class="idea-rank-badge" aria-label="Rank 1">1</div>
+        <div class="idea-header-content">
+          <div class="idea-tags">
+            <span class="frame-chip chip-assumption" style="padding:2px 8px; font-size:0.6rem;"><span class="chip-dot"></span>Assumption-breaking</span>
+            <span class="axis-chip">Standard encoding</span>
+          </div>
+          <h3 class="idea-title">Compliance Specialist as Author, AI as Assessor</h3>
+        </div>
+        <div class="idea-card-meta">
+          <div class="conf-badge"><span class="badge-label">Conf</span><span class="badge-value conf-high">High</span></div>
+          <div class="cx-badge"><span class="badge-label">Cx</span><span class="badge-value cx-med">Medium</span></div>
+        </div>
+      </div>
+      <div class="idea-card-body">
+        <p class="idea-description">The current design puts the compliance specialist downstream: they receive AI pre-assessments and review them. Invert the division of labor — the specialist authors requirements directly in a structured DSL interface (unit picker, threshold input, time window, accepted source multi-select), and the AI takes over all assessment work from that moment forward. The specialist's expertise is in what compliance means; the AI's capability is in evaluating evidence against specified criteria. Today's design wastes one while under-using the other.</p>
+
+        <!-- Architecture diagram: before/after the inversion -->
+        <div class="diagram-wrap" aria-label="Division of labor inversion diagram">
+          <svg viewBox="0 0 780 200" width="100%" height="200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <marker id="arr1" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                <path d="M0,0 L7,3.5 L0,7 Z" fill="#8A93A0"/>
+              </marker>
+              <marker id="arr2" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                <path d="M0,0 L7,3.5 L0,7 Z" fill="#1B5E6B"/>
+              </marker>
+            </defs>
+            <!-- BEFORE label -->
+            <text x="30" y="30" font-family="JetBrains Mono, monospace" font-size="9" fill="#8A93A0" letter-spacing="2" text-anchor="start">BEFORE</text>
+            <!-- Before boxes -->
+            <rect x="30" y="42" width="120" height="36" rx="4" fill="#EDE9E2" stroke="#D4CFC7" stroke-width="1"/>
+            <text x="90" y="58" font-family="DM Sans, sans-serif" font-size="10" fill="#4A5568" text-anchor="middle" font-weight="500">Ext. Standard</text>
+            <text x="90" y="70" font-family="DM Sans, sans-serif" font-size="9" fill="#8A93A0" text-anchor="middle">(PDF/doc)</text>
+            <line x1="150" y1="60" x2="175" y2="60" stroke="#8A93A0" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <rect x="176" y="42" width="110" height="36" rx="4" fill="#EDE9E2" stroke="#D4CFC7" stroke-width="1"/>
+            <text x="231" y="64" font-family="DM Sans, sans-serif" font-size="10" fill="#4A5568" text-anchor="middle" font-weight="500">DSL Import</text>
+            <line x1="286" y1="60" x2="311" y2="60" stroke="#8A93A0" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <rect x="312" y="42" width="110" height="36" rx="4" fill="#EDE9E2" stroke="#D4CFC7" stroke-width="1"/>
+            <text x="367" y="64" font-family="DM Sans, sans-serif" font-size="10" fill="#4A5568" text-anchor="middle" font-weight="500">AI Assessment</text>
+            <line x1="422" y1="60" x2="447" y2="60" stroke="#8A93A0" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <rect x="448" y="42" width="120" height="36" rx="4" fill="#EDE9E2" stroke="#D4CFC7" stroke-width="1"/>
+            <text x="508" y="58" font-family="DM Sans, sans-serif" font-size="10" fill="#4A5568" text-anchor="middle" font-weight="500">Specialist</text>
+            <text x="508" y="70" font-family="DM Sans, sans-serif" font-size="9" fill="#8A93A0" text-anchor="middle">reviews output</text>
+
+            <!-- AFTER label -->
+            <text x="30" y="128" font-family="JetBrains Mono, monospace" font-size="9" fill="#1B5E6B" letter-spacing="2" text-anchor="start">AFTER</text>
+            <!-- After boxes -->
+            <rect x="30" y="140" width="140" height="36" rx="4" fill="rgba(27,94,107,0.09)" stroke="rgba(27,94,107,0.28)" stroke-width="1.5"/>
+            <text x="100" y="156" font-family="DM Sans, sans-serif" font-size="10" fill="#1B5E6B" text-anchor="middle" font-weight="600">Specialist</text>
+            <text x="100" y="168" font-family="DM Sans, sans-serif" font-size="9" fill="#2A7D8E" text-anchor="middle">authors DSL directly</text>
+            <line x1="170" y1="158" x2="197" y2="158" stroke="#1B5E6B" stroke-width="1.5" marker-end="url(#arr2)"/>
+            <rect x="198" y="140" width="130" height="36" rx="4" fill="rgba(27,94,107,0.09)" stroke="rgba(27,94,107,0.28)" stroke-width="1.5"/>
+            <text x="263" y="156" font-family="DM Sans, sans-serif" font-size="10" fill="#1B5E6B" text-anchor="middle" font-weight="600">DSL (live)</text>
+            <text x="263" y="168" font-family="DM Sans, sans-serif" font-size="9" fill="#2A7D8E" text-anchor="middle">typed + versioned</text>
+            <line x1="328" y1="158" x2="355" y2="158" stroke="#1B5E6B" stroke-width="1.5" marker-end="url(#arr2)"/>
+            <rect x="356" y="140" width="120" height="36" rx="4" fill="rgba(27,94,107,0.09)" stroke="rgba(27,94,107,0.28)" stroke-width="1.5"/>
+            <text x="416" y="156" font-family="DM Sans, sans-serif" font-size="10" fill="#1B5E6B" text-anchor="middle" font-weight="600">AI Assessment</text>
+            <text x="416" y="168" font-family="DM Sans, sans-serif" font-size="9" fill="#2A7D8E" text-anchor="middle">all cases, continuously</text>
+            <line x1="476" y1="158" x2="503" y2="158" stroke="#1B5E6B" stroke-width="1.5" marker-end="url(#arr2)"/>
+            <rect x="504" y="140" width="120" height="36" rx="4" fill="#EDE9E2" stroke="#D4CFC7" stroke-width="1"/>
+            <text x="564" y="156" font-family="DM Sans, sans-serif" font-size="10" fill="#4A5568" text-anchor="middle" font-weight="500">Specialist</text>
+            <text x="564" y="168" font-family="DM Sans, sans-serif" font-size="9" fill="#8A93A0" text-anchor="middle">resolves exceptions</text>
+          </svg>
+          <p class="diagram-caption">Illustrative — the division of labor before and after the assumption is broken</p>
+        </div>
+
+        <div class="idea-fields">
+          <div class="idea-field">
+            <span class="field-label">Basis</span>
+            <div class="field-value basis"><span class="basis-tag tag-reasoned">reasoned</span> EcoVadis's limitation — fixed schema per standard, requiring vendor development to add a new standard — is a direct consequence of not having a specialist-facing authoring interface. The DSL already defines the type system; making it writable via a structured UI is the gap. The assumption that standards are "defined externally" is a choice, not a constraint.</div>
+          </div>
+          <div class="idea-field">
+            <span class="field-label">Why it matters</span>
+            <div class="field-value">Changes the product category from a compliance automation tool to a compliance standard platform. CPG customers don't just run externally-defined standards — they create proprietary supplier requirements. Authorship makes those requirements portable and machine-assessable from creation, without engineering work for each new standard.</div>
+          </div>
+          <div class="idea-field idea-field-full">
+            <span class="field-label">Downsides</span>
+            <div class="field-value">Requires a well-designed authoring UX — if the interface is hard to use, specialists won't author requirements correctly. Training investment needed. Risk of requirements authored inconsistently across compliance teams unless the DSL type system enforces structure.</div>
+          </div>
+        </div>
+        <p class="meeting-test">How many CPG customers have requested custom requirement modifications, and how long does it currently take to implement them?</p>
+      </div>
+    </article>
+
+    <!-- ── Idea 2 ────────────────────────────────────────────────────────── -->
+    <article class="idea-card" id="idea-2">
+      <div class="idea-card-header">
+        <div class="idea-rank-badge" aria-label="Rank 2">2</div>
+        <div class="idea-header-content">
+          <div class="idea-tags">
+            <span class="frame-chip chip-analogy" style="padding:2px 8px; font-size:0.6rem;"><span class="chip-dot"></span>Cross-domain analogy</span>
+            <span class="axis-chip">Standard encoding</span>
+          </div>
+          <h3 class="idea-title">Package Manifest Model for Standard Composition</h3>
+        </div>
+        <div class="idea-card-meta">
+          <div class="conf-badge"><span class="badge-label">Conf</span><span class="badge-value conf-high">High</span></div>
+          <div class="cx-badge"><span class="badge-label">Cx</span><span class="badge-value cx-high">High</span></div>
+        </div>
+      </div>
+      <div class="idea-card-body">
+        <p class="idea-description">A CPG company's compliance standard is a manifest that declares which requirement blocks are included, at what version, with which threshold parameters — the same way an <code>npm package.json</code> declares dependencies. Updates to an upstream requirement block cascade to all manifests that include it, with a semantic diff showing what changed. Suppliers respond to the resolved manifest, not a monolithic standard document. The lock file is the resolved compliance state.</p>
+        <div class="idea-fields">
+          <div class="idea-field">
+            <span class="field-label">Analogy domain</span>
+            <div class="field-value">Software dependency management — npm, pip, Cargo</div>
+          </div>
+          <div class="idea-field">
+            <span class="field-label">Why the analogy holds</span>
+            <div class="field-value basis"><span class="basis-tag tag-reasoned">reasoned</span> Software packages and compliance requirements share the same fundamental structure: composability of versioned artifacts across a distributed network of consumers who need to track changes without re-specifying everything from scratch. NIST OSCAL intuited this with its catalog/profile/plan layers but stopped short of the full dependency resolution model — npm has semver ranges; OSCAL has no equivalent. That gap is the opportunity.</div>
+          </div>
+          <div class="idea-field">
+            <span class="field-label">Why it matters</span>
+            <div class="field-value">Standard composition via manifest would let a CPG company assemble a bespoke standard from upstream requirement blocks without encoding it from scratch. Automatic propagation of upstream changes eliminates the current manual diff process entirely. The shared library of requirement blocks becomes a compounding network asset — each new standard encoded makes the next one cheaper to build.</div>
+          </div>
+          <div class="idea-field">
+            <span class="field-label">Downsides</span>
+            <div class="field-value">Requires building a requirement block library first. Version conflict resolution is non-trivial when two manifests include different versions of the same block. Semver semantics for compliance thresholds need definition.</div>
+          </div>
+        </div>
+        <p class="meeting-test">Would the team recognize the catalog/profile/plan architecture in NIST OSCAL as a proto-manifest system, and what would semver-style requirement versioning add?</p>
+      </div>
+    </article>
+
+    <!-- ── Idea 3 ────────────────────────────────────────────────────────── -->
+    <article class="idea-card" id="idea-3">
+      <div class="idea-card-header">
+        <div class="idea-rank-badge" aria-label="Rank 3">3</div>
+        <div class="idea-header-content">
+          <div class="idea-tags">
+            <span class="frame-chip chip-constraint" style="padding:2px 8px; font-size:0.6rem;"><span class="chip-dot"></span>Constraint-flipping</span>
+            <span class="axis-chip">Evidence collection</span>
+          </div>
+          <h3 class="idea-title">Zero-Submission Evidence Architecture</h3>
+        </div>
+        <div class="idea-card-meta">
+          <div class="conf-badge"><span class="badge-label">Conf</span><span class="badge-value conf-high">High</span></div>
+          <div class="cx-badge"><span class="badge-label">Cx</span><span class="badge-value cx-high">High</span></div>
+        </div>
+      </div>
+      <div class="idea-card-body">
+        <p class="idea-description">The extreme constraint flip — "what if evidence was never submitted but always available?" — produces a three-tier evidence architecture. Tier 1: pulled directly from authoritative source systems (USDA Organic Integrity, ISO accreditation registries, third-party auditor portals) on a scheduled basis. Tier 2: supplier-configured standing authorizations to pull from their internal systems (ERP, LIMS, herd management software). Tier 3: requested submission for items not available in Tiers 1 or 2. Submission becomes the exception, not the rule.</p>
+
+        <!-- Tier architecture diagram -->
+        <div class="diagram-wrap" aria-label="Three-tier evidence architecture">
+          <svg viewBox="0 0 780 160" width="100%" height="160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <marker id="arrT" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                <path d="M0,0 L7,3.5 L0,7 Z" fill="#1B5E6B"/>
+              </marker>
+            </defs>
+            <!-- Tier 1 -->
+            <rect x="28" y="30" width="190" height="90" rx="6" fill="rgba(27,94,107,0.12)" stroke="rgba(27,94,107,0.35)" stroke-width="1.5"/>
+            <text x="123" y="55" font-family="JetBrains Mono, monospace" font-size="8" fill="#1B5E6B" text-anchor="middle" letter-spacing="1">TIER 1 — AUTO-PULL</text>
+            <text x="123" y="72" font-family="DM Sans, sans-serif" font-size="10" fill="#1C2128" text-anchor="middle" font-weight="500">Authoritative sources</text>
+            <text x="123" y="86" font-family="DM Sans, sans-serif" font-size="9" fill="#4A5568" text-anchor="middle">USDA, ISO registries,</text>
+            <text x="123" y="98" font-family="DM Sans, sans-serif" font-size="9" fill="#4A5568" text-anchor="middle">auditor portals</text>
+            <text x="123" y="112" font-family="JetBrains Mono, monospace" font-size="8" fill="#2A7D8E" text-anchor="middle">scheduled pull</text>
+            <!-- Tier 2 -->
+            <rect x="238" y="30" width="190" height="90" rx="6" fill="rgba(27,94,107,0.07)" stroke="rgba(27,94,107,0.22)" stroke-width="1.5"/>
+            <text x="333" y="55" font-family="JetBrains Mono, monospace" font-size="8" fill="#2A7D8E" text-anchor="middle" letter-spacing="1">TIER 2 — AUTHORIZED</text>
+            <text x="333" y="72" font-family="DM Sans, sans-serif" font-size="10" fill="#1C2128" text-anchor="middle" font-weight="500">Supplier systems</text>
+            <text x="333" y="86" font-family="DM Sans, sans-serif" font-size="9" fill="#4A5568" text-anchor="middle">ERP, LIMS, herd mgmt,</text>
+            <text x="333" y="98" font-family="DM Sans, sans-serif" font-size="9" fill="#4A5568" text-anchor="middle">standing auth</text>
+            <text x="333" y="112" font-family="JetBrains Mono, monospace" font-size="8" fill="#2A7D8E" text-anchor="middle">on-permission pull</text>
+            <!-- Tier 3 -->
+            <rect x="448" y="30" width="180" height="90" rx="6" fill="#EDE9E2" stroke="#D4CFC7" stroke-width="1.5"/>
+            <text x="538" y="55" font-family="JetBrains Mono, monospace" font-size="8" fill="#8A93A0" text-anchor="middle" letter-spacing="1">TIER 3 — FALLBACK</text>
+            <text x="538" y="72" font-family="DM Sans, sans-serif" font-size="10" fill="#1C2128" text-anchor="middle" font-weight="500">Requested submission</text>
+            <text x="538" y="86" font-family="DM Sans, sans-serif" font-size="9" fill="#4A5568" text-anchor="middle">Only when Tier 1+2</text>
+            <text x="538" y="98" font-family="DM Sans, sans-serif" font-size="9" fill="#4A5568" text-anchor="middle">have no source</text>
+            <text x="538" y="112" font-family="JetBrains Mono, monospace" font-size="8" fill="#8A93A0" text-anchor="middle">exception path</text>
+            <!-- Arrows -->
+            <line x1="218" y1="75" x2="234" y2="75" stroke="#1B5E6B" stroke-width="1.5" marker-end="url(#arrT)"/>
+            <line x1="428" y1="75" x2="444" y2="75" stroke="#8A93A0" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrT)"/>
+            <!-- Resolution order label -->
+            <text x="678" y="75" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#1B5E6B" text-anchor="start">→ DSL</text>
+            <text x="678" y="88" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#1B5E6B" text-anchor="start">assessment</text>
+            <line x1="632" y1="75" x2="674" y2="75" stroke="#1B5E6B" stroke-width="1.5" marker-end="url(#arrT)"/>
+          </svg>
+          <p class="diagram-caption">Resolution order: Tier 1 first → Tier 2 → Tier 3 (submission). The DSL requirement's "accepted sources" field encodes which tier applies.</p>
+        </div>
+
+        <div class="idea-fields">
+          <div class="idea-field">
+            <span class="field-label">Basis</span>
+            <div class="field-value basis"><span class="basis-tag tag-reasoned">reasoned</span> Aviation AD pull model is the Tier 1 operating pattern; Vanta/Drata's 400+ integrations is the Tier 2 model. The DSL requirement's "accepted sources" field becomes a resolution order — the system tries Tier 1 first, then Tier 2, then falls to Tier 3. SBOM showed that mandated ingestion without tooling support fails for smaller suppliers; the tiered model lets supplier capability determine which tier applies.</div>
+          </div>
+          <div class="idea-field">
+            <span class="field-label">Why it matters</span>
+            <div class="field-value">This is the architecture that makes 10,000 suppliers feasible. At that scale, manual submission management is impossible. Getting the tiered pull architecture right now positions for volume scaling and eliminates the most common failure mode (a compliant supplier forgets to submit).</div>
+          </div>
+          <div class="idea-field">
+            <span class="field-label">Downsides</span>
+            <div class="field-value">Significant integration engineering work for Tier 1 and Tier 2 source connectors. Supplier authorization flow for Tier 2 requires trust infrastructure. Some evidence types may have no automated source, keeping Tier 3 permanently in play.</div>
+          </div>
+        </div>
+        <p class="meeting-test">What percentage of current evidence types have a Tier 1 or Tier 2 source that could be pulled rather than submitted?</p>
+      </div>
+    </article>
+
+    <!-- ── Idea 4 ────────────────────────────────────────────────────────── -->
+    <article class="idea-card" id="idea-4">
+      <div class="idea-card-header">
+        <div class="idea-rank-badge" aria-label="Rank 4">4</div>
+        <div class="idea-header-content">
+          <div class="idea-tags">
+            <span class="frame-chip chip-inversion" style="padding:2px 8px; font-size:0.6rem;"><span class="chip-dot"></span>Inversion / automation</span>
+            <span class="axis-chip">Supplier experience</span>
+          </div>
+          <h3 class="idea-title">Ambient Attestation — Email-Native Compliance for Zero-Tech Suppliers</h3>
+        </div>
+        <div class="idea-card-meta">
+          <div class="conf-badge"><span class="badge-label">Conf</span><span class="badge-value conf-high">High</span></div>
+          <div class="cx-badge"><span class="badge-label">Cx</span><span class="badge-value cx-low">Low</span></div>
+        </div>
+      </div>
+      <div class="idea-card-body">
+        <p class="idea-description">For suppliers with zero technical capacity, any portal is too much. An ambient attestation model replaces the portal with a structured email digest: "Here's what we need from you this month — click to confirm each item still applies or attach a file." The interaction surface is email; the back-end writes a structured attestation to the DSL. Suppliers with technical capacity get the full portal; suppliers without get email-native compliance. The portal becomes one channel, not the only channel.</p>
+        <div class="idea-fields">
+          <div class="idea-field">
+            <span class="field-label">Basis</span>
+            <div class="field-value basis"><span class="basis-tag tag-reasoned">reasoned</span> The constraint flip "what if suppliers had zero technical capacity?" produces this design. Large suppliers managing 15–30 portals experience re-entry friction. But the smallest suppliers in the livestock supply chain (individual ranchers, small feedlots) have no compliance staff at all. Ambient attestation meets them where they already are rather than requiring tool adoption.</div>
+          </div>
+          <div class="idea-field">
+            <span class="field-label">Why it matters</span>
+            <div class="field-value">If the platform's weakest link is small-supplier participation, reducing the entry floor from "navigate a portal" to "respond to an email" expands the addressable supply chain. It also shifts the compliance specialist's outreach from manual follow-up to exception-handling on non-responses.</div>
+          </div>
+          <div class="idea-field">
+            <span class="field-label">Downsides</span>
+            <div class="field-value">Email attestation provides weaker evidence than document submission. Self-attestation without verification creates a fraud surface. Needs a clear escalation path when email attestation is insufficient for a given requirement type.</div>
+          </div>
+        </div>
+        <p class="meeting-test">What's the participation rate for the smallest-tier suppliers, and what's the primary dropout reason?</p>
+      </div>
+    </article>
+
+    <!-- ── Idea 5 ────────────────────────────────────────────────────────── -->
+    <article class="idea-card" id="idea-5">
+      <div class="idea-card-header">
+        <div class="idea-rank-badge" aria-label="Rank 5">5</div>
+        <div class="idea-header-content">
+          <div class="idea-tags">
+            <span class="frame-chip chip-constraint" style="padding:2px 8px; font-size:0.6rem;"><span class="chip-dot"></span>Constraint-flipping</span>
+            <span class="axis-chip">Supplier experience</span>
+          </div>
+          <h3 class="idea-title">Supplier-Authored Compliance Profile with AI Verification</h3>
+        </div>
+        <div class="idea-card-meta">
+          <div class="conf-badge"><span class="badge-label">Conf</span><span class="badge-value conf-high">High</span></div>
+          <div class="cx-badge"><span class="badge-label">Cx</span><span class="badge-value cx-med">Medium</span></div>
+        </div>
+      </div>
+      <div class="idea-card-body">
+        <p class="idea-description">Invert the supplier's role from passive responder to active profile author. The supplier describes their own practices, certifications, and evidence in a structured self-attestation tool — "here's what we do, here's the evidence." The AI then maps that self-description against every active DSL standard in the system and identifies gaps. The specialist reviews AI's gap analysis, not a pile of supplier-submitted documents. Instead of the platform asking "do you have X?" — the supplier says "here's what I have" and the AI figures out how it maps.</p>
+        <div class="idea-fields">
+          <div class="idea-field">
+            <span class="field-label">Basis</span>
+            <div class="field-value basis"><span class="basis-tag tag-reasoned">reasoned</span> The constraint flip "what if suppliers authored their own compliance profile?" surfaces the self-attestation-plus-AI-mapping design. Suppliers already know what they have; they don't know what standard it maps to. This reverses the information flow. The compliance specialist's review becomes a verification of the AI's mapping, not an extraction of facts from supplier submissions — the same shift that makes code review faster than code writing.</div>
+          </div>
+          <div class="idea-field">
+            <span class="field-label">Why it matters</span>
+            <div class="field-value">Self-attestation with AI verification scales differently. Suppliers are motivated to be thorough; the AI handles the mapping; the specialist validates mapping quality rather than completeness of submission. For large suppliers with complex multi-standard footprints, this eliminates back-and-forth cycles dramatically.</div>
+          </div>
+          <div class="idea-field">
+            <span class="field-label">Downsides</span>
+            <div class="field-value">Supplier self-attestation may be over-optimistic or strategically incomplete. The AI's mapping accuracy is critical — a missed mapping is a gap the specialist may not catch. Requires high AI recall on the mapping step.</div>
+          </div>
+        </div>
+        <p class="meeting-test">What percentage of requirements could the AI assess without specialist review in a self-attestation model?</p>
+      </div>
+    </article>
+
+    <!-- ── Idea 6 ────────────────────────────────────────────────────────── -->
+    <article class="idea-card" id="idea-6">
+      <div class="idea-card-header">
+        <div class="idea-rank-badge" aria-label="Rank 6">6</div>
+        <div class="idea-header-content">
+          <div class="idea-tags">
+            <span class="frame-chip chip-analogy" style="padding:2px 8px; font-size:0.6rem;"><span class="chip-dot"></span>Cross-domain analogy</span>
+            <span class="axis-chip">Supplier experience</span>
+          </div>
+          <h3 class="idea-title">DSL as Exportable Compliance Passport</h3>
+        </div>
+        <div class="idea-card-meta">
+          <div class="conf-badge"><span class="badge-label">Conf</span><span class="badge-value conf-high">High</span></div>
+          <div class="cx-badge"><span class="badge-label">Cx</span><span class="badge-value cx-med">Medium</span></div>
+        </div>
+      </div>
+      <div class="idea-card-body">
+        <p class="idea-description">Once a supplier's evidence is indexed against a typed DSL, that compliance state is portable. Issue a signed compliance passport — a W3C Verifiable Credential — that the supplier can present to any other CPG customer or standard body without re-submitting evidence. The passport is cryptographically tied to the DSL requirements it satisfies and the evidence that backs it. Every supplier who adopts the platform becomes a distribution channel: "We have an Athian compliance passport — can your system accept it?"</p>
+        <div class="idea-fields">
+          <div class="idea-field">
+            <span class="field-label">Basis</span>
+            <div class="field-value basis"><span class="basis-tag tag-external">external</span> W3C Verifiable Credentials 2.0 (2025) provides exactly the cryptographic infrastructure for this. SBOM mandates showed that once a portable format exists, adoption compounds — the format becomes a prerequisite for doing business. EcoVadis's network effect comes from buyers demanding the EcoVadis score; the same dynamic applies here with a technically superior (machine-readable, verifiable) credential.</div>
+          </div>
+          <div class="idea-field">
+            <span class="field-label">Why it matters</span>
+            <div class="field-value">Converts supplier adoption from a cost center (they participate because required to) to a supplier value proposition (their passport has value across multiple CPG relationships). Creates a compounding network: each passport issued makes the next CPG customer's procurement more efficient, which increases platform demand.</div>
+          </div>
+          <div class="idea-field">
+            <span class="field-label">Downsides</span>
+            <div class="field-value">Network effects require critical mass before the passport has value. CPG customers need to accept the credential format — requires business development, not just engineering. The trust infrastructure for credential revocation and expiration needs careful design.</div>
+          </div>
+        </div>
+        <p class="meeting-test">Is the current platform single-CPG-customer per supplier, or can a supplier's evidence portfolio be shared across multiple CPG customers?</p>
+      </div>
+    </article>
+
+    <!-- ── Idea 7 ────────────────────────────────────────────────────────── -->
+    <article class="idea-card" id="idea-7">
+      <div class="idea-card-header">
+        <div class="idea-rank-badge" aria-label="Rank 7">7</div>
+        <div class="idea-header-content">
+          <div class="idea-tags">
+            <span class="frame-chip chip-constraint" style="padding:2px 8px; font-size:0.6rem;"><span class="chip-dot"></span>Constraint-flipping</span>
+            <span class="axis-chip">Review and reporting</span>
+          </div>
+          <h3 class="idea-title">Threshold-as-Trip-Wire — Trigger-Based Compliance Alerts</h3>
+        </div>
+        <div class="idea-card-meta">
+          <div class="conf-badge"><span class="badge-label">Conf</span><span class="badge-value conf-high">High</span></div>
+          <div class="cx-badge"><span class="badge-label">Cx</span><span class="badge-value cx-med">Medium</span></div>
+        </div>
+      </div>
+      <div class="idea-card-body">
+        <p class="idea-description">The DSL's typed thresholds are not just assessment criteria — they're trip wires. When evidence is updated (via pull or push), the system evaluates it immediately against each threshold and emits a compliance event: PASS, FAIL, WARN (approaching threshold), or EXPIRED. No review cycle required — the specialist receives alerts only when a threshold trips, not on a calendar schedule. The "audit" becomes an exception-handling workflow. The constraint flipped: "what if the DSL defined compliance thresholds that triggered automatic alerts, not periodic reviews?"</p>
+        <div class="idea-fields">
+          <div class="idea-field">
+            <span class="field-label">Basis</span>
+            <div class="field-value basis"><span class="basis-tag tag-external">external</span> Nuclear reactor tech specs operate exactly this way — operating limits define automatic state changes (including shutdown triggers) that fire when readings cross thresholds, not when someone schedules a review. SOC 2 continuous monitoring achieved 30%+ audit cost reduction by replacing periodic review with continuous threshold monitoring. The DSL already has all the typed threshold information needed; the only gap is replacing batch assessment with trigger evaluation.</div>
+          </div>
+          <div class="idea-field">
+            <span class="field-label">Why it matters</span>
+            <div class="field-value">Periodic review cycles are an artifact of paper-based compliance. When evidence is digital and continuously available, real-time threshold evaluation is both cheaper and more accurate. The specialist's workload shifts from calendar-driven to exception-driven — which scales with compliance quality rather than with supplier count.</div>
+          </div>
+          <div class="idea-field">
+            <span class="field-label">Downsides</span>
+            <div class="field-value">Alert volume may be high without good calibration — every threshold crossing generates a notification. WARN threshold definition requires careful tuning to avoid alert fatigue. Regulatory context may still require periodic formal reviews even when continuous state is maintained.</div>
+          </div>
+        </div>
+        <p class="meeting-test">What would the alert volume look like if threshold-based alerts replaced the review cycle for the top 20% of quantitative requirements?</p>
+      </div>
+    </article>
+
+    <!-- ── Idea 8 ────────────────────────────────────────────────────────── -->
+    <article class="idea-card" id="idea-8">
+      <div class="idea-card-header">
+        <div class="idea-rank-badge" aria-label="Rank 8">8</div>
+        <div class="idea-header-content">
+          <div class="idea-tags">
+            <span class="frame-chip chip-inversion" style="padding:2px 8px; font-size:0.6rem;"><span class="chip-dot"></span>Inversion / automation</span>
+            <span class="axis-chip">Review and reporting</span>
+          </div>
+          <h3 class="idea-title">Qualitative Review Rubric Engine</h3>
+        </div>
+        <div class="idea-card-meta">
+          <div class="conf-badge"><span class="badge-label">Conf</span><span class="badge-value conf-high">High</span></div>
+          <div class="cx-badge"><span class="badge-label">Cx</span><span class="badge-value cx-med">Medium</span></div>
+        </div>
+      </div>
+      <div class="idea-card-body">
+        <p class="idea-description">Qualitative (process-based) requirements are the hardest review bottleneck — the AI assesses quantitative thresholds but defers all process evidence to the specialist. A rubric engine encodes qualitative assessment criteria as structured questions derived from each process requirement in the DSL: "Does the audit report confirm a documented HACCP plan? Does it include corrective action records from the past 12 months?" The AI answers each rubric question against the evidence; the specialist reviews the AI's rubric answers, not raw documents.</p>
+        <div class="idea-fields">
+          <div class="idea-field">
+            <span class="field-label">Basis</span>
+            <div class="field-value basis"><span class="basis-tag tag-reasoned">reasoned</span> A compliance specialist reviewing a third-party audit report for a process requirement is running a mental checklist against the document. Making that checklist explicit as a DSL-derived rubric converts the specialist's role from extractor to verifier of AI-extracted answers — the same shift that makes code review faster than code writing. The bottleneck is not judgment; it's structured extraction from unstructured documents.</div>
+          </div>
+          <div class="idea-field">
+            <span class="field-label">Why it matters</span>
+            <div class="field-value">Qualitative requirements are often the ones that matter most for sustainability outcomes and the hardest to scale. A rubric engine that handles extraction leaves the specialist free for genuine judgment calls — which are the cases where their expertise is irreplaceable, not extractable.</div>
+          </div>
+          <div class="idea-field">
+            <span class="field-label">Downsides</span>
+            <div class="field-value">Rubric quality determines everything — poorly authored rubrics produce false positives. Rubric authoring requires the compliance specialist's time upfront. Some qualitative requirements may resist rubric decomposition (judgment-heavy, context-dependent assessments).</div>
+          </div>
+        </div>
+        <p class="meeting-test">What percentage of specialist review time currently goes to qualitative vs quantitative requirements?</p>
+      </div>
+    </article>
+
+    <!-- ── Idea 9 ────────────────────────────────────────────────────────── -->
+    <article class="idea-card" id="idea-9">
+      <div class="idea-card-header">
+        <div class="idea-rank-badge" aria-label="Rank 9">9</div>
+        <div class="idea-header-content">
+          <div class="idea-tags">
+            <span class="frame-chip chip-analogy" style="padding:2px 8px; font-size:0.6rem;"><span class="chip-dot"></span>Cross-domain analogy</span>
+            <span class="axis-chip">Review and reporting</span>
+          </div>
+          <h3 class="idea-title">Epidemiological Surveillance Model for Compliance Risk</h3>
+        </div>
+        <div class="idea-card-meta">
+          <div class="conf-badge"><span class="badge-label">Conf</span><span class="badge-value conf-med">Med</span></div>
+          <div class="cx-badge"><span class="badge-label">Cx</span><span class="badge-value cx-high">High</span></div>
+        </div>
+      </div>
+      <div class="idea-card-body">
+        <p class="idea-description">Epidemiological surveillance monitors populations for early signals of emerging risk — not waiting for confirmed cases but tracking indicators that predict outbreaks before they arrive. Apply this to supply chain compliance: instead of reviewing individual supplier files, monitor the portfolio for leading indicators of systemic risk — clusters of near-threshold performance, seasonal patterns in evidence expiration, supplier segments with declining trend lines. The specialist becomes an epidemiologist of the supply chain, not an auditor of individual files.</p>
+        <div class="idea-fields">
+          <div class="idea-field">
+            <span class="field-label">Analogy domain</span>
+            <div class="field-value">Epidemiology — sentinel surveillance networks, R₀ threshold escalation</div>
+          </div>
+          <div class="idea-field">
+            <span class="field-label">Why the analogy holds</span>
+            <div class="field-value basis"><span class="basis-tag tag-reasoned">reasoned</span> Both domains face the same problem: a single monitoring function tracking distributed actors for early signals of a failure mode that's expensive to remediate once visible. Epidemiology solved this with sentinel surveillance (track a representative sample continuously) and threshold-triggered escalation (R₀ above 1.0 → outbreak response). The DSL's continuous threshold monitoring is already sentinel surveillance infrastructure; the missing piece is population-level signal aggregation.</div>
+          </div>
+          <div class="idea-field">
+            <span class="field-label">Why it matters</span>
+            <div class="field-value">A CPG company's real question is not "is Supplier X compliant?" — it's "where is my supply chain most likely to fail in the next 90 days?" Answering that question puts Athian upstream of the decision-making that actually matters to the CPG customer's procurement and risk functions.</div>
+          </div>
+          <div class="idea-field">
+            <span class="field-label">Downsides</span>
+            <div class="field-value">Requires meaningful historical data to establish baselines before risk signals are meaningful. Portfolio-level analytics are harder to explain to suppliers than individual compliance verdicts. False positives in risk signals could damage supplier relationships.</div>
+          </div>
+        </div>
+        <p class="meeting-test">Does the platform currently produce any portfolio-level risk signal, or only individual supplier compliance verdicts?</p>
+      </div>
+    </article>
+
+    <!-- ── Idea 10 ───────────────────────────────────────────────────────── -->
+    <article class="idea-card" id="idea-10">
+      <div class="idea-card-header">
+        <div class="idea-rank-badge" aria-label="Rank 10">10</div>
+        <div class="idea-header-content">
+          <div class="idea-tags">
+            <span class="frame-chip chip-constraint" style="padding:2px 8px; font-size:0.6rem;"><span class="chip-dot"></span>Constraint-flipping</span>
+            <span class="axis-chip">Standard lifecycle</span>
+          </div>
+          <h3 class="idea-title">Weekly Standard Versioning — Standard as Continuous Spec</h3>
+        </div>
+        <div class="idea-card-meta">
+          <div class="conf-badge"><span class="badge-label">Conf</span><span class="badge-value conf-med">Med</span></div>
+          <div class="cx-badge"><span class="badge-label">Cx</span><span class="badge-value cx-high">High</span></div>
+        </div>
+      </div>
+      <div class="idea-card-body">
+        <p class="idea-description">The constraint flip "what if the standard changed every week?" produces a continuous delivery model for compliance standards. Requirements are versioned individually, not monolithically; each has a pending update queue. Updates batch weekly with a grace period calendar: "Requirement 4c updates to v2.3 on [date] — here are affected suppliers and their grace periods." The specialist becomes a requirements product manager shipping standard updates on a cadence rather than rare high-stakes releases. The assumption that standards change rarely is a historical artifact of the manual update process, not an intrinsic property of compliance requirements.</p>
+        <div class="idea-fields">
+          <div class="idea-field">
+            <span class="field-label">Basis</span>
+            <div class="field-value basis"><span class="basis-tag tag-reasoned">reasoned</span> Science-based sustainability thresholds (GHG intensity, feed additive efficacy, antibiotic use) update as research advances. When the DSL represents requirements as individually versioned artifacts (like software packages), governance can shift from infrequent monolithic releases to continuous small updates — the same shift DevOps applied to software deployment. W3C Verifiable Credentials already supports versioned credential schemas.</div>
+          </div>
+          <div class="idea-field">
+            <span class="field-label">Why it matters</span>
+            <div class="field-value">Standards that can only update infrequently fall behind the science. A platform enabling continuous small updates keeps the standard current with the best available evidence — which is the core scientific legitimacy claim for Scope 3 reduction programs. It also positions the compliance specialist as a standard maintainer, not just a reviewer.</div>
+          </div>
+          <div class="idea-field">
+            <span class="field-label">Downsides</span>
+            <div class="field-value">Supplier burden increases if updates arrive too frequently without adequate grace periods. Requires robust change management and communication tooling. May conflict with regulatory standards that specify fixed update cycles. Needs strong version rollback capability.</div>
+          </div>
+        </div>
+        <p class="meeting-test">Are there requirements in the current DSL that the science team knows are outdated but can't update because the update process is too heavyweight?</p>
+      </div>
+    </article>
+
+  </section><!-- /Ranked Ideas -->
+
+  <!-- ─── Rejection Summary ─────────────────────────────────────────────── -->
+  <section class="section" aria-labelledby="rejection-heading">
+    <p class="section-label">Rejection Summary</p>
+    <h2 class="section-heading" id="rejection-heading">Considered and cut</h2>
+    <div style="overflow-x: auto;">
+      <table class="rejection-table">
+        <thead>
+          <tr>
+            <th style="width:30%;">Idea</th>
+            <th>Reason rejected</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="idea-name-cell">Evidence Triage Dashboard</td><td class="rejection-reason">Below ambition floor — UI routing work, not a product direction that changes what the team builds next</td></tr>
+          <tr><td class="idea-name-cell">Evidence Format Normalization Layer</td><td class="rejection-reason">Architectural subsystem, not a standalone product idea — implied by the Zero-Submission architecture</td></tr>
+          <tr><td class="idea-name-cell">Requirement Gap Notification</td><td class="rejection-reason">Good but outcompeted by stronger ideas addressing the same supplier-feedback surface</td></tr>
+          <tr><td class="idea-name-cell">Stale Evidence Early Warning</td><td class="rejection-reason">Tactical, below ambition floor — expiration reminders appear in every SaaS</td></tr>
+          <tr><td class="idea-name-cell">Cross-Standard Evidence Reuse Map</td><td class="rejection-reason">Good basis (15–30 portal friction) but outcompeted by Zero-Submission Architecture, which covers the full design</td></tr>
+          <tr><td class="idea-name-cell">Specialist Review Workload Forecaster</td><td class="rejection-reason">Incremental feature, doesn't change what to build next</td></tr>
+          <tr><td class="idea-name-cell">Pull from Source Systems (standalone)</td><td class="rejection-reason">Duplicate of Zero-Submission Architecture, weaker formulation</td></tr>
+          <tr><td class="idea-name-cell">Remove Renewal Cycle — Continuous State</td><td class="rejection-reason">Core idea captured in Threshold-as-Trip-Wire, which is more concrete</td></tr>
+          <tr><td class="idea-name-cell">Remove Standard Import Step</td><td class="rejection-reason">Duplicate of Compliance Specialist as Author (weaker formulation)</td></tr>
+          <tr><td class="idea-name-cell">Automate Standard Diff</td><td class="rejection-reason">Outcompeted by Weekly Standard Versioning, which addresses the same problem more ambitiously</td></tr>
+          <tr><td class="idea-name-cell">Standard Library as Network Asset</td><td class="rejection-reason">Outcompeted by Package Manifest Model, which provides the more concrete mechanism</td></tr>
+          <tr><td class="idea-name-cell">Compliance Signal as Procurement Signal</td><td class="rejection-reason">Good but a feature extension of the continuous compliance state — not direction-setting on its own</td></tr>
+          <tr><td class="idea-name-cell">CSDDD/EU DPP Pre-Positioning</td><td class="rejection-reason">Strategic positioning framing, not a product idea — better as a sales narrative than a build direction</td></tr>
+          <tr><td class="idea-name-cell">Evidence Portfolio as Institutional Memory</td><td class="rejection-reason">Outcompeted by Elo Threshold Calibration (stronger second-order idea); both cut at final trim</td></tr>
+          <tr><td class="idea-name-cell">Flight Operations Manual Model for Versioning</td><td class="rejection-reason">Outcompeted by Weekly Standard Versioning, less concrete mechanism extracted from the same domain</td></tr>
+          <tr><td class="idea-name-cell">Credit Rating Model for Supplier Scoring</td><td class="rejection-reason">Overlaps with DSL as Compliance Passport; less concrete formulation of the same network-effect idea</td></tr>
+          <tr><td class="idea-name-cell">Protocol Buffer / Open DSL Schema</td><td class="rejection-reason">Strongest interoperability idea but infrastructure-first; team needs ideas 1 and 2 in place before this unlocks</td></tr>
+          <tr><td class="idea-name-cell">Elo Rating for Dynamic Threshold Calibration</td><td class="rejection-reason">Strong second-order idea; cut at final trim (11 → 10) with Standard lifecycle already covered by Weekly Versioning</td></tr>
+          <tr><td class="idea-name-cell">Compliance Specialist Elimination (Automated Path)</td><td class="rejection-reason">Outcompeted by Threshold-as-Trip-Wire, which is more structurally novel and less framing-dependent</td></tr>
+          <tr><td class="idea-name-cell">Standard as Living DSL</td><td class="rejection-reason">Duplicate of Compliance Specialist as Author, weaker formulation</td></tr>
+          <tr><td class="idea-name-cell">Evidence Collection Decoupled from Cycles</td><td class="rejection-reason">Duplicate of Zero-Submission Architecture — a sub-pattern of the full tiered design</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div><!-- /page -->
+
+<footer class="composition-signal page">
+  Composed 2026-06-22 by ce-ideate · Athian Compliance — Three Frames (cross-domain analogy, assumption-breaking, constraint-flipping) · Run a3f92e1b
+</footer>
+
+</body>
+</html>

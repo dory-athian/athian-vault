@@ -1,0 +1,934 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Athian Compliance — Cross-Domain Analogy Ideation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ── Token layer ─────────────────────────────────────── */
+  :root {
+    --ground:      #F2F4F7;
+    --ground-2:    #E8ECF2;
+    --ground-3:    #DDE2EC;
+    --text:        #1A1F2E;
+    --text-mid:    #3A4155;
+    --text-dim:    #6B7285;
+    --text-muted:  #9AA0B2;
+    --accent:      #B35A1A;
+    --accent-2:    #2B5FAD;
+    --accent-dim:  rgba(179, 90, 26, 0.10);
+    --accent-2-dim: rgba(43, 95, 173, 0.09);
+    --border:      #CDD2DE;
+    --border-mid:  #B0B8CC;
+
+    /* Domain stamp colors — muted, distinct per field */
+    --domain-finance:     #1F4E79;
+    --domain-finance-bg:  #DCE9F5;
+    --domain-aviation:    #5B3800;
+    --domain-aviation-bg: #F5EAD6;
+    --domain-agri:        #1A4A2A;
+    --domain-agri-bg:     #D6EDDA;
+    --domain-maritime:    #2A3A5C;
+    --domain-maritime-bg: #D8E1F0;
+    --domain-safety:      #4A1A1A;
+    --domain-safety-bg:   #F0D9D9;
+    --domain-games:       #3A1F5A;
+    --domain-games-bg:    #E8DFF5;
+    --domain-immig:       #1A3A3A;
+    --domain-immig-bg:    #D6ECEC;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { font-size: 16px; scroll-behavior: smooth; }
+
+  body {
+    background: var(--ground);
+    color: var(--text);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--accent-2); }
+  a:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+
+  /* ── Site header ─────────────────────────────────────── */
+  .site-header {
+    background: var(--text);
+    color: #E8ECF5;
+    padding: 52px 56px 44px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .site-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
+  }
+
+  .header-kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #7A8499;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .kicker-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: inline-block;
+  }
+
+  .header-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(28px, 4vw, 52px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: #E8ECF5;
+    max-width: 720px;
+    margin-bottom: 12px;
+  }
+
+  .header-title em {
+    font-style: italic;
+    font-weight: 400;
+    color: #A8B8D8;
+  }
+
+  .header-subtitle {
+    font-size: 15px;
+    font-weight: 300;
+    color: #7A8499;
+    max-width: 560px;
+    margin-bottom: 36px;
+    line-height: 1.7;
+  }
+
+  .header-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    border: 1px solid rgba(255,255,255,0.1);
+    max-width: 640px;
+  }
+
+  .stat-item {
+    padding: 12px 22px;
+    border-right: 1px solid rgba(255,255,255,0.1);
+    flex: 1;
+    min-width: 110px;
+  }
+
+  .stat-item:last-child { border-right: none; }
+
+  .stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #4A5266;
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  .stat-value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    color: #C8D2E8;
+  }
+
+  /* ── Frame description band ──────────────────────────── */
+  .frame-band {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 28px 56px;
+    display: flex;
+    gap: 48px;
+    align-items: flex-start;
+  }
+
+  .frame-instruction {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .frame-label-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .frame-text {
+    font-size: 14px;
+    color: var(--text-mid);
+    line-height: 1.75;
+    max-width: 560px;
+  }
+
+  .frame-rule {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    color: var(--accent);
+    background: var(--accent-dim);
+    border-left: 2px solid var(--accent);
+    padding: 10px 14px;
+    line-height: 1.6;
+    max-width: 260px;
+    flex-shrink: 0;
+  }
+
+  /* ── Axis navigation ─────────────────────────────────── */
+  .axis-nav {
+    background: var(--ground-2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 56px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .axis-nav::-webkit-scrollbar { display: none; }
+
+  .axis-nav-item {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 14px 16px;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .axis-nav-item:hover {
+    color: var(--text);
+    border-bottom-color: var(--border-mid);
+  }
+
+  /* ── Main content ────────────────────────────────────── */
+  .content { padding: 0 56px 72px; }
+
+  /* ── Axis section ────────────────────────────────────── */
+  .axis-section { padding-top: 56px; }
+
+  .axis-section + .axis-section {
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+  }
+
+  .axis-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+
+  .axis-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .axis-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  .axis-count {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-left: auto;
+  }
+
+  /* ── Idea cards ──────────────────────────────────────── */
+  .ideas-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .idea-card {
+    background: white;
+    border: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 0;
+  }
+
+  /* Source domain panel (left) */
+  .card-source {
+    padding: 28px 24px 28px 28px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: var(--ground);
+  }
+
+  .domain-stamp {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 11px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9.5px;
+    font-weight: 500;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    width: fit-content;
+  }
+
+  .domain-stamp svg {
+    width: 12px; height: 12px;
+    flex-shrink: 0;
+    opacity: 0.75;
+  }
+
+  .stamp-finance    { background: var(--domain-finance-bg);  color: var(--domain-finance); }
+  .stamp-aviation   { background: var(--domain-aviation-bg); color: var(--domain-aviation); }
+  .stamp-agri       { background: var(--domain-agri-bg);     color: var(--domain-agri); }
+  .stamp-maritime   { background: var(--domain-maritime-bg); color: var(--domain-maritime); }
+  .stamp-safety     { background: var(--domain-safety-bg);   color: var(--domain-safety); }
+  .stamp-games      { background: var(--domain-games-bg);    color: var(--domain-games); }
+  .stamp-immig      { background: var(--domain-immig-bg);    color: var(--domain-immig); }
+
+  .source-field-name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 15px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--text-mid);
+    line-height: 1.45;
+  }
+
+  .source-mechanism {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    color: var(--text-dim);
+    line-height: 1.65;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+  }
+
+  .mech-label {
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  /* Translation panel (right) */
+  .card-translation {
+    padding: 28px 32px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  .card-summary {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--text-mid);
+    line-height: 1.75;
+  }
+
+  .card-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .card-field {
+    background: var(--ground);
+    border: 1px solid var(--border);
+    padding: 12px 14px;
+  }
+
+  .card-field.full { grid-column: 1 / -1; }
+
+  .cf-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .cf-value {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-mid);
+    line-height: 1.6;
+  }
+
+  .basis-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--accent-2-dim);
+    border: 1px solid rgba(43, 95, 173, 0.18);
+    padding: 11px 14px;
+  }
+
+  .basis-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    padding: 3px 8px;
+    border-radius: 2px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .basis-tag.external { background: #CCE0F5; color: var(--domain-finance); }
+  .basis-tag.reasoned { background: #D6F0DC; color: var(--domain-agri); }
+
+  .basis-text {
+    font-size: 12.5px;
+    color: var(--text-mid);
+    line-height: 1.6;
+  }
+
+  .meeting-test {
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+  }
+
+  .mt-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .mt-value {
+    font-size: 13px;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--text);
+    line-height: 1.65;
+  }
+
+  /* ── Rejection section ───────────────────────────────── */
+  .rejection-section {
+    margin-top: 64px;
+    padding-top: 32px;
+    border-top: 2px solid var(--border);
+  }
+
+  .rejection-header {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+  }
+
+  .rejection-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .rejection-table th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 8px 14px;
+    border-bottom: 1.5px solid var(--border-mid);
+    background: var(--ground-2);
+  }
+
+  .rejection-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--text-dim);
+    line-height: 1.55;
+  }
+
+  .rejection-table tr:last-child td { border-bottom: none; }
+  .rej-title { font-weight: 500; color: var(--text-mid); }
+  .rej-domain { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-muted); }
+
+  /* ── Footer ──────────────────────────────────────────── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 20px 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .footer-text {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* ── Responsive ──────────────────────────────────────── */
+  @media (max-width: 760px) {
+    .site-header, .frame-band, .content, footer { padding-left: 20px; padding-right: 20px; }
+    .axis-nav { padding: 0 20px; }
+    .idea-card { grid-template-columns: 1fr; }
+    .card-source { border-right: none; border-bottom: 1px solid var(--border); }
+    .card-fields { grid-template-columns: 1fr; }
+    .card-field.full { grid-column: 1; }
+    .frame-band { flex-direction: column; gap: 18px; }
+    .frame-rule { max-width: 100%; }
+    .header-stats { max-width: 100%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .axis-nav-item { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Header ────────────────────────────────────────── -->
+<header class="site-header">
+  <p class="header-kicker"><span class="kicker-dot"></span>Athian Compliance · Ideation · Cross-Domain Analogy</p>
+  <h1 class="header-title">What other fields already <em>solved</em></h1>
+  <p class="header-subtitle">Seven analogies drawn from aviation, finance, agriculture, maritime regulation, and safety law. Each one holds structurally — same constraints, same failure modes — not just shared vocabulary.</p>
+  <div class="header-stats">
+    <div class="stat-item">
+      <span class="stat-label">Frame</span>
+      <span class="stat-value">cross-domain</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Ideas</span>
+      <span class="stat-value">7 survivors</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Axes covered</span>
+      <span class="stat-value">5 / 5</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Cut</span>
+      <span class="stat-value">1 candidate</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Date</span>
+      <span class="stat-value">2026-06-22</span>
+    </div>
+  </div>
+</header>
+
+<!-- ── Frame description ──────────────────────────────── -->
+<div class="frame-band">
+  <div class="frame-instruction">
+    <span class="frame-label-tag">Ideation frame</span>
+    <p class="frame-text">These ideas start from a different field, not from the platform itself. The structural similarity is the argument — not "aviation also uses forms" but "aviation solved this exact constraint set and we can read off the design." Each idea names its source domain, the specific mechanism that transferred, and the basis for claiming the analogy holds.</p>
+  </div>
+  <div class="frame-rule">The analogy must hold structurally — same constraints, same failure modes — not just surface vocabulary. "Both involve documents" is not an analogy.</div>
+</div>
+
+<!-- ── Axis navigation ────────────────────────────────── -->
+<nav class="axis-nav" aria-label="Jump to axis">
+  <a class="axis-nav-item" href="#axis-standard-encoding">Standard Encoding</a>
+  <a class="axis-nav-item" href="#axis-evidence-collection">Evidence Collection</a>
+  <a class="axis-nav-item" href="#axis-supplier-experience">Supplier Experience</a>
+  <a class="axis-nav-item" href="#axis-review-reporting">Review &amp; Reporting</a>
+  <a class="axis-nav-item" href="#axis-standard-lifecycle">Standard Lifecycle</a>
+</nav>
+
+<!-- ── Ideas ──────────────────────────────────────────── -->
+<main class="content" id="main">
+
+  <!-- AXIS: STANDARD ENCODING -->
+  <section class="axis-section" id="axis-standard-encoding" aria-labelledby="label-standard-encoding">
+    <div class="axis-header">
+      <span class="axis-tag">Axis 01</span>
+      <h2 class="axis-title" id="label-standard-encoding">Standard Encoding</h2>
+      <span class="axis-count">1 idea</span>
+    </div>
+    <div class="ideas-stack">
+
+      <article class="idea-card" id="idea-1">
+        <div class="card-source">
+          <div class="domain-stamp stamp-finance">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+            Finance
+          </div>
+          <p class="source-field-name">Leveraged lending — bond indenture covenant monitoring</p>
+          <div class="source-mechanism">
+            <span class="mech-label">Mechanism transferred</span>
+            Continuous threshold monitoring: typed metric + bound + time window + evidence cadence + reset cycle — evaluated automatically as evidence arrives, not on a schedule.
+          </div>
+        </div>
+        <div class="card-translation">
+          <h3 class="card-title">Compliance Requirements as Monitored Financial Covenants</h3>
+          <p class="card-summary">Bond indentures define forward-looking behavioral constraints — minimum coverage ratios, maximum leverage ratios — that must be satisfied continuously, not just at audit time. Covenant monitoring systems ingest reported financials as they arrive, compute ratios against typed thresholds, and flag headroom in real time. A DSL compliance requirement (e.g., "methane intensity ≤ 0.47 kg CO₂e/kg product, rolling 12-month average, third-party verified, quarterly update") is structurally identical: typed metric, threshold, time window, evidence source, reset cadence. The DSL encodes covenant terms. Continuous re-assessment is the covenant monitoring engine. Evidence drift detection is headroom warning.</p>
+          <div class="basis-row">
+            <span class="basis-tag reasoned">reasoned:</span>
+            <p class="basis-text">Covenant monitoring solves the exact constraint named in the grounding: "batch-mode compliance with no continuous re-assessment." Both systems track whether a measured value crosses a typed bound over a rolling window, with defined evidence sources. The pain of covenant breach (debt acceleration) vs. compliance lapse (supply chain disqualification) creates identical incentives for continuous rather than periodic monitoring. Covenant definitions are also versioned, counterparty-negotiated objects — directly analogous to how standards change and require DSL versioning.</p>
+          </div>
+          <div class="card-fields">
+            <div class="card-field">
+              <span class="cf-label">Why it matters</span>
+              <p class="cf-value">Reframes "did you pass last quarter's audit?" into "how much headroom do you have right now?" That shift changes supplier behavior — proactive evidence collection vs. reactive audit prep — and unlocks evidence drift detection as a native platform capability rather than a bolt-on.</p>
+            </div>
+            <div class="card-field">
+              <span class="cf-label">Downsides</span>
+              <p class="cf-value">Requires suppliers to produce and submit evidence on a continuous cadence, not just at audit time. Behavior change for suppliers who are used to annual document drops. Works best when evidence sources can be queried automatically rather than requiring manual submission.</p>
+            </div>
+          </div>
+          <div class="meeting-test">
+            <span class="mt-label">Meeting test</span>
+            <p class="mt-value">The covenant monitoring analogy directly imports the vocabulary for headroom alerts, cure periods, and waiver mechanics — does that change how we design the compliance dashboard and supplier notification system?</p>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- AXIS: EVIDENCE COLLECTION -->
+  <section class="axis-section" id="axis-evidence-collection" aria-labelledby="label-evidence-collection">
+    <div class="axis-header">
+      <span class="axis-tag">Axis 02</span>
+      <h2 class="axis-title" id="label-evidence-collection">Evidence Collection</h2>
+      <span class="axis-count">1 idea</span>
+    </div>
+    <div class="ideas-stack">
+
+      <article class="idea-card" id="idea-2">
+        <div class="card-source">
+          <div class="domain-stamp stamp-agri">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22V12M12 12C12 7 17 3 22 2c0 5-3 9-10 10M12 12C12 7 7 3 2 2c0 5 3 9 10 10"/></svg>
+            International Trade
+          </div>
+          <p class="source-field-name">CITES — Convention on International Trade in Endangered Species permit system</p>
+          <div class="source-mechanism">
+            <span class="mech-label">Mechanism transferred</span>
+            Evidence-as-reusable-permit: a third-party-issued document with a defined validity window travels with the specimen across border crossings, accumulating custody endorsements rather than being re-issued at each crossing.
+          </div>
+        </div>
+        <div class="card-translation">
+          <h3 class="card-title">Compliance Evidence as CITES-Style Reusable Permits with Chain-of-Custody</h3>
+          <p class="card-summary">CITES issues permits for individual trade transactions that travel with the specimen — each shipment carries a permit referencing source documentation, with chain-of-custody entries at each border crossing. The permit is not re-issued at every border; it accumulates endorsements. A supplier's ISO 22000 certificate or SQF audit report functions the same way: issued by an authority, carrying a validity window, traveling with the supplier's evidence package across all compliance contexts without re-entry. The Athian portable evidence model is the permit. DSL schema validation is the border inspection. The compliance report is the final endorsement.</p>
+          <div class="basis-row">
+            <span class="basis-tag external">external:</span>
+            <p class="basis-text">The grounding notes "certificate-as-currency: suppliers share PDF certificates (EcoVadis scorecard, SQF, BRC, ISO 22000) as the informal standard." CITES formalizes exactly that intuition with a chain-of-custody model. The structural match: third-party-issued document, defined validity period, accepted use contexts, chain-of-custody requirement when crossing compliance "borders." The pain point being solved — "evidence re-entry across multiple systems (no unified data model)" — is the port-of-entry problem: every border crossing demands re-inspection of the same document.</p>
+          </div>
+          <div class="card-fields">
+            <div class="card-field">
+              <span class="cf-label">Why it matters</span>
+              <p class="cf-value">Encoding evidence as portable, chain-of-custody-tracked permits with formal validity windows makes the DSL's portable evidence model legally defensible rather than merely convenient. It imports a provenance vocabulary — who issued it, when last validated, what its use contexts have been — that the current "PDF certificate" informal standard lacks entirely.</p>
+            </div>
+            <div class="card-field">
+              <span class="cf-label">Downsides</span>
+              <p class="cf-value">Chain-of-custody logging adds data infrastructure. Requires defining what counts as a "custody handoff" in the compliance context — supplier submission, AI ingestion, specialist review each need to be distinct custody events. May over-engineer the MVP if most suppliers have simple evidence sets.</p>
+            </div>
+          </div>
+          <div class="meeting-test">
+            <span class="mt-label">Meeting test</span>
+            <p class="mt-value">CITES chain-of-custody as the evidence provenance model — does that directly shape how we store, validate, and present third-party certificates across multiple customer relationships?</p>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- AXIS: SUPPLIER EXPERIENCE -->
+  <section class="axis-section" id="axis-supplier-experience" aria-labelledby="label-supplier-experience">
+    <div class="axis-header">
+      <span class="axis-tag">Axis 03</span>
+      <h2 class="axis-title" id="label-supplier-experience">Supplier Experience</h2>
+      <span class="axis-count">2 ideas</span>
+    </div>
+    <div class="ideas-stack">
+
+      <article class="idea-card" id="idea-3">
+        <div class="card-source">
+          <div class="domain-stamp stamp-agri">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Agriculture
+          </div>
+          <p class="source-field-name">USDA National Organic Program — Certificate of Operation</p>
+          <div class="source-mechanism">
+            <span class="mech-label">Mechanism transferred</span>
+            Portable scope-bounded credential: an accredited certifier issues a Certificate of Operation with exact scope boundaries (specific parcels, production units), valid for one year, usable across all market channels that require organic attestation — once issued, no re-attestation per channel.
+          </div>
+        </div>
+        <div class="card-translation">
+          <h3 class="card-title">Supplier DSL Profile as NOP Certificate of Operation — Living, Portable Scope Document</h3>
+          <p class="card-summary">The USDA NOP issues each certified operation a Certificate of Operation defining exactly what is certified — specific parcels, production units, handling operations — that travels to any buyer or market channel requiring organic attestation. The certificate is scope-bounded (a certified corn field does not certify the adjacent non-organic soybean field), third-party-issued, and updated annually. A supplier's DSL profile — their declared attributes, intervention enrollments, verified evidence, and scope boundaries — is structurally a Certificate of Operation: a living, versioned document defining what the platform has verified, at what scope, with what evidence authority, valid through what date. One profile, queryable by any enrolled CPG buyer.</p>
+          <div class="basis-row">
+            <span class="basis-tag external">external:</span>
+            <p class="basis-text">The USDA NOP Certificate of Operation is documented in the USDA Organic Integrity Database (ams.usda.gov/organic-integrity). The structural match: NOP solves the multi-buyer, multi-channel problem (one cert travels to farmers' markets, retailers, distributors, and export markets) using a scope-bounded, third-party-issued, portable document. The grounding describes "portable evidence model across compliance contexts without re-entry" as the DSL's advantage — the NOP certificate model is the field-validated implementation of that design. The 2,000+ distinct procurement portals problem (Tendify 2024) is the buyer-side analog of the multi-channel distribution problem NOP certificates solved.</p>
+          </div>
+          <div class="card-fields">
+            <div class="card-field">
+              <span class="cf-label">Why it matters</span>
+              <p class="cf-value">Encoding the supplier's DSL profile as a formal, scope-bounded, versioned Certificate of Operation creates a portable credential across all enrolled CPG buyer relationships — a supplier verified once presents their profile to any buyer, eliminating per-buyer re-assessment. This is the network effect the platform needs to justify its single-portal model.</p>
+            </div>
+            <div class="card-field">
+              <span class="cf-label">Downsides</span>
+              <p class="cf-value">The NOP model relies on third-party certifiers to issue the certificate; Athian would need to establish itself as the equivalent certification authority — a significant positioning and trust claim. Requires building the multi-buyer query infrastructure before the certificate model has network value.</p>
+            </div>
+          </div>
+          <div class="meeting-test">
+            <span class="mt-label">Meeting test</span>
+            <p class="mt-value">DSL profile as portable Certificate of Operation across multiple CPG buyer relationships — is that the network effect design decision that should shape both the product architecture and the go-to-market model?</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="idea-card" id="idea-4">
+        <div class="card-source">
+          <div class="domain-stamp stamp-immig">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Immigration
+          </div>
+          <p class="source-field-name">USCIS naturalization and visa applications — conditional document checklist model</p>
+          <div class="source-mechanism">
+            <span class="mech-label">Mechanism transferred</span>
+            Profile-driven conditional checklist: what documentation is required depends deterministically on prior answers (citizenship by birth or naturalization? prior military? travel history?) — the full evidence requirement is known at intake, not discovered at review.
+          </div>
+        </div>
+        <div class="card-translation">
+          <h3 class="card-title">Supplier Onboarding as Conditional Document Checklist — Complete Evidence Roadmap at Intake</h3>
+          <p class="card-summary">Immigration petition processes (USCIS N-400, DS-260) present applicants with a conditional document checklist — what you need depends on your profile answers, and the checklist is deterministic given the answers. Omitting a required document stalls the whole process; but crucially, the applicant knows the full requirement set at intake, not mid-process. A supplier's compliance requirement set is similarly conditional: a Brazilian beef producer needs different evidence than an Irish dairy operation. The DSL's requirement profiles should generate a complete, conditional evidence checklist at onboarding — the supplier receives a full evidence roadmap based on their declared profile, not a blank portal that reveals requirements incrementally through failed submissions.</p>
+          <div class="basis-row">
+            <span class="basis-tag reasoned">reasoned:</span>
+            <p class="basis-text">The grounding notes "suppliers manage 15-30 portals; aggregation solutions have failed repeatedly" — the failure mode is that suppliers face requirements piecemeal across portals with no unified view. The immigration conditional checklist was designed for exactly this case: a large population of applicants (millions of immigrants, thousands of suppliers) each facing a unique but deterministic combination of requirements, where the institutional cost of handling incomplete submissions is high enough that front-loaded clarity is worth engineering. The DSL's typed requirement definitions with accepted-source constraints are the raw material for generating this checklist.</p>
+          </div>
+          <div class="card-fields">
+            <div class="card-field">
+              <span class="cf-label">Why it matters</span>
+              <p class="cf-value">A profile-generated conditional evidence checklist at onboarding is the single-portal experience the DSL was designed to deliver — and the opposite of the "discover gaps at audit" experience that creates re-entry pain. It converts compliance from something that happens to suppliers into something they can plan and budget for.</p>
+            </div>
+            <div class="card-field">
+              <span class="cf-label">Downsides</span>
+              <p class="cf-value">Requires mapping the conditional requirement logic into the DSL's profile attribute system before it can generate checklists. If supplier profiles are inaccurate at intake, the checklist is wrong — garbage in, garbage out. Initial profile data quality is a real onboarding challenge.</p>
+            </div>
+          </div>
+          <div class="meeting-test">
+            <span class="mt-label">Meeting test</span>
+            <p class="mt-value">Profile-driven conditional evidence checklist at supplier onboarding — would this be the flagship supplier experience differentiator against the fragmented 15-portal status quo?</p>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- AXIS: REVIEW AND REPORTING -->
+  <section class="axis-section" id="axis-review-reporting" aria-labelledby="label-review-reporting">
+    <div class="axis-header">
+      <span class="axis-tag">Axis 04</span>
+      <h2 class="axis-title" id="label-review-reporting">Review &amp; Reporting</h2>
+      <span class="axis-count">2 ideas</span>
+    </div>
+    <div class="ideas-stack">
+
+      <article class="idea-card" id="idea-5">
+        <div class="card-source">
+          <div class="domain-stamp stamp-maritime">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3z"/><path d="M12 4v4M8 21l4-4 4 4"/></svg>
+            Maritime
+          </div>
+          <p class="source-field-name">IMO ISM Code — Designated Person Ashore (DPA)</p>
+          <div class="source-mechanism">
+            <span class="mech-label">Mechanism transferred</span>
+            Named accountability with override log: the DPA is a specific individual with documented authority, direct access to senior management, and an immutable record of every safety-related decision — creating legal defensibility through documented independent judgment, not just documented outcome.
+          </div>
+        </div>
+        <div class="card-translation">
+          <h3 class="card-title">Compliance Specialist Role as ISM Designated Person Ashore — Immutable Override Log and Accountability Surface</h3>
+          <p class="card-summary">The ISM Code (SOLAS Chapter IX) requires every shipping company to designate a "Designated Person Ashore" — a named individual with direct access to senior management and defined authority to intervene in safety matters, whose decisions are recorded in the Safety Management System. The DPA is not a role label; it is a governance accountability structure with an audit trail. The Athian compliance specialist is structurally a DPA: they review AI pre-assessments, override them, approve reports, sign off on compliance status. But the platform currently lacks the governance layer recording why an override was made, by whom, with what authority. The DSL should include a specialist authority model with an immutable override log.</p>
+          <div class="basis-row">
+            <span class="basis-tag external">external:</span>
+            <p class="basis-text">The ISM Code is available at IMO MSC-MEPC.7/Circ.8 with a well-documented DPA model. The structural match: a human professional reviews machine-generated (or automated) assessments, has override authority, and must demonstrate due diligence to a regulatory or contractual auditor. The grounding explicitly states that EcoVadis positions "analyst review as legal defensibility feature" — the DPA model provides the governance architecture making human review legally defensible, not just operationally present. Without an override log, a specialist's approval is legally indistinguishable from rubber-stamping AI output.</p>
+          </div>
+          <div class="card-fields">
+            <div class="card-field">
+              <span class="cf-label">Why it matters</span>
+              <p class="cf-value">An immutable override log with rationale captures the specialist's judgment in a form that survives personnel turnover, satisfies CS3D/CSDD due diligence requirements, and makes the AI pre-review model defensible in audit — the specialist is demonstrably exercising independent judgment, not approving machine output. This directly answers the EcoVadis legal defensibility argument without requiring 500 analysts.</p>
+            </div>
+            <div class="card-field">
+              <span class="cf-label">Downsides</span>
+              <p class="cf-value">Adds a required documentation step for specialists — every override must include a typed rationale. Specialists who are used to informal review processes may experience this as bureaucratic overhead. Needs thoughtful UX to make override logging feel like annotation, not compliance theater.</p>
+            </div>
+          </div>
+          <div class="meeting-test">
+            <span class="mt-label">Meeting test</span>
+            <p class="mt-value">DPA-style immutable override log for compliance specialist decisions — is this the governance feature that enterprise buyers subject to CS3D/CSDD would require, making it a differentiator against EcoVadis's analyst model?</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="idea-card" id="idea-6">
+        <div class="card-source">
+          <div class="domain-stamp stamp-games">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4"/><circle cx="16" cy="10" r="1" fill="currentColor"/><circle cx="18" cy="13" r="1" fill="currentColor"/></svg>
+            Games
+          </div>
+          <p class="source-field-name">Console platform certification — Nintendo TRC / Sony TCR lotcheck</p>
+          <div class="source-mechanism">
+            <span class="mech-label">Mechanism transferred</span>
+            Machine-checked acceptance gates before human queue: hundreds of typed technical requirements are evaluated automatically; human reviewers receive only the cases machine checks cannot resolve — a judgment queue, not a universal review queue.
+          </div>
+        </div>
+        <div class="card-translation">
+          <h3 class="card-title">Compliance Specialist Queue as Lotcheck — Machine-Checked Gates Before Human Review</h3>
+          <p class="card-summary">Console platform holders (Nintendo, Sony, Microsoft) require game developers to pass "lotcheck" — a structured submission process with hundreds of defined technical requirements (TRCs/TCRs), most machine-checked in automated passes before any human evaluator engages. The human reviewer only handles judgment calls machine checks cannot resolve. A supplier's evidence package submitted against DSL typed requirements should pass machine-checked gates first — is the document dated within validity window? does the reported value pass the threshold? is the certificate from an approved source? — before any compliance specialist sees it. The specialist queue should contain only residual judgment calls, not uniform review of every submission.</p>
+          <div class="basis-row">
+            <span class="basis-tag external">external:</span>
+            <p class="basis-text">Nintendo's TRC checklist has a public developer-facing equivalent; Sony's certification documentation is available to registered developers. The insight: most compliance checks are binary and machine-executable; human review time is expensive and should be reserved for non-binary cases. The grounding notes EcoVadis's "human-analyst-mediated" model as a pain point — lotcheck is the published pattern that breaks that bottleneck in a high-stakes certification context. The DSL's typed requirements with units, thresholds, time periods, and accepted sources are precisely the machine-checkable definitions TRC entries encode.</p>
+          </div>
+          <div class="card-fields">
+            <div class="card-field">
+              <span class="cf-label">Why it matters</span>
+              <p class="cf-value">If the specialist only sees residual judgment calls, the platform handles 10× the supplier volume with the same specialist headcount — the core scalability argument against EcoVadis's 500-analyst model. The DSL already enables this; the lotcheck analogy makes the UX and workflow design explicit and gives the team a reference implementation to study.</p>
+            </div>
+            <div class="card-field">
+              <span class="cf-label">Downsides</span>
+              <p class="cf-value">Partial overlap with the automated mortgage underwriting triage idea (Clear / Conditional / Refer). Lotcheck is more specific about the pre-queue gate mechanism; the triage model is more about the output tier structure. Both are needed, and they're complementary rather than redundant, but the design team should treat them as one integrated workflow rather than two separate features.</p>
+            </div>
+          </div>
+          <div class="meeting-test">
+            <span class="mt-label">Meeting test</span>
+            <p class="mt-value">Lotcheck-style machine-checked gates as the compliance specialist queue model — would that directly shape how we design the evidence submission pipeline and the specialist's review interface in the next sprint?</p>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- AXIS: STANDARD LIFECYCLE -->
+  <section class="axis-section" id="axis-standard-lifecycle" aria-labelledby="label-standard-lifecycle">
+    <div class="axis-header">
+      <span class="axis-tag">Axis 05</span>
+      <h2 class="axis-title" id="label-standard-lifecycle">Standard Lifecycle</h2>
+      <span class="axis-count">1 idea</span>
+    </div>
+    <div class="ideas-stack">
+
+      <article class="idea-card" id="idea-7">
+        <div class="card-source">
+          <div class="domain-stamp stamp-safety">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Process Safety
+          </div>
+          <p class="source-field-name">OSHA PSM — Management of Change (MOC) procedure (29 CFR 1910.119)</p>
+          <div class="source-mechanism">
+            <span class="mech-label">Mechanism transferred</span>
+            Gated activation: before a process change goes live, a documented impact assessment, sign-off, and employee communication is required — preventing a deliberate system modification from creating inadvertent non-compliance without the organization's knowledge.
+          </div>
+        </div>
+        <div class="card-translation">
+          <h3 class="card-title">Standard Amendments as PSM Management of Change — Impact Assessment Before Re-Assessment Fires</h3>
+          <p class="card-summary">OSHA's Process Safety Management standard requires a formal Management of Change procedure before any modification to a covered process — even temporary changes trigger a documented impact assessment and sign-off before the change goes live. The analogy: when a standard is amended (e.g., RSPO changes its deforestation verification window from 5 years to 3), this is a "process change" that could trigger inadvertent non-compliance for suppliers previously assessed as compliant. The DSL's standard-lifecycle mechanism should gate the new standard version's activation behind a MOC-style impact assessment: which active compliance plans are affected, what evidence gaps are created, which suppliers must be notified — before the re-assessment cycle fires.</p>
+          <div class="basis-row">
+            <span class="basis-tag external">external:</span>
+            <p class="basis-text">OSHA PSM MOC is the canonical solved pattern for: a parameter safe yesterday may become unsafe today because of a deliberate process change, not a failure. The structural match: versioned specifications with compliance implications; transitions between versions must not create phantom failures; impact assessment, documentation, and stakeholder notification are required before activation. The existing "Airworthiness Directive" analogy in the companion doc focuses on propagation (informing affected parties after a change). MOC focuses on gating (you cannot activate the change until impact assessment is complete). These are orthogonal problems in the standard lifecycle.</p>
+          </div>
+          <div class="card-fields">
+            <div class="card-field">
+              <span class="cf-label">Why it matters</span>
+              <p class="cf-value">Without a MOC analog, a standard update activates immediately and silently triggers re-assessment failures for suppliers who were compliant under the prior version — creating noise, customer confusion, and potential legal exposure for the CPG buyer. MOC gating gives the compliance team visibility and control over when and how a version transition takes effect.</p>
+            </div>
+            <div class="card-field">
+              <span class="cf-label">Downsides</span>
+              <p class="cf-value">Adds governance overhead to standard updates — the compliance team must complete an impact assessment before activating a new version, which adds time to the standard onboarding process. May be unnecessary for minor clarification updates where impact is trivially zero. Needs a tiered MOC requirement (major version changes vs. minor amendments).</p>
+            </div>
+          </div>
+          <div class="meeting-test">
+            <span class="mt-label">Meeting test</span>
+            <p class="mt-value">MOC-style gating before a standard version goes live — does that change how the engineering team designs the standard-lifecycle state machine and what the compliance team's change management process looks like?</p>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ── Rejection summary ────────────────────────────── -->
+  <section class="rejection-section" aria-labelledby="rejection-header">
+    <p class="rejection-header" id="rejection-header">Considered and cut — 1 candidate refuted by basis review</p>
+    <table class="rejection-table">
+      <thead>
+        <tr>
+          <th style="width: 22%">Domain</th>
+          <th style="width: 28%">Candidate</th>
+          <th>Reason rejected</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="rej-domain">Mining / extraction</span></td>
+          <td><span class="rej-title">Geological Core Sample Chain-of-Custody</span></td>
+          <td>Subsumed by two stronger ideas. The evidence provenance angle is covered more actionably by the CITES permit model (portable evidence across compliance contexts). The legal defensibility angle — the reason geological core chains of custody matter — is covered by the ISM DPA override log. No distinctive mechanism remains that either of those ideas doesn't address.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+</main>
+
+<!-- ── Footer ─────────────────────────────────────────── -->
+<footer>
+  <p class="footer-text">Composed 2026-06-22 by ce-ideate · Athian Compliance · cross-domain analogy frame · 7 survivors, 5 axes</p>
+  <p class="footer-text">Next: /ce-brainstorm to develop one idea into requirements</p>
+</footer>
+
+</body>
+</html>

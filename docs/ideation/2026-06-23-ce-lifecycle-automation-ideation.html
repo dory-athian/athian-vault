@@ -1,0 +1,961 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ideation: CE Lifecycle Automation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root {
+  --ground: #0E1117;
+  --ground-2: #161B24;
+  --ground-3: #1D2535;
+  --text: #E8ECF0;
+  --text-muted: #8895A7;
+  --text-dim: #4D5A6A;
+  --accent: #4FFFB0;
+  --accent-dim: rgba(79, 255, 176, 0.12);
+  --accent-2: #7B9FFF;
+  --accent-2-dim: rgba(123, 159, 255, 0.12);
+  --warn: #FFB347;
+  --warn-dim: rgba(255, 179, 71, 0.1);
+  --border: rgba(232, 236, 240, 0.08);
+  --border-strong: rgba(232, 236, 240, 0.14);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 15px; -webkit-font-smoothing: antialiased; }
+
+body {
+  background: var(--ground);
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.65;
+  min-height: 100vh;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* ── Layout ── */
+.page-wrap {
+  max-width: 860px;
+  margin-inline: auto;
+  padding: 0 2rem 4rem;
+}
+
+/* ── Header ── */
+.doc-header {
+  padding: 3.5rem 0 2.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2.5rem;
+}
+
+.doc-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.doc-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+.doc-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(1.7rem, 4vw, 2.4rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+  margin-bottom: 0.6rem;
+  letter-spacing: -0.02em;
+}
+
+.doc-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  margin-top: 1.2rem;
+}
+
+.meta-chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--ground-2);
+  border: 1px solid var(--border-strong);
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+
+.meta-chip.mode { color: var(--accent-2); border-color: rgba(123, 159, 255, 0.25); }
+
+/* ── Stats strip ── */
+.stats-strip {
+  display: flex;
+  gap: 0;
+  margin-bottom: 2.5rem;
+  background: var(--ground-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.stat-block {
+  flex: 1;
+  padding: 1.1rem 1.4rem;
+  border-right: 1px solid var(--border);
+}
+
+.stat-block:last-child { border-right: none; }
+
+.stat-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ── Section headings ── */
+section { margin-bottom: 3rem; }
+
+.section-heading {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── Context grid ── */
+.context-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 600px) { .context-grid { grid-template-columns: 1fr; } }
+
+.context-card {
+  background: var(--ground-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.1rem 1.2rem;
+}
+
+.context-card h4 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent-2);
+  margin-bottom: 0.6rem;
+}
+
+.context-card p, .context-card li {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.context-card ul { padding-left: 1.1rem; }
+.context-card li { margin-bottom: 0.2rem; }
+
+/* ── Axes ── */
+.axes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.axis-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.9rem;
+  background: var(--ground-2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+}
+
+.axis-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 1.4rem;
+}
+
+.axis-name {
+  font-size: 0.83rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.axis-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+/* ── Jump list ── */
+.jump-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 2rem;
+}
+
+.jump-list a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  padding: 0.45rem 0.7rem;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background 0.15s;
+  border: 1px solid transparent;
+}
+
+.jump-list a:hover, .jump-list a:focus {
+  background: var(--ground-2);
+  border-color: var(--border);
+  outline: none;
+}
+
+.jump-rank {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 1.2rem;
+}
+
+.jump-title {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+  flex: 1;
+}
+
+.jump-axis {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── Idea cards ── */
+.idea-cards { display: flex; flex-direction: column; gap: 2rem; }
+
+article.idea-card {
+  background: var(--ground-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+article.idea-card:focus-within { border-color: var(--border-strong); }
+
+.card-top {
+  display: flex;
+  gap: 0;
+}
+
+.card-rank-col {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 1.5rem 1rem 1.5rem 1.4rem;
+  min-width: 4.2rem;
+  border-right: 1px solid var(--border);
+}
+
+.card-rank-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 3.4rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--accent);
+  opacity: 0.18;
+  letter-spacing: -0.04em;
+  user-select: none;
+}
+
+.card-main {
+  flex: 1;
+  padding: 1.4rem 1.5rem 1.3rem;
+  min-width: 0;
+}
+
+.card-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.35rem;
+  display: block;
+}
+
+.card-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.0rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+  margin-bottom: 0.9rem;
+  letter-spacing: -0.01em;
+}
+
+.card-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.95rem;
+}
+
+.chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.63rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 3px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.chip-axis { background: var(--accent-2-dim); color: var(--accent-2); border: 1px solid rgba(123, 159, 255, 0.2); }
+.chip-conf-high { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(79, 255, 176, 0.2); }
+.chip-conf-med { background: var(--warn-dim); color: var(--warn); border: 1px solid rgba(255, 179, 71, 0.2); }
+.chip-cx-s { background: var(--ground-3); color: #6FCF97; border: 1px solid rgba(111, 207, 151, 0.2); }
+.chip-cx-m { background: var(--ground-3); color: var(--warn); border: 1px solid rgba(255, 179, 71, 0.15); }
+
+.card-description {
+  font-size: 0.875rem;
+  color: var(--text);
+  line-height: 1.65;
+  margin-bottom: 0;
+}
+
+/* ── Card details (expandable) ── */
+details.card-details {
+  border-top: 1px solid var(--border);
+}
+
+details.card-details summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.5rem;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  user-select: none;
+  list-style: none;
+  transition: color 0.15s;
+}
+
+details.card-details summary::-webkit-details-marker { display: none; }
+
+details.card-details summary::before {
+  content: '▶';
+  font-size: 0.55rem;
+  transition: transform 0.15s;
+}
+
+details.card-details[open] summary::before { transform: rotate(90deg); }
+details.card-details summary:hover { color: var(--text-muted); }
+
+details.card-details:focus-within summary { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+.details-body {
+  padding: 1.1rem 1.5rem 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.detail-row { }
+
+.detail-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.63rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  margin-bottom: 0.3rem;
+}
+
+.detail-value {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.basis-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.63rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+  margin-right: 0.4rem;
+  background: var(--ground-3);
+  color: var(--accent-2);
+  border: 1px solid rgba(123, 159, 255, 0.2);
+  text-transform: uppercase;
+}
+
+.basis-tag.direct { color: var(--accent); border-color: rgba(79, 255, 176, 0.2); }
+.basis-tag.reasoned { color: var(--warn); border-color: rgba(255, 179, 71, 0.2); }
+
+.downside-note {
+  background: rgba(255, 179, 71, 0.06);
+  border: 1px solid rgba(255, 179, 71, 0.15);
+  border-radius: 5px;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.downside-note .detail-label { color: var(--warn); opacity: 0.7; }
+
+/* ── Diagram / illustration ── */
+.card-diagram {
+  padding: 0 1.5rem 1.1rem;
+  border-top: 1px solid var(--border);
+}
+
+.card-diagram-inner {
+  background: var(--ground);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.1rem 1rem;
+  margin-top: 0.9rem;
+  overflow-x: auto;
+}
+
+/* ── Rejection table ── */
+.rejection-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.rejection-table th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.63rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  font-weight: 600;
+  padding: 0.5rem 0.8rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-strong);
+}
+
+.rejection-table td {
+  padding: 0.6rem 0.8rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+  vertical-align: top;
+}
+
+.rejection-table tr:last-child td { border-bottom: none; }
+
+.rejection-table td:first-child {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+/* ── Footer ── */
+footer.composition-signal {
+  margin-top: 4rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+</style>
+</head>
+<body>
+
+<div class="page-wrap">
+
+  <!-- ── Header ── -->
+  <header class="doc-header">
+    <p class="doc-eyebrow">CE Ideation · Athian</p>
+    <h1 class="doc-title">CE Lifecycle Automation</h1>
+    <div class="doc-meta-row">
+      <span class="meta-chip">2026-06-23</span>
+      <span class="meta-chip mode">elsewhere-software</span>
+      <span class="meta-chip">7 survivors · 19 raw candidates</span>
+    </div>
+  </header>
+
+  <!-- ── Stats strip ── -->
+  <div class="stats-strip" aria-label="Summary statistics">
+    <div class="stat-block">
+      <div class="stat-num">17+</div>
+      <div class="stat-label">CE files, zero actions downstream</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-num">5</div>
+      <div class="stat-label">Topic axes covered</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-num">7</div>
+      <div class="stat-label">Ranked ideas</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-num">3</div>
+      <div class="stat-label">Small builds (n8n + git)</div>
+    </div>
+  </div>
+
+  <!-- ── Topic Context ── -->
+  <section aria-labelledby="context-heading">
+    <h2 id="context-heading" class="section-heading">Topic Context</h2>
+    <div class="context-grid">
+      <div class="context-card">
+        <h4>Problem Shape</h4>
+        <p>CE outputs (ideation .html, plan .md, brainstorm .md, HANDOFF.md) land in <code>docs/{ideation,plans,brainstorms}/</code> — outside git, untracked, unshared, undiscoverable. Nothing happens downstream. The working frame: CE value should materialize in Linear issues, CLAUDE.md entries, and Slack threads. The CE doc is scaffolding.</p>
+      </div>
+      <div class="context-card">
+        <h4>Stated Constraints</h4>
+        <ul>
+          <li>Tools: GitHub, Slack, Linear (Compliance), Jira (Sustainability), n8n (live), Figma</li>
+          <li>n8n Feedback Hub pipeline already debugged: Granola → n8n → Sheets → Claude</li>
+          <li>Linear MCP + CLAUDE.md both required for skills to route correctly — silent fallback otherwise</li>
+          <li>HANDOFF.md is manually written, single-threaded, no multi-user support</li>
+          <li>~10 engineers; Dory is VP Eng + acting VP Product</li>
+        </ul>
+      </div>
+      <div class="context-card">
+        <h4>Key Pain Points</h4>
+        <ul>
+          <li>17+ .html files from one session, zero downstream actions (17:0 generate-to-act ratio)</li>
+          <li>HANDOFF.md is Dory's state, not team state — overwrites silently on concurrent use</li>
+          <li>Plans orphaned from the issues they should create</li>
+          <li>docs/ has no index and no search entry point</li>
+          <li>CE skills silently route to wrong tracker when MCP not configured</li>
+        </ul>
+      </div>
+      <div class="context-card">
+        <h4>Broken Assumptions</h4>
+        <ul>
+          <li>"CE outputs need to be stored" → they need to be acted on; storage is incidental</li>
+          <li>"The session is the value; the file is the record" → the file is only valuable if it causes something</li>
+          <li>"Plans and ideation are different artifact types" → one artifact at different lifecycle stages</li>
+          <li>"Session continuity is a memory problem" → it's a retrieval problem</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Topic Axes ── -->
+  <section aria-labelledby="axes-heading">
+    <h2 id="axes-heading" class="section-heading">Topic Axes</h2>
+    <div class="axes-list">
+      <div class="axis-row"><span class="axis-num">01</span><span class="axis-name">Storage location</span><span class="axis-desc">Where CE outputs physically live and who can access them</span></div>
+      <div class="axis-row"><span class="axis-num">02</span><span class="axis-name">CLAUDE.md / context hierarchy</span><span class="axis-desc">How AI context composes across repos and sessions</span></div>
+      <div class="axis-row"><span class="axis-num">03</span><span class="axis-name">Session continuity</span><span class="axis-desc">How planning artifacts survive session boundaries</span></div>
+      <div class="axis-row"><span class="axis-num">04</span><span class="axis-name">Discoverability</span><span class="axis-desc">How team members find CE planning docs</span></div>
+      <div class="axis-row"><span class="axis-num">05</span><span class="axis-name">Artifact lifecycle</span><span class="axis-desc">How CE outputs transition to issues, decisions, code</span></div>
+    </div>
+  </section>
+
+  <!-- ── Ranked Ideas ── -->
+  <section aria-labelledby="ideas-heading">
+    <h2 id="ideas-heading" class="section-heading">Ranked Ideas</h2>
+
+    <!-- Jump list -->
+    <nav aria-label="Jump to idea" class="jump-list">
+      <a href="#idea-1"><span class="jump-rank">1</span><span class="jump-title">Git-track docs/ and use push as the lifecycle trigger</span><span class="jump-axis">storage</span></a>
+      <a href="#idea-2"><span class="jump-rank">2</span><span class="jump-title">Linear as the CE thread system of record</span><span class="jump-axis">lifecycle</span></a>
+      <a href="#idea-3"><span class="jump-rank">3</span><span class="jump-title">Replace HANDOFF.md with a Linear issue + session-start live query</span><span class="jump-axis">continuity</span></a>
+      <a href="#idea-4"><span class="jump-rank">4</span><span class="jump-title">n8n lifecycle pipeline — plan→issue decomposition + Slack digest</span><span class="jump-axis">lifecycle</span></a>
+      <a href="#idea-5"><span class="jump-rank">5</span><span class="jump-title">CLAUDE.md as living decisions index, auto-updated from CE outputs</span><span class="jump-axis">context</span></a>
+      <a href="#idea-6"><span class="jump-rank">6</span><span class="jump-title">CE artifact YAML frontmatter + automated CE-INDEX.md</span><span class="jump-axis">discoverability</span></a>
+      <a href="#idea-7"><span class="jump-rank">7</span><span class="jump-title">Skip local files entirely — write to Linear first</span><span class="jump-axis">storage</span></a>
+    </nav>
+
+    <div class="idea-cards">
+
+      <!-- Idea 1 -->
+      <article class="idea-card" id="idea-1">
+        <div class="card-top">
+          <div class="card-rank-col" aria-hidden="true"><span class="card-rank-num">1</span></div>
+          <div class="card-main">
+            <span class="card-id">Idea 1 · Storage location</span>
+            <h3 class="card-title">Git-track docs/ and use push as the lifecycle trigger</h3>
+            <div class="card-chips">
+              <span class="chip chip-axis">Storage location</span>
+              <span class="chip chip-conf-high">Conf: High</span>
+              <span class="chip chip-cx-s">Cx: Small</span>
+            </div>
+            <p class="card-description">The single highest-leverage change: move <code>docs/</code> into a git-tracked location (or initialize the Athian directory as a git repo). Every CE artifact immediately gets version history, diff, PR review, and — critically — GitHub webhook events. A GitHub Actions workflow on <code>docs/plans/**</code> push can parse frontmatter and create Linear issues automatically. This is the prerequisite that unlocks almost every other automation on this list: the CI/CD pattern applied to planning artifacts rather than code.</p>
+          </div>
+        </div>
+
+        <!-- Diagram: before/after -->
+        <div class="card-diagram">
+          <div class="card-diagram-inner">
+            <svg viewBox="0 0 720 110" width="100%" aria-label="Before: CE file written locally, nothing happens. After: git push triggers n8n pipeline, Linear issues and Slack notification are created." role="img">
+              <defs>
+                <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                  <polygon points="0 0, 8 3, 0 6" fill="#4FFFB0" opacity="0.7"/>
+                </marker>
+                <marker id="arr2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                  <polygon points="0 0, 8 3, 0 6" fill="#4D5A6A"/>
+                </marker>
+              </defs>
+              <!-- BEFORE label -->
+              <text x="10" y="18" font-family="JetBrains Mono, monospace" font-size="9" fill="#4D5A6A" letter-spacing="1" text-anchor="start">BEFORE</text>
+              <!-- file box -->
+              <rect x="10" y="26" width="130" height="32" rx="4" fill="#1D2535" stroke="#2D3A4A" stroke-width="1"/>
+              <text x="75" y="45" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#8895A7" text-anchor="middle">plan.md written</text>
+              <!-- arrow dead-end -->
+              <line x1="140" y1="42" x2="175" y2="42" stroke="#4D5A6A" stroke-width="1.5" marker-end="url(#arr2)"/>
+              <text x="185" y="46" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4D5A6A">nothing happens</text>
+
+              <!-- AFTER label -->
+              <text x="10" y="83" font-family="JetBrains Mono, monospace" font-size="9" fill="#4D5A6A" letter-spacing="1" text-anchor="start">AFTER</text>
+              <!-- file box -->
+              <rect x="10" y="91" width="130" height="32" rx="4" fill="#1D2535" stroke="#4FFFB0" stroke-width="1" opacity="0.8"/>
+              <text x="75" y="110" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#E8ECF0" text-anchor="middle">git push docs/plans/</text>
+              <!-- arrow to GH Actions -->
+              <line x1="140" y1="107" x2="200" y2="107" stroke="#4FFFB0" stroke-width="1.5" marker-end="url(#arr)" opacity="0.7"/>
+              <!-- GH Actions box -->
+              <rect x="200" y="91" width="110" height="32" rx="4" fill="#161B24" stroke="#2D3A4A" stroke-width="1"/>
+              <text x="255" y="110" font-family="JetBrains Mono, monospace" font-size="9" fill="#7B9FFF" text-anchor="middle">GitHub Actions</text>
+              <!-- arrow to n8n -->
+              <line x1="310" y1="107" x2="365" y2="107" stroke="#4FFFB0" stroke-width="1.5" marker-end="url(#arr)" opacity="0.7"/>
+              <!-- n8n box -->
+              <rect x="365" y="91" width="80" height="32" rx="4" fill="#161B24" stroke="#2D3A4A" stroke-width="1"/>
+              <text x="405" y="110" font-family="JetBrains Mono, monospace" font-size="9" fill="#7B9FFF" text-anchor="middle">n8n pipeline</text>
+              <!-- arrows out from n8n -->
+              <line x1="445" y1="102" x2="495" y2="91" stroke="#4FFFB0" stroke-width="1.5" marker-end="url(#arr)" opacity="0.6"/>
+              <line x1="445" y1="112" x2="495" y2="119" stroke="#4FFFB0" stroke-width="1.5" marker-end="url(#arr)" opacity="0.6"/>
+              <!-- Linear box -->
+              <rect x="495" y="82" width="100" height="24" rx="4" fill="#161B24" stroke="#2D3A4A" stroke-width="1"/>
+              <text x="545" y="98" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#4FFFB0" text-anchor="middle">Linear issues</text>
+              <!-- Slack box -->
+              <rect x="495" y="111" width="100" height="24" rx="4" fill="#161B24" stroke="#2D3A4A" stroke-width="1"/>
+              <text x="545" y="127" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#4FFFB0" text-anchor="middle">Slack digest</text>
+            </svg>
+          </div>
+        </div>
+
+        <details class="card-details">
+          <summary>Basis · Rationale · Downsides</summary>
+          <div class="details-body">
+            <div class="detail-row">
+              <div class="detail-label">Basis</div>
+              <div class="detail-value"><span class="basis-tag direct">direct</span><code>/Users/doryweiss/Athian</code> is confirmed not a git repo — outputs are untracked. The Feedback Hub n8n workflow (direct precedent) already does file-event → structured extraction → downstream action. CI/CD pattern: push triggers pipeline.</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Rationale</div>
+              <div class="detail-value">Git-tracking <code>docs/</code> is a prerequisite for almost every other idea on this list. It costs one <code>git init</code> and one <code>.gitignore</code> configuration. After that, GitHub webhooks, diff, PR review, and GitHub Actions are all available. The downstream automation stack becomes available for zero additional infrastructure cost.</div>
+            </div>
+            <div class="downside-note">
+              <div class="detail-label">Downsides</div>
+              Requires deciding what else lives in the Athian directory that shouldn't be committed (feedback_hub_schema.xlsx, projects/, etc.). A <code>.gitignore</code> configuration pass is needed first. Also: HTML ideation files are large blobs — consider LFS or committing only .md artifacts to git.
+            </div>
+          </div>
+        </details>
+      </article>
+
+      <!-- Idea 2 -->
+      <article class="idea-card" id="idea-2">
+        <div class="card-top">
+          <div class="card-rank-col" aria-hidden="true"><span class="card-rank-num">2</span></div>
+          <div class="card-main">
+            <span class="card-id">Idea 2 · Artifact lifecycle</span>
+            <h3 class="card-title">Linear as the CE thread system of record</h3>
+            <div class="card-chips">
+              <span class="chip chip-axis">Artifact lifecycle</span>
+              <span class="chip chip-conf-high">Conf: High</span>
+              <span class="chip chip-cx-m">Cx: Medium</span>
+            </div>
+            <p class="card-description">One Linear issue per CE thread (an ideation topic, a plan, an execution spike), serving as the spine. The issue description holds the goal; comments hold stage transitions (ideation → plan → executing); attachments link the CE artifacts; child issues are the downstream work items. Status field tracks the lifecycle: Open → Refining → Plan → Executing → Done. This makes every CE thread queryable, assignable, commentable, and linked to the work it spawned — none of which the local file system provides.</p>
+          </div>
+        </div>
+        <details class="card-details">
+          <summary>Basis · Rationale · Downsides</summary>
+          <div class="details-body">
+            <div class="detail-row">
+              <div class="detail-label">Basis</div>
+              <div class="detail-value"><span class="basis-tag">external</span>MindStudio 2026: issue trackers as agent infrastructure — tickets as state machines, comments as message bus, labels as metadata. Five capabilities agents need that issue trackers already provide: persistent state, ownership, permissions, structured history, webhook layer. Athian already has Linear MCP live for Compliance work.</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Rationale</div>
+              <div class="detail-value">Linear already has everything a CE thread needs: a URL, an owner, a status lifecycle, comments, linked issues, webhook events, and search. Using it as the spine doesn't require building any new infrastructure — only a convention about how CE threads are created and labeled. The artifact lifecycle problem is solved by the issue tracker's existing data model.</div>
+            </div>
+            <div class="downside-note">
+              <div class="detail-label">Downsides</div>
+              Requires a naming/label convention the team adopts and maintains. If CE threads mix with regular issues, the signal-to-noise ratio in Linear degrades. A dedicated CE label or project within Linear is needed. Also: Jira (Sustainability) vs Linear (Compliance) split means CE threads for different scopes land in different trackers.
+            </div>
+          </div>
+        </details>
+      </article>
+
+      <!-- Idea 3 -->
+      <article class="idea-card" id="idea-3">
+        <div class="card-top">
+          <div class="card-rank-col" aria-hidden="true"><span class="card-rank-num">3</span></div>
+          <div class="card-main">
+            <span class="card-id">Idea 3 · Session continuity</span>
+            <h3 class="card-title">Replace HANDOFF.md with a Linear issue + session-start live query</h3>
+            <div class="card-chips">
+              <span class="chip chip-axis">Session continuity</span>
+              <span class="chip chip-conf-high">Conf: High</span>
+              <span class="chip chip-cx-m">Cx: Medium</span>
+            </div>
+            <p class="card-description">Drop HANDOFF.md entirely. Instead, a CE session start triggers a live query to Linear: open CE threads for this repo, recent decisions in the last 7 days, active plans. Claude reconstructs its context from current issue state rather than a stale file. Session end updates the relevant Linear issue with new decisions and next steps — no separate file to write. The handoff is always current because it's pulled live, not stored. This solves the concurrent-user problem (HANDOFF.md overwrites silently), the staleness problem, and the "Dory's state vs team state" problem simultaneously.</p>
+          </div>
+        </div>
+        <details class="card-details">
+          <summary>Basis · Rationale · Downsides</summary>
+          <div class="details-body">
+            <div class="detail-row">
+              <div class="detail-label">Basis</div>
+              <div class="detail-value"><span class="basis-tag reasoned">reasoned</span>HANDOFF.md is a workaround for the absence of a shared, persistent, queryable session state store — it literally is a text file encoding what an issue tracker already provides. Session continuity is a retrieval problem: at session start, Claude needs to know what was decided and what's pending. That information exists in Linear issues and git commits. A live query is always current; a file is always stale.</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Rationale</div>
+              <div class="detail-value">Removes the end-of-session manual write step (the highest-friction point — it's when you're tired and most likely to skip it). The engineer starting fresh work gets a current-state summary without relying on the prior engineer to have done anything. The handoff exists when needed, reconstructed from current state.</div>
+            </div>
+            <div class="downside-note">
+              <div class="detail-label">Downsides</div>
+              Requires Linear MCP to be available and correctly configured (both CLAUDE.md and MCP server must be present — known silent-failure risk documented in <code>docs/solutions/</code>). Also requires a convention for how CE threads are tagged in Linear so the query finds the right things. The query needs to be built into a skill or hook.
+            </div>
+          </div>
+        </details>
+      </article>
+
+      <!-- Idea 4 -->
+      <article class="idea-card" id="idea-4">
+        <div class="card-top">
+          <div class="card-rank-col" aria-hidden="true"><span class="card-rank-num">4</span></div>
+          <div class="card-main">
+            <span class="card-id">Idea 4 · Artifact lifecycle + Discoverability</span>
+            <h3 class="card-title">n8n lifecycle pipeline — plan→issue decomposition + Slack digest</h3>
+            <div class="card-chips">
+              <span class="chip chip-axis">Artifact lifecycle</span>
+              <span class="chip chip-axis">Discoverability</span>
+              <span class="chip chip-conf-high">Conf: High</span>
+              <span class="chip chip-cx-m">Cx: Medium</span>
+            </div>
+            <p class="card-description">Extend the Feedback Hub n8n pattern to CE artifacts: a file watcher (or GitHub Actions webhook after idea 1 is implemented) triggers on new files in <code>docs/plans/</code>. n8n parses the plan's YAML frontmatter and section headers, creates Linear issues for each section tagged as a work item, and posts a one-line summary to <code>#engineering</code> Slack with a link. Two outputs from one pipeline: discoverability via Slack notification, and artifact lifecycle closure via issue creation. The build is a weekend given the existing Feedback Hub workflow as direct precedent.</p>
+          </div>
+        </div>
+        <details class="card-details">
+          <summary>Basis · Rationale · Downsides</summary>
+          <div class="details-body">
+            <div class="detail-row">
+              <div class="detail-label">Basis</div>
+              <div class="detail-value"><span class="basis-tag direct">direct</span>Feedback Hub workflow <code>QU1ak4vCs0KkoaEJ</code> — live, fully debugged. Architecture is identical: trigger → parse structured content → create downstream record. n8n has native Linear nodes. 10 bugs documented and fixed across two sessions. The pattern is proven at Athian specifically.</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Rationale</div>
+              <div class="detail-value">n8n is already the automation runtime at Athian and the team has debugged it extensively. Extending a working, documented workflow pattern has dramatically lower build risk than building from scratch. The Feedback Hub's bug archive is effectively documentation for pitfalls to avoid in this build.</div>
+            </div>
+            <div class="downside-note">
+              <div class="detail-label">Downsides</div>
+              Requires YAML frontmatter on plan files (idea 6 is the prerequisite). Also requires deciding the trigger mechanism: file watcher in n8n (polling-based, slight latency) vs GitHub Actions webhook (requires idea 1 — git-tracking — to be done first). The Slack notification is only useful if the team actually watches <code>#engineering</code>.
+            </div>
+          </div>
+        </details>
+      </article>
+
+      <!-- Idea 5 -->
+      <article class="idea-card" id="idea-5">
+        <div class="card-top">
+          <div class="card-rank-col" aria-hidden="true"><span class="card-rank-num">5</span></div>
+          <div class="card-main">
+            <span class="card-id">Idea 5 · CLAUDE.md / context hierarchy</span>
+            <h3 class="card-title">CLAUDE.md as living decisions index, auto-updated from CE outputs</h3>
+            <div class="card-chips">
+              <span class="chip chip-axis">CLAUDE.md / context hierarchy</span>
+              <span class="chip chip-conf-high">Conf: High</span>
+              <span class="chip chip-cx-s">Cx: Small</span>
+            </div>
+            <p class="card-description">A section of CLAUDE.md (the dotfiles symlink target, not the repo CLAUDE.md) maintains a running index of active CE decisions — one line per decision, pointing to its Linear issue or plan file. The <code>/ce-compound</code> skill already writes to <code>docs/solutions/</code> after CE sessions; extend this to also append decision entries to a <code>## Active CE Decisions</code> section in CLAUDE.md. Future sessions inherit these decisions without re-reading source artifacts. Context compounds: each session builds on prior decisions rather than starting from scratch. This is the session-continuity mechanism that doesn't require Linear to be configured.</p>
+          </div>
+        </div>
+        <details class="card-details">
+          <summary>Basis · Rationale · Downsides</summary>
+          <div class="details-body">
+            <div class="detail-row">
+              <div class="detail-label">Basis</div>
+              <div class="detail-value"><span class="basis-tag direct">direct</span><code>/ce-compound</code> skill already writes to <code>docs/solutions/</code> with YAML frontmatter — same pattern, different target. Multi-repo CLAUDE.md hierarchy (external: karun.me, 2026): org > team > repo layers; one-line descriptions prevent drift. The CLAUDE.md at Athian is a symlink to <code>/Users/doryweiss/dotfiles/CLAUDE-work.md</code> — editing the real file rather than the symlink is the known-solution pattern.</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Rationale</div>
+              <div class="detail-value">CLAUDE.md is loaded at every session start — it's the highest-leverage location for context that needs to be available without retrieval. Decisions written there are free at session start; decisions in Linear require an MCP query. This is the fallback continuity mechanism that works even when Linear isn't configured correctly.</div>
+            </div>
+            <div class="downside-note">
+              <div class="detail-label">Downsides</div>
+              CLAUDE.md grows without pruning, and stale decisions are invisible (there's no "this was superseded by" mechanism unless one is built). The symlink issue means the write target must be resolved at automation time. Also: this is AI context, not human context — team members don't benefit from CLAUDE.md entries the way they benefit from Linear issues.
+            </div>
+          </div>
+        </details>
+      </article>
+
+      <!-- Idea 6 -->
+      <article class="idea-card" id="idea-6">
+        <div class="card-top">
+          <div class="card-rank-col" aria-hidden="true"><span class="card-rank-num">6</span></div>
+          <div class="card-main">
+            <span class="card-id">Idea 6 · Discoverability</span>
+            <h3 class="card-title">CE artifact YAML frontmatter + automated CE-INDEX.md</h3>
+            <div class="card-chips">
+              <span class="chip chip-axis">Discoverability</span>
+              <span class="chip chip-conf-high">Conf: High</span>
+              <span class="chip chip-cx-s">Cx: Small</span>
+            </div>
+            <p class="card-description">Add YAML frontmatter to every CE artifact with fields: <code>status</code>, <code>linear_issue</code>, <code>jira_ticket</code>, <code>axes</code>, <code>session_id</code>, <code>created</code>. A post-write hook (or the CE skill itself) maintains a <code>docs/CE-INDEX.md</code> — one line per artifact, organized by subject area and date. The index is the discoverability surface; the artifacts are the source. The session ID field links all artifacts from a single session, making the full session trace queryable. This is the minimum viable discoverability solution: no infrastructure, human-readable, greppable, and an entry point for any future search automation.</p>
+          </div>
+        </div>
+        <details class="card-details">
+          <summary>Basis · Rationale · Downsides</summary>
+          <div class="details-body">
+            <div class="detail-row">
+              <div class="detail-label">Basis</div>
+              <div class="detail-value"><span class="basis-tag direct">direct</span><code>docs/solutions/</code> already uses YAML frontmatter with <code>module</code>, <code>tags</code>, <code>problem_type</code> — the learnings-researcher agent searches by it. The pattern is proven and the tooling (grep-based search) is already in place. Extending frontmatter to ideation/plans/brainstorms is a direct convention extension, not a new pattern.</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Rationale</div>
+              <div class="detail-value">Once all CE artifacts have structured frontmatter, every existing search tool (grep, the learnings researcher, future automation) can query them. The session ID field is the key that enables "show me everything from the session where we planned the compliance pilot" — a query that's currently impossible. CE-INDEX.md is the human-readable entry point that requires no new tooling at all.</div>
+            </div>
+            <div class="downside-note">
+              <div class="detail-label">Downsides</div>
+              HTML ideation files can't have YAML frontmatter in the traditional sense — the frontmatter would need to be in an HTML comment or a visible header section. Plan and brainstorm .md files can use standard frontmatter. CE-INDEX.md requires either a post-write hook or manual maintenance — the value degrades immediately if maintenance is skipped.
+            </div>
+          </div>
+        </details>
+      </article>
+
+      <!-- Idea 7 -->
+      <article class="idea-card" id="idea-7">
+        <div class="card-top">
+          <div class="card-rank-col" aria-hidden="true"><span class="card-rank-num">7</span></div>
+          <div class="card-main">
+            <span class="card-id">Idea 7 · Storage location</span>
+            <h3 class="card-title">Skip local files entirely — write to Linear first</h3>
+            <div class="card-chips">
+              <span class="chip chip-axis">Storage location</span>
+              <span class="chip chip-conf-med">Conf: Medium</span>
+              <span class="chip chip-cx-m">Cx: Medium</span>
+            </div>
+            <p class="card-description">The most radical inversion: CE skills write a Linear issue as the primary artifact. No local file is created. The issue description holds the plan; comments hold decisions and next steps; attachments hold any rendered CE output if needed. The local HTML/MD can be generated on demand from the Linear issue. This eliminates file management, the git-tracking question, the discoverability problem, and the docs/ maintenance problem in one move. The constraint is that it requires the Linear MCP to be reliably available and correctly configured — the known silent-failure risk must be solved first.</p>
+          </div>
+        </div>
+        <details class="card-details">
+          <summary>Basis · Rationale · Downsides</summary>
+          <div class="details-body">
+            <div class="detail-row">
+              <div class="detail-label">Basis</div>
+              <div class="detail-value"><span class="basis-tag reasoned">reasoned</span>Breaking the assumption: "CE outputs need to be stored somewhere." Issue trackers already have the five capabilities needed (persistent state, ownership, permissions, history, webhooks). Linear's search is better than <code>find docs/ideation/ -name '*.html'</code>. The local file is a rendering artifact, not the source of truth.</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Rationale</div>
+              <div class="detail-value">This is the cleanest expression of the zero-state/transience frame. If it works, it's the simplest possible architecture. Zero file management, zero git-tracking complexity, zero discoverability infrastructure. Linear's existing capabilities (search, assignment, linking, webhooks) replace every custom solution needed for the file-based approach.</div>
+            </div>
+            <div class="downside-note">
+              <div class="detail-label">Downsides</div>
+              High dependency on Linear MCP reliability — the known silent-fallback failure mode is a blocker here, not just a nuisance. CE skills need to be modified to write to Linear rather than local files, which is a more significant change than any other idea on this list. HTML rendering is Linear-native only (limited formatting vs a full HTML artifact). Rated medium confidence because the MCP dependency risk is real.
+            </div>
+          </div>
+        </details>
+      </article>
+
+    </div><!-- /.idea-cards -->
+  </section>
+
+  <!-- ── Rejection Summary ── -->
+  <section aria-labelledby="rejection-heading">
+    <h2 id="rejection-heading" class="section-heading">Rejection Summary</h2>
+    <div style="overflow-x:auto;">
+      <table class="rejection-table">
+        <thead>
+          <tr>
+            <th scope="col">Idea</th>
+            <th scope="col">Reason Rejected</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>24-hour TTL for CE artifacts</td><td>Enforcement mechanism unclear; interesting as a policy attached to other ideas, not viable as a standalone idea. The forcing-function logic is captured in ideas 2 and 3.</td></tr>
+          <tr><td>PR model for CE plans</td><td>Depends on git-tracking (idea 1) as a prerequisite; adds PR overhead (branches, reviews, merges) for a ~10-person team where that friction likely outweighs the benefit.</td></tr>
+          <tr><td>Git branching as CE vocabulary</td><td>Below meeting floor — a mental model / naming convention with no actionable mechanism. Vocabulary alone doesn't change behavior.</td></tr>
+          <tr><td>Building permit model</td><td>Duplicate framing of ideas 2 and 7 — the "CE doc activates the workflow then becomes a record" logic is already captured there.</td></tr>
+          <tr><td>Podcast episode / publish-to-multiple-channels</td><td>Duplicate of idea 4's mechanism. X6 is the framing; I6/idea 4 is the actionable pipeline.</td></tr>
+          <tr><td>CE skills routing to wrong tracker (silent fallback)</td><td>Existing documented bug, not a new direction. Addressed in <code>docs/solutions/tooling-decisions/linear-mcp-compound-engineering-skills.md</code> — fix is a config change, not an ideation topic.</td></tr>
+          <tr><td>Automate HANDOFF.md from /done</td><td>Superseded by idea 3 — replacing HANDOFF.md with a Linear issue is the cleaner solution. Automating a file that should be eliminated is the wrong direction.</td></tr>
+          <tr><td>Remove artifact type distinction (one CE thread)</td><td>Absorbed into idea 2. The "one artifact at multiple lifecycle stages" logic is the Linear-as-spine model.</td></tr>
+          <tr><td>Invert storage (transitional — write to Linear first, local file as cache)</td><td>Superseded by idea 7 (more complete inversion). The transitional version adds complexity without commitment.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div><!-- /.page-wrap -->
+
+<footer class="composition-signal" style="max-width:860px; margin-inline:auto; padding-left:2rem; padding-right:2rem;">
+  Composed 2026-06-23 by ce-ideate · elsewhere-software mode · Athian CE Lifecycle Automation
+</footer>
+
+</body>
+</html>

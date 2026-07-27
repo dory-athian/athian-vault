@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ideation: CE Planning Storage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f9fafb;
+    --surface: #ffffff;
+    --border: #e5e7eb;
+    --border-soft: #f3f4f6;
+    --text: #111827;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --accent: #166534;
+    --accent-mid: #16a34a;
+    --accent-soft: #f0fdf4;
+    --accent-text: #14532d;
+    --warn-soft: #fefce8;
+    --warn-text: #713f12;
+    --info-soft: #eff6ff;
+    --info-text: #1e3a5f;
+    --cut-soft: #fef2f2;
+    --cut-text: #7f1d1d;
+    --mono: 'JetBrains Mono', 'Fira Mono', monospace;
+    --sans: 'Inter', system-ui, sans-serif;
+    --radius: 8px;
+    --radius-sm: 4px;
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  .page { max-width: 940px; margin-inline: auto; padding: 3rem 2rem 6rem; }
+
+  .doc-header { margin-bottom: 3rem; }
+  .doc-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent-mid);
+    margin-bottom: .5rem;
+  }
+  .doc-title {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -.02em;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+  .doc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-bottom: 1.25rem;
+  }
+  .meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    font-size: 12px;
+    font-weight: 500;
+    background: var(--border-soft);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 2px 10px;
+    color: var(--text-secondary);
+  }
+  .meta-chip.mode { background: var(--accent-soft); border-color: #bbf7d0; color: var(--accent-text); }
+
+  .stats-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 2.5rem;
+  }
+  .stat { display: flex; flex-direction: column; min-width: 80px; }
+  .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--accent); line-height: 1; }
+  .stat-label { font-size: 11px; color: var(--text-muted); margin-top: .2rem; text-transform: uppercase; letter-spacing: .04em; }
+
+  section { margin-bottom: 3rem; }
+  h2.section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: .5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .grounding-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  @media (max-width: 640px) { .grounding-grid { grid-template-columns: 1fr; } }
+  .grounding-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.1rem;
+  }
+  .grounding-card h3 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: .6rem;
+  }
+  .grounding-card p, .grounding-card li { font-size: 13px; color: var(--text-secondary); }
+  .grounding-card ul { padding-left: 1.2rem; }
+  .grounding-card li { margin-bottom: .3rem; }
+  .key-insight {
+    grid-column: 1 / -1;
+    background: var(--accent-soft);
+    border: 1px solid #bbf7d0;
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+  }
+  .key-insight h3 { color: var(--accent-text); }
+  .key-insight p { color: var(--accent-text); font-size: 13px; }
+
+  .axes-list { display: flex; flex-direction: column; gap: .4rem; }
+  .axis-item { display: flex; align-items: baseline; gap: .75rem; font-size: 13.5px; }
+  .axis-num { font-size: 11px; font-weight: 700; color: var(--accent-mid); min-width: 1.2rem; }
+  .axis-name { font-weight: 600; color: var(--text); }
+  .axis-desc { color: var(--text-secondary); }
+
+  .idea-jump {
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .idea-jump a {
+    font-size: 13px;
+    color: var(--accent-mid);
+    text-decoration: none;
+    display: flex;
+    align-items: baseline;
+    gap: .5rem;
+  }
+  .idea-jump a:hover { text-decoration: underline; }
+  .jump-rank { font-weight: 700; color: var(--text-muted); font-size: 11px; min-width: 1.4rem; }
+
+  .idea-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem 1.5rem 1.25rem;
+    margin-bottom: 1.25rem;
+    position: relative;
+  }
+  .idea-card:target { border-color: var(--accent-mid); box-shadow: 0 0 0 2px #bbf7d0; }
+
+  .idea-header { display: flex; align-items: flex-start; gap: .75rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .idea-rank-chip {
+    font-size: 11px;
+    font-weight: 700;
+    background: var(--accent-soft);
+    color: var(--accent-text);
+    border: 1px solid #bbf7d0;
+    border-radius: 100px;
+    padding: 2px 8px;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+  .idea-title { font-size: 1.1rem; font-weight: 700; line-height: 1.3; letter-spacing: -.01em; color: var(--text); }
+  .idea-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1rem; }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 100px;
+    padding: 2px 9px;
+    border: 1px solid transparent;
+  }
+  .chip.axis { background: var(--info-soft); color: var(--info-text); border-color: #bfdbfe; }
+  .chip.conf-high { background: var(--accent-soft); color: var(--accent-text); border-color: #bbf7d0; }
+  .chip.conf-med { background: var(--warn-soft); color: var(--warn-text); border-color: #fde68a; }
+  .chip.cx-low { background: var(--border-soft); color: var(--text-secondary); border-color: var(--border); }
+  .chip.cx-med { background: #fefce8; color: #713f12; border-color: #fde68a; }
+
+  .idea-description { font-size: 14.5px; line-height: 1.65; color: var(--text); margin-bottom: 1.1rem; max-width: 72ch; }
+
+  .idea-fields { display: flex; flex-direction: column; gap: .75rem; }
+  .field { display: grid; grid-template-columns: 130px 1fr; gap: .5rem; align-items: baseline; }
+  .field-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding-top: .15rem;
+  }
+  .field-value { font-size: 13.5px; color: var(--text-secondary); line-height: 1.55; }
+  .field-value code {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--border-soft);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1px 5px;
+    color: var(--text);
+  }
+
+  .basis-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-right: 4px;
+  }
+  .basis-tag.direct { background: var(--accent-soft); color: var(--accent-text); }
+  .basis-tag.external { background: var(--info-soft); color: var(--info-text); }
+  .basis-tag.reasoned { background: var(--warn-soft); color: var(--warn-text); }
+
+  .meeting-test {
+    margin-top: 1rem;
+    padding: .75rem 1rem;
+    background: var(--border-soft);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-style: italic;
+    border-left: 3px solid var(--border);
+  }
+
+  .diagram-wrap { margin: 1.25rem 0; overflow-x: auto; }
+  .diagram-caption { font-size: 12px; color: var(--text-muted); margin-top: .4rem; font-style: italic; }
+
+  .rejection-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: .5rem .75rem;
+    border-bottom: 2px solid var(--border);
+  }
+  td {
+    padding: .6rem .75rem;
+    border-bottom: 1px solid var(--border-soft);
+    color: var(--text-secondary);
+    vertical-align: top;
+  }
+  td:first-child { font-weight: 500; color: var(--text); white-space: nowrap; }
+  tr:last-child td { border-bottom: none; }
+  .cut-reason { color: var(--cut-text); font-size: 12px; }
+
+  footer.composition-signal {
+    margin-top: 4rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  footer code { font-family: var(--mono); font-size: 11px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="doc-header">
+    <p class="doc-eyebrow">CE Ideation</p>
+    <h1 class="doc-title">Where should CE planning outputs live across multiple repos?</h1>
+    <div class="doc-meta">
+      <span class="meta-chip"><time datetime="2026-06-23">2026-06-23</time></span>
+      <span class="meta-chip">ce-planning-storage</span>
+      <span class="meta-chip mode">repo-grounded</span>
+    </div>
+    <div class="stats-strip">
+      <div class="stat"><span class="stat-value">8</span><span class="stat-label">Survivors</span></div>
+      <div class="stat"><span class="stat-value">16</span><span class="stat-label">Raw candidates</span></div>
+      <div class="stat"><span class="stat-value">8</span><span class="stat-label">Cut</span></div>
+      <div class="stat"><span class="stat-value">5</span><span class="stat-label">Topic axes</span></div>
+      <div class="stat"><span class="stat-value">2</span><span class="stat-label">Frames</span></div>
+    </div>
+  </header>
+
+  <section id="grounding">
+    <h2 class="section-title">Grounding Context</h2>
+    <div class="grounding-grid">
+      <div class="grounding-card">
+        <h3>Organization</h3>
+        <p>Athian, growth-stage ag tech. VP of Engineering + ~10 engineers. Active AI adoption initiative — this infrastructure decision is a cultural demonstration, not just a tooling choice.</p>
+      </div>
+      <div class="grounding-card">
+        <h3>Repos</h3>
+        <ul>
+          <li><code>platform</code> — monorepo backend</li>
+          <li><code>sus-plat</code> — main frontend</li>
+          <li><code>duita</code> — separate repo</li>
+        </ul>
+        <p style="margin-top:.5rem">Parent <code>/Athian/</code> dir is NOT a git repo. Existing convention: <code>docs/solutions/</code> per-repo with YAML frontmatter.</p>
+      </div>
+      <div class="grounding-card">
+        <h3>Tools in play</h3>
+        <ul>
+          <li>GitHub (Athian-ai org)</li>
+          <li>Claude Code</li>
+          <li>Linear (Compliance), Asana</li>
+          <li>n8n (automation)</li>
+          <li>Granola, Figma</li>
+        </ul>
+      </div>
+      <div class="grounding-card">
+        <h3>Already evaluated (ruled out)</h3>
+        <ul>
+          <li>Meta-Repo / Repo-of-Repos</li>
+          <li>Spine Pattern (CLAUDE.md hierarchy + <code>_tasks/</code>)</li>
+          <li>Planning Repo (parent git ignoring nested)</li>
+          <li>Virtual Monorepo (<code>.repos</code> manifest)</li>
+        </ul>
+      </div>
+      <div class="grounding-card">
+        <h3>External research</h3>
+        <ul>
+          <li><strong>Context Engineering (arXiv 2604.04258):</strong> formalization dramatically improves first-pass AI quality</li>
+          <li><strong>Production Bible (film):</strong> stable constitutional layer vs. operational scripts — collapsing both makes both worse</li>
+          <li><strong>Multi-jurisdictional coordination (ICS/urban):</strong> explicit scope declarations are what make multi-authority coordination work</li>
+          <li><strong>Lab notebooks:</strong> immutability of the record is the value — software docs overwrite it away</li>
+          <li><strong>Freight manifest + event log:</strong> what's supposed to be true vs. what actually happened must be separate files</li>
+        </ul>
+      </div>
+      <div class="key-insight">
+        <h3>Key synthesis insight</h3>
+        <p>"The real problem isn't storage — it's identity. A CE planning doc that touches two repos has no single 'owner' repo, which means any single-repo placement is a naming convention, not a fact. The tension between low-maintenance and high-discoverability is the actual design constraint, and it doesn't have a clean resolution — just tradeoffs to rank."</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="axes">
+    <h2 class="section-title">Topic Axes</h2>
+    <div class="axes-list">
+      <div class="axis-item"><span class="axis-num">1</span><span class="axis-name">Storage location</span><span class="axis-desc">— which repo(s) do CE outputs physically live in</span></div>
+      <div class="axis-item"><span class="axis-num">2</span><span class="axis-name">CLAUDE.md / context hierarchy</span><span class="axis-desc">— how AI context composes across repos for cross-repo work</span></div>
+      <div class="axis-item"><span class="axis-num">3</span><span class="axis-name">Session continuity</span><span class="axis-desc">— how planning artifacts survive session boundaries spanning repos</span></div>
+      <div class="axis-item"><span class="axis-num">4</span><span class="axis-name">Discoverability</span><span class="axis-desc">— how team members find and reference cross-repo planning docs</span></div>
+      <div class="axis-item"><span class="axis-num">5</span><span class="axis-name">Artifact lifecycle</span><span class="axis-desc">— how CE outputs transition to issues, decisions, and code</span></div>
+    </div>
+  </section>
+
+  <section id="ideas">
+    <h2 class="section-title">Ranked Ideas</h2>
+
+    <nav class="idea-jump" aria-label="Idea navigation">
+      <a href="#idea-1"><span class="jump-rank">1.</span>The Planning Ledger (MANIFEST + LEDGER)</a>
+      <a href="#idea-2"><span class="jump-rank">2.</span>The Inverse PR: Decision First, Code Second</a>
+      <a href="#idea-3"><span class="jump-rank">3.</span>Split the Constitutional Layer from the Operational Layer</a>
+      <a href="#idea-4"><span class="jump-rank">4.</span>Repos Are the Wrong Unit — Own the Intervention, Not the File</a>
+      <a href="#idea-5"><span class="jump-rank">5.</span>Dead-Letter Context: The Failure Archive</a>
+      <a href="#idea-6"><span class="jump-rank">6.</span>Scope Declarations as First-Class Artifacts</a>
+      <a href="#idea-7"><span class="jump-rank">7.</span>TTL-Tagged Decision Records</a>
+      <a href="#idea-8"><span class="jump-rank">8.</span>Engineers Aren't the Authors — CE Artifacts Are Co-Committed with Claude</a>
+    </nav>
+
+    <!-- Idea 1 -->
+    <article class="idea-card" id="idea-1">
+      <div class="idea-header">
+        <span class="idea-rank-chip">1</span>
+        <h3 class="idea-title">The Planning Ledger (MANIFEST + LEDGER)</h3>
+      </div>
+      <div class="idea-chips">
+        <span class="chip axis">Storage location</span>
+        <span class="chip conf-high">High confidence</span>
+        <span class="chip cx-med">Medium complexity</span>
+      </div>
+      <p class="idea-description">A dedicated <code>athian-decisions</code> repository stores exactly two files: <code>MANIFEST.yaml</code> — the current authoritative state of all cross-repo decisions, edited deliberately with PR review — and <code>LEDGER.log</code> — a timestamped append-only record of every planning session, decision, and reversal, never edited, only appended. PRs in all other repos reference a LEDGER entry ID. The manifest is what's supposed to be true. The ledger is what actually happened. They are never the same file.</p>
+
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 560 200" width="560" height="200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Manifest and Ledger split">
+          <defs>
+            <marker id="arw" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <path d="M0,0 L8,3 L0,6 Z" fill="#6b7280"/>
+            </marker>
+          </defs>
+          <rect x="20" y="25" width="170" height="150" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+          <text x="105" y="47" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#14532d" text-anchor="middle">athian-decisions</text>
+          <rect x="36" y="58" width="138" height="40" rx="5" fill="#fff" stroke="#86efac" stroke-width="1"/>
+          <text x="105" y="75" font-family="JetBrains Mono,monospace" font-size="11" fill="#14532d" text-anchor="middle">MANIFEST.yaml</text>
+          <text x="105" y="90" font-family="Inter,sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">mutable · PR-reviewed</text>
+          <rect x="36" y="112" width="138" height="40" rx="5" fill="#fff" stroke="#a7f3d0" stroke-width="1"/>
+          <text x="105" y="129" font-family="JetBrains Mono,monospace" font-size="11" fill="#065f46" text-anchor="middle">LEDGER.log</text>
+          <text x="105" y="144" font-family="Inter,sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">append-only · never edited</text>
+          <rect x="248" y="45" width="130" height="38" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+          <text x="313" y="62" font-family="Inter,sans-serif" font-size="12" font-weight="600" fill="#1e3a5f" text-anchor="middle">platform PR</text>
+          <text x="313" y="76" font-family="Inter,sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">refs: LEDGER-0047</text>
+          <rect x="248" y="115" width="130" height="38" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+          <text x="313" y="132" font-family="Inter,sans-serif" font-size="12" font-weight="600" fill="#1e3a5f" text-anchor="middle">sus-plat PR</text>
+          <text x="313" y="146" font-family="Inter,sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">refs: LEDGER-0047</text>
+          <line x1="192" y1="132" x2="246" y2="132" stroke="#6b7280" stroke-width="1.2" marker-end="url(#arw)"/>
+          <line x1="192" y1="132" x2="220" y2="64" stroke="#6b7280" stroke-width="1" stroke-dasharray="4,3"/>
+          <line x1="220" y1="64" x2="246" y2="64" stroke="#6b7280" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arw)"/>
+          <rect x="428" y="72" width="118" height="40" rx="6" fill="#fefce8" stroke="#fde68a" stroke-width="1.5"/>
+          <text x="487" y="90" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#713f12" text-anchor="middle">Claude Code</text>
+          <text x="487" y="104" font-family="Inter,sans-serif" font-size="10" fill="#92400e" text-anchor="middle">reads MANIFEST</text>
+          <line x1="380" y1="78" x2="426" y2="85" stroke="#d97706" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arw)"/>
+        </svg>
+        <p class="diagram-caption">Directional sketch — MANIFEST.yaml is the plan; LEDGER.log is the record. PRs reference LEDGER entries; Claude Code reads MANIFEST at session start.</p>
+      </div>
+
+      <div class="idea-fields">
+        <div class="field">
+          <span class="field-label">Basis</span>
+          <span class="field-value"><span class="basis-tag external">external</span>Freight logistics manifest + event log pattern — what's supposed to be true vs. what actually happened must be separate artifacts. The grounding research names this split explicitly as the most directly applicable external finding.</span>
+        </div>
+        <div class="field">
+          <span class="field-label">Why it matters</span>
+          <span class="field-value">Resolves the identity problem by refusing to solve it: no single repo "owns" a cross-repo decision — the ledger records it happened, the manifest declares what's currently true. At 10 engineers the split is lightweight; at 100 it's the only architecture that scales without losing history.</span>
+        </div>
+        <div class="field">
+          <span class="field-label">Downsides</span>
+          <span class="field-value">Requires maintaining a new dedicated repo. MANIFEST and LEDGER can drift — knowing when the MANIFEST is stale relative to the LEDGER needs a check. Some overhead to establish the PR reference convention across existing repos.</span>
+        </div>
+      </div>
+      <div class="meeting-test">"So the MANIFEST and LEDGER would diverge by design — how do we know when a MANIFEST entry is stale relative to the LEDGER?"</div>
+    </article>
+
+    <!-- Idea 2 -->
+    <article class="idea-card" id="idea-2">
+      <div class="idea-header">
+        <span class="idea-rank-chip">2</span>
+        <h3 class="idea-title">The Inverse PR: Decision First, Code Second</h3>
+      </div>
+      <div class="idea-chips">
+        <span class="chip axis">Artifact lifecycle</span>
+        <span class="chip conf-high">High confidence</span>
+        <span class="chip cx-med">Medium complexity</span>
+      </div>
+      <p class="idea-description">Engineers open a Decision Record (DR) in <code>athian-decisions</code> before writing code. The DR gets a stable ID (<code>DR-0047</code>). Pull requests in <code>platform</code> or <code>sus-plat</code> include <code>dr: DR-0047</code> in their description. A GitHub Action validates that the DR exists and is in an approved state before the PR can merge. Code is the implementation of a decision. The decision is the primary artifact.</p>
+
+      <div class="idea-fields">
+        <div class="field">
+          <span class="field-label">Basis</span>
+          <span class="field-value"><span class="basis-tag reasoned">reasoned</span>The Production Bible pattern (film) separates constitutional layer from operational scripts. Current engineering practice does this backwards — PRs describe what code does; decisions are inferred after the fact. Inverting the dependency makes planning the gate, not the artifact that gets written if time permits.</span>
+        </div>
+        <div class="field">
+          <span class="field-label">Why it matters</span>
+          <span class="field-value">Gives CE artifacts actual enforcement leverage in the deployment pipeline rather than advisory status. For Athian's AI adoption initiative: Claude-assisted DRs gate code that skipped planning — the AI has visible teeth. Engineers feel the structure rather than having it suggested to them.</span>
+        </div>
+        <div class="field">
+          <span class="field-label">Downsides</span>
+          <span class="field-value">Most likely failure mode: engineers route around it on hotfixes or "quick" changes, which then become habit. Requires careful scoping of when a DR is required vs. optional to prevent friction from outweighing benefit. Needs a lightweight DR format to stay viable under deadline pressure.</span>
+        </div>
+      </div>
+      <div class="meeting-test">"If we required a DR before any cross-repo PR, how long before the first engineer routes around it — and does that tell us the rule is wrong, or just that adoption takes work?"</div>
+    </article>
+
+    <!-- Idea 3 -->
+    <article class="idea-card" id="idea-3">
+      <div class="idea-header">
+        <span class="idea-rank-chip">3</span>
+        <h3 class="idea-title">Split the Constitutional Layer from the Operational Layer</h3>
+      </div>
+      <div class="idea-chips">
+        <span class="chip axis">CLAUDE.md / context hierarchy</span>
+        <span class="chip conf-high">High confidence</span>
+        <span class="chip cx-low">Low complexity</span>
+      </div>
+      <p class="idea-description">Athian maintains one <code>CONSTITUTION.md</code> per org — stored in a shared repo, referenced via <code>@path</code> include in each repo's CLAUDE.md — that holds stable architectural commitments, team conventions, and design system decisions. Daily CE outputs (plans, sessions, decisions) live in per-repo <code>ce/</code> directories and never touch the constitutional layer. Constitutional changes require explicit team review; operational CE outputs do not. CLAUDE.md hierarchies currently collapse two different change rates into one file, making both worse.</p>
+
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 480 165" width="480" height="165" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Constitutional vs operational layer split">
+          <defs>
+            <marker id="arw2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <path d="M0,0 L8,3 L0,6 Z" fill="#6b7280"/>
+            </marker>
+          </defs>
+          <rect x="20" y="18" width="180" height="52" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+          <text x="110" y="38" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#14532d" text-anchor="middle">CONSTITUTION.md</text>
+          <text x="110" y="53" font-family="Inter,sans-serif" font-size="11" fill="#16a34a" text-anchor="middle">stable · architectural commitments</text>
+          <text x="110" y="63" font-family="Inter,sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">PR review required</text>
+          <rect x="20" y="88" width="180" height="52" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+          <text x="110" y="108" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#1e3a5f" text-anchor="middle">ce/ per repo</text>
+          <text x="110" y="123" font-family="Inter,sans-serif" font-size="11" fill="#3b82f6" text-anchor="middle">operational · session outputs</text>
+          <text x="110" y="133" font-family="Inter,sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">frequently updated · no gating</text>
+          <line x1="202" y1="44" x2="258" y2="44" stroke="#6b7280" stroke-width="1.2" marker-end="url(#arw2)"/>
+          <text x="230" y="39" font-family="Inter,sans-serif" font-size="10" fill="#9ca3af" text-anchor="middle">@include</text>
+          <line x1="202" y1="114" x2="258" y2="114" stroke="#6b7280" stroke-width="1.2" marker-end="url(#arw2)"/>
+          <text x="230" y="109" font-family="Inter,sans-serif" font-size="10" fill="#9ca3af" text-anchor="middle">feeds</text>
+          <rect x="260" y="28" width="190" height="112" rx="8" fill="#fefce8" stroke="#fde68a" stroke-width="1.5"/>
+          <text x="355" y="50" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#713f12" text-anchor="middle">CLAUDE.md (per repo)</text>
+          <text x="355" y="68" font-family="Inter,sans-serif" font-size="11" fill="#92400e" text-anchor="middle">Composed from both layers</text>
+          <text x="355" y="88" font-family="Inter,sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">Constitutional section: stable</text>
+          <text x="355" y="103" font-family="Inter,sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">Operational section: current session</text>
+          <text x="355" y="118" font-family="Inter,sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">Different change cadences</text>
+        </svg>
+        <p class="diagram-caption">Directional sketch — two change rates, two files. CLAUDE.md composes from both; each layer is authored and reviewed at its own cadence.</p>
+      </div>
+
+      <div class="idea-fields">
+        <div class="field">
+          <span class="field-label">Basis</span>
+          <span class="field-value"><span class="basis-tag external">external</span>Film Production Bible pattern — constitutional (world-building rules, rarely touched) vs. operational scripts (daily work). Confirmed by Context Engineering paper finding that formalized, structured context improves first-pass AI quality.</span>
+        </div>
+        <div class="field">
+          <span class="field-label">Why it matters</span>
+          <span class="field-value">Engineers who want Athian's non-negotiable architecture decisions shouldn't have to filter through last Tuesday's session notes. Claude Code sessions reading only constitutional context get cleaner first-pass outputs on stable design questions. The split also makes architectural drift visible: any operational artifact that contradicts the constitution is a named conflict, not invisible.</span>
+        </div>
+        <div class="field">
+          <span class="field-label">Downsides</span>
+          <span class="field-value">Someone must maintain CONSTITUTION.md and make judgment calls about what's constitutional vs. operational — the line isn't always obvious. Teams tend to over-promote things to constitutional status early, inflating what was meant to be stable.</span>
+        </div>
+      </div>
+      <div class="meeting-test">"What's the difference between a constitutional decision and an operational one — can we name three examples of each for Athian right now?"</div>
+    </article>
+
+    <!-- Idea 4 -->
+    <article class="idea-card" id="idea-4">
+      <div class="idea-header">
+        <span class="idea-rank-chip">4</span>
+        <h3 class="idea-title">Repos Are the Wrong Unit — Own the Intervention, Not the File</h3>
+      </div>
+      <div class="idea-chips">
+        <span class="chip axis">Storage location</span>
+        <span class="chip axis">Discoverability</span>
+        <span class="chip conf-high">High confidence</span>
+        <span class="chip cx-low">Low complexity</span>
+      </div>
+      <p class="idea-description">CE planning doesn't belong to a repo; it belongs to an <em>intervention</em> — the cross-cutting change that happens to touch multiple repos. Instead of routing artifacts by repo, Athian routes them by Linear issue ID, which becomes the canonical home. Each repo gets a thin <code>ce/</code> pointer file ("see ATH-1234") — no content duplication, no ownership ambiguity. Finding a CE artifact means searching Linear, not the filesystem.</p>
+
+      <div class="idea-fields">
+        <div class="field">
+          <span class="field-label">Basis</span>
+          <span class="field-value"><span class="basis-tag direct">direct</span>The synthesis insight identifies that "a CE doc that touches two repos has no single 'owner' repo — any single-repo placement is a naming convention, not a fact." Linear is already Athian's system of record for Compliance work; extending that identity to CE artifacts reuses existing muscle memory rather than introducing a new convention.</span>
+        </div>
+        <div class="field">
+          <span class="field-label">Why it matters</span>
+          <span class="field-value">Dissolves the placement debate entirely. "Where does this live?" has a non-arbitrary answer: wherever the work lives. Pointer files in each repo satisfy the "CE artifacts must live in a repo" constraint without requiring content duplication. Discoverability comes from Linear search, not a file convention everyone has to remember and maintain.</span>
+        </div>
+        <div class="field">
+          <span class="field-label">Downsides</span>
+          <span class="field-value">Depends on Linear's availability and search quality. If a CE artifact needs to be read by Claude Code during a session, fetching it from Linear requires an MCP call rather than a local file read — pointer files alone don't give Claude Code the content, only a reference.</span>
+        </div>
+      </div>
+      <div class="meeting-test">"Should we stop filing CE outputs in repos at all and make Linear the canonical home, with pointer files in each repo satisfying the git-residence requirement?"</div>
+    </article>
+
+    <!-- Idea 5 -->
+    <article class="idea-card" id="idea-5">
+      <div class="idea-header">
+        <span class="idea-rank-chip">5</span>
+        <h3 class="idea-title">Dead-Letter Context: The Failure Archive</h3>
+      </div>
+      <div class="idea-chips">
+        <span class="chip axis">Session continuity</span>
+        <span class="chip conf-med">Medium confidence</span>
+        <span class="chip cx-low">Low complexity</span>
+      </div>
+      <p class="idea-description">Every ruled-out approach, abandoned plan, and superseded decision gets committed to a <code>docs/dead-letters/</code> directory in <code>athian-decisions</code> with mandatory frontmatter: <code>killed_by: DR-0031</code>, <code>reason:</code>, <code>date:</code>. Claude Code, when beginning a new planning session, reads the dead-letter archive to avoid proposing approaches the team has already ruled out. The negative space is the context.</p>
+
+      <div class="idea-fields">
+        <div class="field">
+          <span class="field-label">Basis</span>
+          <span class="field-value"><span class="basis-tag reasoned">reasoned</span>The grounding itself lists four evaluated-and-rejected patterns (meta-repo, spine, planning repo, virtual monorepo) that currently live only in the memory of whoever was in the room. If those rejections had been committed as dead letters, the next session would start with them as context. A system that only records what's true now loses the most valuable planning signal: what was tried and why it failed.</span>
+        </div>
+        <div class="field">
+          <span class="field-label">Why it matters</span>
+          <span class="field-value">At Athian's stage, institutional memory is thin. Dead letters make the negative space permanent and retrievable — for Claude Code and for humans. This is the cultural demonstration the AI adoption initiative needs: the system knows what the team already tried, session boundaries don't erase it, and new engineers don't re-propose rejected approaches.</span>
+        </div>
+        <div class="field">
+          <span class="field-label">Downsides</span>
+          <span class="field-value">Risk of becoming a graveyard nobody reads. Value depends on Claude Code surfacing dead letters at the right moment — not dumping them wholesale into context. Requires discipline to write dead letters at decision time rather than retroactively.</span>
+        </div>
+      </div>
+      <div class="meeting-test">"What stops dead letters from becoming a graveyard — how does Claude know when to surface them versus when they're noise?"</div>
+    </article>
+
+    <!-- Idea 6 -->
+    <article class="idea-card" id="idea-6">
+      <div class="idea-header">
+        <span class="idea-rank-chip">6</span>
+        <h3 class="idea-title">Scope Declarations as First-Class Artifacts</h3>
+      </div>
+      <div class="idea-chips">
+        <span class="chip axis">Session continuity</span>
+        <span class="chip conf-med">Medium confidence</span>
+        <span class="chip cx-low">Low complexity</span>
+      </div>
+      <p class="idea-description">Before any cross-repo CE session begins, a <code>ce/scope.md</code> is committed that explicitly declares which repos are in scope, what decisions require cross-repo sign-off vs. local discretion, and who the session coordinator is. The scope declaration is the artifact that makes cross-repo work tractable. Sessions without a scope declaration are by convention single-repo and require no coordination.</p>
+
+      <div class="idea-fields">
+        <div class="field">
+          <span class="field-label">Basis</span>
+          <span class="field-value"><span class="basis-tag external">external</span>Multi-jurisdictional coordination research (ICS, urban planning) — explicit scope declarations are what make multi-authority coordination work. Software planning rarely does this, defaulting to informal designations that only the people in the room understand.</span>
+        </div>
+        <div class="field">
+          <span class="field-label">Why it matters</span>
+          <span class="field-value">Makes cross-repo work formally tractable instead of informally understood. A new session reads <code>ce/scope.md</code> and knows immediately what's in scope — solving the cold-start problem concretely. Claude Code can read the scope declaration and decline to modify out-of-scope files, enforcing architecture boundaries without a human gatekeeper.</span>
+        </div>
+        <div class="field">
+          <span class="field-label">Downsides</span>
+          <span class="field-value">Adds ceremony to every cross-repo session — easy to skip under deadline pressure. "Committing a scope declaration first" needs a lightweight enough format to stay viable in fast-moving contexts.</span>
+        </div>
+      </div>
+      <div class="meeting-test">"Should starting a cross-repo feature require committing a scope declaration first — and what's the minimum it needs to say to be genuinely useful?"</div>
+    </article>
+
+    <!-- Idea 7 -->
+    <article class="idea-card" id="idea-7">
+      <div class="idea-header">
+        <span class="idea-rank-chip">7</span>
+        <h3 class="idea-title">TTL-Tagged Decision Records</h3>
+      </div>
+      <div class="idea-chips">
+        <span class="chip axis">Artifact lifecycle</span>
+        <span class="chip conf-med">Medium confidence</span>
+        <span class="chip cx-low">Low complexity</span>
+      </div>
+      <p class="idea-description">Every CE output gets a frontmatter field: <code>expires: 90d</code>. An n8n workflow (which Athian already runs) scans all repos nightly, flags expired artifacts as issues in Linear, and moves them to <code>docs/solutions/archived/</code>. Active planning docs are, by definition, recent. Stale architecture decisions are surfaced as tech debt rather than silently rotting.</p>
+
+      <div class="idea-fields">
+        <div class="field">
+          <span class="field-label">Basis</span>
+          <span class="field-value"><span class="basis-tag direct">direct</span>Athian's existing n8n + Linear toolchain is real and operational — this is a new workflow built from existing infrastructure, not new tool adoption. <span class="basis-tag external">external</span>Freight manifest/event log split: the manifest (what's currently true) must be actively maintained; expiry enforces that discipline rather than relying on hope.</span>
+        </div>
+        <div class="field">
+          <span class="field-label">Why it matters</span>
+          <span class="field-value">Athian's <code>docs/solutions/</code> files have no lifecycle. A solution documented during Series A will sit there through Series B looking authoritative. Forced expiry makes the team either recommit to a decision or acknowledge it's no longer load-bearing. The infrastructure that survives expiry — the n8n workflow and the archive path — is the institutional memory.</span>
+        </div>
+        <div class="field">
+          <span class="field-label">Downsides</span>
+          <span class="field-value">Expiry timing is arbitrary and will generate noise. Some decisions should never expire (architectural foundations); others expire immediately. Requires triage discipline around the Linear issues generated — without it, the workflow becomes a noise machine.</span>
+        </div>
+      </div>
+      <div class="meeting-test">"If a CE artifact expires, does that mean the decision expired, or just our documentation of it? Those are different problems with different solutions."</div>
+    </article>
+
+    <!-- Idea 8 -->
+    <article class="idea-card" id="idea-8">
+      <div class="idea-header">
+        <span class="idea-rank-chip">8</span>
+        <h3 class="idea-title">Engineers Aren't the Authors — CE Artifacts Are Co-Committed with Claude</h3>
+      </div>
+      <div class="idea-chips">
+        <span class="chip axis">Artifact lifecycle</span>
+        <span class="chip conf-med">Medium confidence</span>
+        <span class="chip cx-low">Low complexity</span>
+      </div>
+      <p class="idea-description">Claude is the primary author of all CE planning artifacts; the engineer is reviewer and committer. The artifact isn't done until Claude produces it and the engineer explicitly signs off — a PR approval or a co-author commit tag. Commit messages name Claude as co-author. This inverts the cultural dynamic: CE artifacts are evidence of AI-human collaboration, not human work with AI assistance.</p>
+
+      <div class="idea-fields">
+        <div class="field">
+          <span class="field-label">Basis</span>
+          <span class="field-value"><span class="basis-tag direct">direct</span>Athian's active AI adoption initiative explicitly prioritizes cultural demonstration over mandates. The VP has stated cultural weight is the primary metric. A workflow where Claude's authorship is visible in the commit history is a daily proof-of-concept that AI-first engineering is real, not aspirational.</span>
+        </div>
+        <div class="field">
+          <span class="field-label">Why it matters</span>
+          <span class="field-value">Reframes CE artifacts from "documentation overhead" to "the artifact Claude and I made together." For a team still deciding whether AI tools are worth the friction, that reframe matters more than the storage location. The commit history becomes the proof that the team is working AI-first — visible to anyone who runs git log.</span>
+        </div>
+        <div class="field">
+          <span class="field-label">Downsides</span>
+          <span class="field-value">Co-authorship attribution is a tactic, not a guarantee of quality or adoption. An engineer who finds the workflow awkward will revert to writing the doc themselves and crediting Claude nominally. The cultural demonstration requires authentic workflow integration, not just a commit message format.</span>
+        </div>
+      </div>
+      <div class="meeting-test">"What if every CE planning doc listed Claude as co-author — would that change how the team thinks about the process, or would it just be a convention we ignore after a week?"</div>
+    </article>
+
+  </section>
+
+  <section id="rejection">
+    <h2 class="section-title">Rejection Summary</h2>
+    <div class="rejection-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Idea</th><th>Reason Rejected</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>A3</td>
+            <td>Artifacts Are Append-Only — Never Overwrite</td>
+            <td class="cut-reason">Near-duplicate of Idea 1 (Planning Ledger); the Ledger does append-only better via the explicit MANIFEST/LEDGER structural split. Append-only without the split accumulates contradictions that degrade AI context quality — basis doesn't engage with that failure mode.</td>
+          </tr>
+          <tr>
+            <td>A4</td>
+            <td>CLAUDE.md Is a Generated Artifact, Not a Source of Truth</td>
+            <td class="cut-reason">Refuted — basis inverts the arXiv paper's actual finding. The paper supports generating well-structured CLAUDE.md files; it doesn't support demoting CLAUDE.md to derived artifact status. YAML fragments being machine-parseable assumes a parser that doesn't exist at Athian.</td>
+          </tr>
+          <tr>
+            <td>A5</td>
+            <td>Discoverability Is a Pull Signal, Not a Search Convention</td>
+            <td class="cut-reason">Push-based systems require maintenance discipline the basis doesn't earn. "Athian uses Slack" establishes a vacuum, not a reason push-based discovery has lower adoption barriers. No dedicated process owner on a 10-person team to sustain it.</td>
+          </tr>
+          <tr>
+            <td>A7</td>
+            <td>The Repo Boundary Is an Accident — Own the Graph Instead</td>
+            <td class="cut-reason">Borrows monorepo benefits without acknowledging the mechanism that delivers them. Implementation gap is too large for a 10-person team without tooling that doesn't exist yet. Better explored as a brainstorm-level direction than an actionable idea now.</td>
+          </tr>
+          <tr>
+            <td>C1</td>
+            <td>The Context Injection API (manifest repo + CLI)</td>
+            <td class="cut-reason">Introduces the same synchronization problem it purports to solve. A manifest repo + CLI is a cache with a different invalidation failure mode, not a solution to cache invalidity.</td>
+          </tr>
+          <tr>
+            <td>C2</td>
+            <td>Git Notes as the Context Layer</td>
+            <td class="cut-reason">Git notes are not reliably propagated across clones and remotes — most hosting providers don't fetch them by default. This transport failure mode is disqualifying for a small team with no dedicated infrastructure ownership.</td>
+          </tr>
+          <tr>
+            <td>C4</td>
+            <td>Session Receipts, Not Documents</td>
+            <td class="cut-reason">Near-duplicate of A3 and Idea 1 (Planning Ledger). "Session receipt" framing is a label, not a structural distinction. What differentiates C4 from the Ledger is only granularity, which the Ledger handles better.</td>
+          </tr>
+          <tr>
+            <td>C5</td>
+            <td>Scope Declarations with Sign-Off Quorum</td>
+            <td class="cut-reason">ICS sign-off quorum exists because lives are at stake and authority is legally distributed — the mechanism doesn't fit Athian's actual barrier (speed and AI adoption). After the quorum mechanism is removed, what remains is Idea 6 (Scope Declarations), which survives on its own merits.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="composition-signal">
+    Composed <time datetime="2026-06-23">2026-06-23</time> by <code>ce-ideate</code> · Frames: assumption-breaking and reframing, constraint-flipping · 16 raw candidates → 8 survivors
+  </footer>
+
+</div>
+</body>
+</html>

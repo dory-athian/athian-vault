@@ -1,0 +1,740 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CE Planning Storage — Cross-Domain Mechanisms</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
+
+  :root {
+    --ground:    #1C2026;
+    --ground-2:  #242B34;
+    --ground-3:  #2E3744;
+    --text:      #E8E4DC;
+    --text-muted:#9BA5B2;
+    --accent:    #E8A629;
+    --accent-2:  #4A7FA5;
+    --border:    rgba(232, 228, 220, 0.10);
+    --border-strong: rgba(232, 228, 220, 0.20);
+
+    --font-display: 'IBM Plex Sans Condensed', system-ui, sans-serif;
+    --font-body:    'Lora', Georgia, serif;
+    --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--ground);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.65;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HEADER ────────────────────────────────────────────────── */
+
+  .header {
+    padding: 3.5rem 2rem 2.5rem;
+    max-width: 860px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--border-strong);
+  }
+
+  .header-meta {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .header-meta span + span::before {
+    content: '·';
+    margin-right: 2rem;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .header-sub {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    max-width: 600px;
+    line-height: 1.6;
+  }
+
+  /* ── CONTEXT BLOCK ─────────────────────────────────────────── */
+
+  .context-block {
+    max-width: 860px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+  }
+
+  .context-inner {
+    background: var(--ground-2);
+    border: 1px solid var(--border-strong);
+    border-left: 3px solid var(--accent-2);
+    padding: 1.25rem 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem 2.5rem;
+  }
+
+  @media (max-width: 600px) {
+    .context-inner { grid-template-columns: 1fr; }
+  }
+
+  .context-group-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    margin-bottom: 0.35rem;
+  }
+
+  .context-list {
+    list-style: none;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+  }
+
+  .context-list li::before {
+    content: '—';
+    margin-right: 0.5rem;
+    opacity: 0.4;
+  }
+
+  /* ── SECTION HEADER ────────────────────────────────────────── */
+
+  .section-header {
+    max-width: 860px;
+    margin: 2.5rem auto 0;
+    padding: 0 2rem;
+  }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.4rem;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  /* ── IDEAS LIST ────────────────────────────────────────────── */
+
+  .ideas {
+    max-width: 860px;
+    margin: 1.5rem auto 3rem;
+    padding: 0 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  /* ── IDEA CARD ─────────────────────────────────────────────── */
+
+  .idea-card {
+    background: var(--ground-2);
+    border: 1px solid var(--border);
+    position: relative;
+    transition: border-color 0.15s ease;
+    overflow: hidden;
+  }
+
+  .idea-card:hover {
+    border-color: var(--border-strong);
+  }
+
+  .idea-card:focus-within {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* Domain stripe — left edge color per source field */
+  .idea-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+  }
+
+  .idea-card[data-domain="er"]::before     { background: #C94040; }
+  .idea-card[data-domain="atc"]::before    { background: #4A9E6B; }
+  .idea-card[data-domain="polaroid"]::before { background: #9B6DD6; }
+  .idea-card[data-domain="authority"]::before { background: #E8A629; }
+  .idea-card[data-domain="planning"]::before { background: #4A7FA5; }
+
+  .idea-inner {
+    padding: 1.5rem 1.75rem 1.5rem 2rem;
+  }
+
+  /* ── CARD TOP ROW ──────────────────────────────────────────── */
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .card-title-group {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .card-domain-tag {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+  }
+
+  .idea-card[data-domain="er"]       .card-domain-tag { color: #C94040; }
+  .idea-card[data-domain="atc"]      .card-domain-tag { color: #4A9E6B; }
+  .idea-card[data-domain="polaroid"] .card-domain-tag { color: #9B6DD6; }
+  .idea-card[data-domain="authority"] .card-domain-tag { color: #E8A629; }
+  .idea-card[data-domain="planning"] .card-domain-tag { color: #4A7FA5; }
+
+  .card-title {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .card-badges {
+    display: flex;
+    gap: 0.4rem;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .badge {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    background: var(--ground-3);
+    border: 1px solid var(--border-strong);
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .badge-axis {
+    color: var(--accent-2);
+    border-color: rgba(74, 127, 165, 0.3);
+    background: rgba(74, 127, 165, 0.08);
+  }
+
+  /* ── CARD BODY ─────────────────────────────────────────────── */
+
+  .card-summary {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+  }
+
+  .card-summary strong {
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  /* ── CARD DETAIL GRID ──────────────────────────────────────── */
+
+  .card-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 580px) {
+    .card-details { grid-template-columns: 1fr; }
+  }
+
+  .detail-block {}
+
+  .detail-label {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+  }
+
+  .detail-text {
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: var(--text-muted);
+  }
+
+  .detail-text em {
+    font-style: italic;
+    color: var(--text);
+  }
+
+  /* Meeting test gets special treatment */
+  .meeting-test-block {
+    grid-column: 1 / -1;
+    padding: 0.65rem 0.85rem;
+    background: var(--ground-3);
+    border-left: 2px solid var(--accent);
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  /* ── REJECTION SUMMARY ─────────────────────────────────────── */
+
+  .rejections {
+    max-width: 860px;
+    margin: 0 auto 3rem;
+    padding: 0 2rem;
+  }
+
+  .rejections-inner {
+    background: var(--ground-2);
+    border: 1px solid var(--border);
+    padding: 1.25rem 1.5rem;
+  }
+
+  .rejection-header {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.01em;
+  }
+
+  .rejection-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+  }
+
+  .rejection-table th {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 0 0.5rem 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .rejection-table td {
+    padding: 0.45rem 0.5rem 0.45rem 0;
+    vertical-align: top;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  .rejection-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .rejection-table td:first-child {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text);
+    white-space: nowrap;
+    padding-right: 1rem;
+  }
+
+  /* ── FOOTER ────────────────────────────────────────────────── */
+
+  .footer {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem 3rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .footer-left {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+  }
+
+  .footer-next {
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-style: italic;
+    color: var(--text-muted);
+  }
+
+  .footer-next strong {
+    font-style: normal;
+    color: var(--accent);
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-meta">
+    <span>Athian Engineering</span>
+    <span>CE Ideation · Cross-Domain Analogies</span>
+    <span>2026-06-23</span>
+    <span>Run a3f7c921</span>
+  </div>
+  <h1>Five mechanisms the <em>other fields</em> already solved.</h1>
+  <p class="header-sub">
+    This session applied cross-domain analogy to a specific structural failure: planning artifacts produced during AI-assisted sessions at Athian vanish at session end, span multiple repos without a home, and never reliably become Linear issues. The prior session identified 8 foundational ideas (git spine, CLAUDE.md hierarchy, plan manifest, etc.). These 5 are additive to those — generated from ER medicine, air traffic control, Hollywood production, and field science — and filtered to the ones that survive at team size 8.
+  </p>
+</header>
+
+<!-- CONTEXT -->
+<section class="context-block" aria-label="Grounding context">
+  <div class="context-inner">
+    <div>
+      <div class="context-group-label">Problem axes covered</div>
+      <ul class="context-list">
+        <li>Storage location — which repo(s) artifacts physically live in</li>
+        <li>Context hierarchy — how AI context composes for cross-repo work</li>
+        <li>Session continuity — how planning artifacts survive session boundaries</li>
+        <li>Discoverability — how team members find cross-repo planning docs</li>
+        <li>Artifact lifecycle — how CE outputs transition to issues and code</li>
+      </ul>
+    </div>
+    <div>
+      <div class="context-group-label">Prior survivors not duplicated here</div>
+      <ul class="context-list">
+        <li>Git init /Athian/ as workspace spine</li>
+        <li>Constitutional vs. operational CLAUDE.md split</li>
+        <li>Cross-repo plan manifest with <code style="font-size:0.78em; opacity:0.7">repos:</code> frontmatter</li>
+        <li>Append-only DECISIONS.md session log</li>
+        <li>Three-tier CLAUDE.md hierarchy</li>
+        <li>n8n → Linear wiring from plan frontmatter</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION LABEL -->
+<div class="section-header">
+  <div class="section-label">Survivors · 5 of 12 candidates</div>
+  <div class="section-title">Cross-domain mechanisms — ranked by confidence</div>
+</div>
+
+<!-- IDEAS -->
+<main class="ideas" aria-label="Ideation survivors">
+
+  <!-- IDEA 1: Strip Board -->
+  <article class="idea-card" data-domain="atc" tabindex="0">
+    <div class="idea-inner">
+      <div class="card-top">
+        <div class="card-title-group">
+          <div class="card-domain-tag">Air traffic control — the strip board</div>
+          <div class="card-title">ACTIVE.md as the canonical sector state</div>
+        </div>
+        <div class="card-badges">
+          <span class="badge badge-axis">session-continuity</span>
+          <span class="badge">reasoned:</span>
+        </div>
+      </div>
+
+      <p class="card-summary">
+        <strong>/Athian/docs/ACTIVE.md is the strip board:</strong> a flat, always-current inventory of every in-progress artifact. One entry per item, with a state snapshot — repos it touches, what happens next, who owns it, link to the artifact. The session discipline is simple and non-negotiable: open a session → read ACTIVE.md first; close a session → update the relevant entries before anything else. An item not on the strip board is considered <em>landed</em> (move to DECISIONS.md or a Linear issue) or <em>abandoned</em> — there is no implicit "I'll remember this."
+      </p>
+      <p class="card-summary" style="margin-top:-0.5rem;">
+        ATC controllers don't track aircraft in memory. If it's not on the strip board, it doesn't exist as live work. The same logic clears the fog of "what was I doing?" without requiring any new tooling — just a file and a commitment that its emptiness means something.
+      </p>
+
+      <div class="card-details">
+        <div class="detail-block">
+          <div class="detail-label">Where it lives</div>
+          <div class="detail-text">/Athian/docs/ACTIVE.md — in the workspace git spine. One file, team-readable.</div>
+        </div>
+        <div class="detail-block">
+          <div class="detail-label">Relationship to prior ideas</div>
+          <div class="detail-text">Additive to DECISIONS.md. That tracks <em>history</em>; this tracks <em>current state</em>. Both are necessary.</div>
+        </div>
+        <div class="meeting-test-block">
+          "So if it's not in ACTIVE.md, we're agreeing it doesn't exist as live work."
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- IDEA 2: Bedside Handoff -->
+  <article class="idea-card" data-domain="er" tabindex="0">
+    <div class="idea-inner">
+      <div class="card-top">
+        <div class="card-title-group">
+          <div class="card-domain-tag">Emergency medicine — bedside handoff</div>
+          <div class="card-title">The active-plan stub at the site of the work</div>
+        </div>
+        <div class="card-badges">
+          <span class="badge badge-axis">session-continuity</span>
+          <span class="badge">external:</span>
+        </div>
+      </div>
+
+      <p class="card-summary">
+        <strong>At session close, write a short structured stub</strong> — not a summary, a <em>handoff note</em> — directly inside the repo directory where active work happened. The file lives at <code style="font-family: var(--font-mono); font-size: 0.82em;">.claude/handoff.md</code> in whichever repo the session touched. It follows a fixed four-field SBAR template: <em>Situation</em> (what problem was being solved), <em>Background</em> (which files and decisions are load-bearing), <em>Assessment</em> (what's unresolved and why), <em>Recommendation</em> (exactly what the next session should do first). The stub is committed to the branch and travels with the work.
+      </p>
+      <p class="card-summary" style="margin-top:-0.5rem;">
+        At session start, the opening ritual is to read any <code style="font-family: var(--font-mono); font-size: 0.82em;">.claude/handoff.md</code> files in the repos being opened, then supersede them as the session produces its own work. ER handoff happens at the bedside — not in a conference room — because context lives at the site of care. A separate session log (DECISIONS.md) requires you to remember to check it. This is impossible to miss because it's in the repo you opened.
+      </p>
+
+      <div class="card-details">
+        <div class="detail-block">
+          <div class="detail-label">Where it lives</div>
+          <div class="detail-text">.claude/handoff.md in the active repo. Committed to the branch. Ephemeral — deleted or superseded at next session open.</div>
+        </div>
+        <div class="detail-block">
+          <div class="detail-label">Relationship to prior ideas</div>
+          <div class="detail-text">Additive to DECISIONS.md (permanent ledger). This is a disposable re-entry card — used once, then superseded. Complements ACTIVE.md: that's workspace-level; this is branch-level.</div>
+        </div>
+        <div class="meeting-test-block">
+          "So it's like a sticky note on the file itself — I'd see it the moment I opened the branch."
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- IDEA 3: Session Polaroid -->
+  <article class="idea-card" data-domain="polaroid" tabindex="0">
+    <div class="idea-inner">
+      <div class="card-top">
+        <div class="card-title-group">
+          <div class="card-domain-tag">Hollywood production — continuity polaroid</div>
+          <div class="card-title">Session polaroid protocol</div>
+        </div>
+        <div class="card-badges">
+          <span class="badge badge-axis">session-continuity</span>
+          <span class="badge">reasoned:</span>
+        </div>
+      </div>
+
+      <p class="card-summary">
+        <strong>At the close of every CE session, write a standardized 5-field snapshot file</strong> to <code style="font-family: var(--font-mono); font-size: 0.82em;">/Athian/.sessions/YYYY-MM-DD-HHMMSS.polaroid.yaml</code>. Fields: <em>last_artifact</em> (path), <em>repos_touched</em> (list), <em>open_threads</em> (list), <em>next_action</em> (one sentence, imperative), <em>blocking_on</em> (nullable). Commit it immediately. Polaroids are never edited — if state changes, a new polaroid supersedes the old one.
+      </p>
+      <p class="card-summary" style="margin-top:-0.5rem;">
+        At session open, the skill reads the most recent polaroid and surfaces a one-paragraph resumption brief before any work begins. Film continuity supervisors take a polaroid of each scene's exact state — not a narrative description, a reconstruction artifact — so any crew member can reset the scene on any shooting day. The polaroid isn't documentation, it's state reconstruction.
+      </p>
+
+      <div class="card-details">
+        <div class="detail-block">
+          <div class="detail-label">Where it lives</div>
+          <div class="detail-text">/Athian/.sessions/ — in the workspace spine. One YAML file per session close. Append-only, never edited.</div>
+        </div>
+        <div class="detail-block">
+          <div class="detail-label">Relationship to prior ideas</div>
+          <div class="detail-text">Complements A (branch-level re-entry). This is workspace-level orientation; A is repo-level. Together they cover both entry points without duplicating each other.</div>
+        </div>
+        <div class="meeting-test-block">
+          "Oh, so it's like a git stash but for your brain state, not your code state."
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- IDEA 4: Lead Agency -->
+  <article class="idea-card" data-domain="authority" tabindex="0">
+    <div class="idea-inner">
+      <div class="card-top">
+        <div class="card-title-group">
+          <div class="card-domain-tag">Urban planning — lead agency designation</div>
+          <div class="card-title">Cross-repo plan ownership via <code style="font-family: var(--font-mono); font-size: 0.85em;">lead_repo:</code></div>
+        </div>
+        <div class="card-badges">
+          <span class="badge badge-axis">discoverability</span>
+          <span class="badge">reasoned:</span>
+        </div>
+      </div>
+
+      <p class="card-summary">
+        <strong>Every plan that touches more than one repo carries a <code style="font-family: var(--font-mono); font-size: 0.82em;">lead_repo:</code> field in its YAML frontmatter</strong> — the single repo where the canonical copy lives and where changes must originate. Other touched repos carry a <code style="font-family: var(--font-mono); font-size: 0.82em;">see_also:</code> pointer back to the lead. A lightweight coordination file at <code style="font-family: var(--font-mono); font-size: 0.82em;">/Athian/docs/COORDINATION.md</code> lists every active cross-repo plan, its lead repo, and its current lifecycle state (draft / active / landed).
+      </p>
+      <p class="card-summary" style="margin-top:-0.5rem;">
+        The prior plan manifest idea (prior survivor #3) establishes which repos a plan <em>touches</em>. This closes the harder question: where does the truth live when copies diverge, and who has authority to change it? A California highway crossing three counties is managed by the State DOT — it has authority <em>over</em> the boundary even though counties own the interior. No single county can reroute it unilaterally.
+      </p>
+
+      <div class="card-details">
+        <div class="detail-block">
+          <div class="detail-label">Where it lives</div>
+          <div class="detail-text">lead_repo: field in plan frontmatter. COORDINATION.md at /Athian/docs/ for the overview inventory.</div>
+        </div>
+        <div class="detail-block">
+          <div class="detail-label">Relationship to prior ideas</div>
+          <div class="detail-text">Extends prior survivor #3 (cross-repo manifest with repos: field). That names the repos; this designates authority among them. They compose, not compete.</div>
+        </div>
+        <div class="meeting-test-block">
+          "So <code style="font-family: var(--font-mono); font-size: 0.85em;">platform</code> can't just update that plan on its own — it has to go through wherever the lead is."
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- IDEA 5: Forced Checkpoint -->
+  <article class="idea-card" data-domain="planning" tabindex="0">
+    <div class="idea-inner">
+      <div class="card-top">
+        <div class="card-title-group">
+          <div class="card-domain-tag">Urban planning — public comment period</div>
+          <div class="card-title">Mandatory PR checkpoint before Linear promotion</div>
+        </div>
+        <div class="card-badges">
+          <span class="badge badge-axis">artifact-lifecycle</span>
+          <span class="badge">reasoned:</span>
+        </div>
+      </div>
+
+      <p class="card-summary">
+        <strong>Before any planning artifact transitions into a formal Linear issue, it enters a brief "comment period"</strong> — a PR opened against the /Athian repo with the artifact as the diff. The PR template prompts reviewers for one of three responses: approve, request revision, or mark as blocked by another item. Only after merge does the n8n automation fire and create the Linear issue.
+      </p>
+      <p class="card-summary" style="margin-top:-0.5rem;">
+        Prior survivor #7 wires plan frontmatter to auto-create Linear issues. Without this checkpoint, that automation fires on half-baked plans and creates backlog noise that kills trust in the system over time. Urban planning requires a public comment period before a plan can be adopted — not to slow things down, but because the plan must be surfaced before it becomes binding. The PR is posted outside the county planning office; someone has to have had a chance to see it. The 48-hour window is a starting point, not a constraint — the team should decide the right window for their cadence.
+      </p>
+
+      <div class="card-details">
+        <div class="detail-block">
+          <div class="detail-label">Where it lives</div>
+          <div class="detail-text">PR against /Athian repo. Template lives in .github/PULL_REQUEST_TEMPLATE/plan-promotion.md.</div>
+        </div>
+        <div class="detail-block">
+          <div class="detail-label">Relationship to prior ideas</div>
+          <div class="detail-text">Additive to prior survivor #7 (n8n → Linear wiring). That automates the promotion; this adds the human gate before it fires. Both are necessary.</div>
+        </div>
+        <div class="meeting-test-block">
+          "So nothing hits the backlog that at least one other person didn't have a chance to see."
+        </div>
+      </div>
+    </div>
+  </article>
+
+</main>
+
+<!-- REJECTION SUMMARY -->
+<section class="rejections" aria-label="Rejected candidates">
+  <div class="section-header" style="padding: 0; margin: 0 0 1rem;">
+    <div class="section-label">Filtered out · 7 of 12 candidates</div>
+    <div class="section-title">Cut — with reasons</div>
+  </div>
+  <div class="rejections-inner">
+    <div class="rejection-header">Ideas that didn't survive at team size 8</div>
+    <table class="rejection-table">
+      <thead>
+        <tr>
+          <th>Candidate</th>
+          <th>Why it was cut</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>The Cut-Up (ephemeral session slices)</td>
+          <td>Pre-session curation discipline that won't survive sprint pressure. Value is real; overhead-to-value ratio fails at 8 people.</td>
+        </tr>
+        <tr>
+          <td>Multi-Player Clip Tag (index.yaml cross-reference)</td>
+          <td>A build system disguised as a metadata field. Pre-commit hook breaks; index drifts. Lead Agency Designation solves the authority piece more directly.</td>
+        </tr>
+        <tr>
+          <td>Permanent Record (provenance block in frontmatter)</td>
+          <td>YAML multi-line provenance blocks degrade. Git already does this. The handoff stub (A) covers re-entry; git blame covers history.</td>
+        </tr>
+        <tr>
+          <td>Numbered Entry Log (LOG.ndjson with citation IDs)</td>
+          <td>Variant of prior DECISIONS.md survivor with citation overhead nobody will maintain at this team size. Nobody will cite LOG#147 in a plan doc.</td>
+        </tr>
+        <tr>
+          <td>Personal-to-Synthesis Ritual (/ce-promote)</td>
+          <td>Weekly promotion cadence breaks the moment someone is heads-down for two weeks. The underlying value is covered by ACTIVE.md and the three-tier CLAUDE.md hierarchy.</td>
+        </tr>
+        <tr>
+          <td>Coverage Sheet per Artifact (*.coverage.yaml)</td>
+          <td>Sidecar file discipline proportionate to a 40-person org running structured change management. At 8 people, the handoff stub + ACTIVE.md answer the same question.</td>
+        </tr>
+        <tr>
+          <td>Traffic Management Initiative (TMI: flag)</td>
+          <td>A good team norm turned into a file format. At 8 people, overload is visible without a formal flag. The norm belongs in standup, not in ACTIVE.md's schema.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-left">ce-ideate · run a3f7c921 · 2026-06-23 · athian.ag</div>
+  <div class="footer-next">Next: pick one survivor → <strong>/ce-brainstorm</strong></div>
+</footer>
+
+</body>
+</html>

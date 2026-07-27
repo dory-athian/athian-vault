@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ideation: CE Multi-Repo Organization</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f7f7f5;
+      --surface: #ffffff;
+      --border: #e4e4e1;
+      --text: #18181b;
+      --text-muted: #71717a;
+      --accent: #1a6e42;
+      --accent-soft: #eaf4ef;
+      --accent-text: #145a35;
+      --warn-soft: #fef9ec;
+      --warn-text: #92400e;
+      --header-bg: #0e1e12;
+      --header-text: #f0faf4;
+      --rank-bg: #eaf4ef;
+      --rank-text: #145a35;
+      --chip-border: #c6dfcc;
+      --mono: 'JetBrains Mono', 'Fira Mono', monospace;
+      --sans: 'Inter', system-ui, sans-serif;
+      --radius: 8px;
+      --radius-sm: 5px;
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    code {
+      font-family: var(--mono);
+      font-size: 0.87em;
+      background: #f0f0ed;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.1em 0.35em;
+    }
+
+    /* ── Page layout ── */
+    .page {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 0 24px 64px;
+    }
+
+    /* ── Document header ── */
+    .doc-header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 48px 0 36px;
+      margin-bottom: 40px;
+    }
+    .doc-header .page { padding-top: 0; padding-bottom: 0; }
+    .doc-header .eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6ee7a0;
+      margin-bottom: 10px;
+    }
+    .doc-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #e8f8f0;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      max-width: 70ch;
+    }
+    .doc-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      font-size: 13px;
+      color: #9ec8b0;
+    }
+    .doc-meta span { display: flex; align-items: center; gap: 6px; }
+    .doc-meta .label { color: #6a9b7c; }
+
+    /* ── Stats strip ── */
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 40px;
+    }
+    .stat { text-align: center; }
+    .stat .number { font-size: 28px; font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 4px; }
+    .stat .label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+    /* ── Sections ── */
+    section { margin-bottom: 48px; }
+    section > h2 {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Grounding context ── */
+    .grounding-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 640px) { .grounding-grid { grid-template-columns: 1fr; } }
+    .grounding-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+    }
+    .grounding-card h3 {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .grounding-card ul { padding-left: 18px; }
+    .grounding-card li { margin-bottom: 6px; font-size: 14px; }
+    .grounding-card li:last-child { margin-bottom: 0; }
+    .grounding-card.full { grid-column: 1 / -1; }
+    .pattern-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+    .pattern-chip {
+      font-size: 12px;
+      background: var(--accent-soft);
+      color: var(--accent-text);
+      border: 1px solid var(--chip-border);
+      border-radius: 100px;
+      padding: 3px 10px;
+      font-weight: 500;
+    }
+
+    /* ── Topic axes ── */
+    .axes-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .axis-chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .axis-num {
+      display: inline-block;
+      background: var(--accent-soft);
+      color: var(--accent-text);
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+      text-align: center;
+      margin-right: 7px;
+    }
+
+    /* ── Jump list ── */
+    .jump-list {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 28px;
+    }
+    .jump-list h3 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 12px; }
+    .jump-list ol { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+    .jump-list li { display: flex; align-items: baseline; gap: 10px; font-size: 13.5px; }
+    .jump-list .rank { font-size: 11px; font-weight: 700; color: var(--accent); min-width: 20px; }
+    .jump-list .chips { display: flex; gap: 6px; margin-left: auto; }
+    .jump-list a { color: var(--text); font-weight: 500; }
+    .jump-list a:hover { color: var(--accent); text-decoration: none; }
+
+    /* ── Idea cards ── */
+    article.idea-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 28px 24px;
+      margin-bottom: 20px;
+    }
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .rank-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 36px;
+      height: 36px;
+      background: var(--accent-soft);
+      color: var(--accent-text);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+      padding: 0 10px;
+      border: 1px solid var(--chip-border);
+    }
+    .card-title { font-size: 19px; font-weight: 700; line-height: 1.25; flex: 1; }
+    .card-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; width: 100%; }
+    .chip {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: #f4f4f2;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .chip.axis { background: var(--accent-soft); color: var(--accent-text); border-color: var(--chip-border); }
+    .chip.conf-high { background: #edfaf3; color: #166534; border-color: #bbf7d0; }
+    .chip.conf-med { background: var(--warn-soft); color: var(--warn-text); border-color: #fde68a; }
+    .chip.cx-low { background: #f0f9ff; color: #075985; border-color: #bae6fd; }
+    .chip.cx-med { background: #fdf4ff; color: #7e22ce; border-color: #e9d5ff; }
+
+    .card-body { display: flex; flex-direction: column; gap: 0; }
+    .field { margin-bottom: 16px; }
+    .field:last-child { margin-bottom: 0; }
+    .field-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+    .field p, .field ul { font-size: 14.5px; }
+    .field ul { padding-left: 18px; }
+    .field li { margin-bottom: 4px; }
+
+    .basis-block {
+      background: #f9f9f7;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      font-size: 14px;
+    }
+    .basis-tag {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-right: 6px;
+    }
+
+    .downsides-block {
+      background: var(--warn-soft);
+      border: 1px solid #fde68a;
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    /* ── SVG diagrams ── */
+    .diagram-wrap {
+      margin: 20px 0 16px;
+      overflow-x: auto;
+    }
+    .diagram-wrap svg { display: block; max-width: 100%; }
+
+    /* ── Rejection summary ── */
+    .rejection-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+    }
+    .rejection-table th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .rejection-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .rejection-table tr:last-child td { border-bottom: none; }
+    .rejection-table .idea-name { font-weight: 500; color: var(--text); }
+    .rejection-table .reason { color: var(--text-muted); }
+    .rejection-table tr:hover td { background: #fafaf8; }
+
+    /* ── Footer ── */
+    footer.composition-signal {
+      margin-top: 56px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+<header class="doc-header">
+  <div class="page">
+    <p class="eyebrow">Compound Engineering · Ideation</p>
+    <h1>CE Multi-Repo Organization</h1>
+    <div class="doc-meta">
+      <span><span class="label">Date</span> <time datetime="2026-06-24">2026-06-24</time></span>
+      <span><span class="label">Topic</span> ce-multi-repo-organization</span>
+      <span><span class="label">Focus</span> CE planning outputs across multiple GitHub repos</span>
+      <span><span class="label">Mode</span> elsewhere-software</span>
+    </div>
+  </div>
+</header>
+
+<div class="page">
+
+  <div class="stats-strip">
+    <div class="stat"><div class="number">7</div><div class="label">Ranked ideas</div></div>
+    <div class="stat"><div class="number">15</div><div class="label">Raw candidates</div></div>
+    <div class="stat"><div class="number">5</div><div class="label">Topic axes</div></div>
+    <div class="stat"><div class="number">8</div><div class="label">Rejected</div></div>
+  </div>
+
+  <!-- ── Grounding Context ── -->
+  <section id="grounding">
+    <h2>Topic Context</h2>
+    <div class="grounding-grid">
+      <div class="grounding-card">
+        <h3>Current State</h3>
+        <ul>
+          <li>Parent <code>/Athian/</code> is <strong>not a git repo</strong> — contains <code>projects/</code> with individual repos</li>
+          <li><code>/Athian/</code> already holds: <code>CLAUDE.md</code>, <code>STRATEGY.md</code>, <code>HANDOFF.md</code>, <code>docs/</code> with 20+ CE artifacts — all <strong>untracked</strong></li>
+          <li>Per-repo <code>CLAUDE.md</code> files exist in sus-plat and duita; none at workspace level</li>
+          <li>Existing pattern: <code>docs/solutions/</code> with YAML frontmatter (<code>module</code>, <code>tags</code>, <code>problem_type</code>)</li>
+        </ul>
+      </div>
+      <div class="grounding-card">
+        <h3>Repos &amp; Team</h3>
+        <ul>
+          <li><code>platform</code> — backend monorepo</li>
+          <li><code>sustainability-platform</code> (sus-plat) — main frontend</li>
+          <li><code>duita</code> — newer, active work</li>
+          <li>Team: VP Eng + &lt;10 engineers, driving AI tool adoption</li>
+          <li>Cross-repo work is real: Nestle pilot spans duita + sus-plat</li>
+        </ul>
+      </div>
+      <div class="grounding-card">
+        <h3>Key Pain Points</h3>
+        <ul>
+          <li>CE outputs land locally — not tracked, not shared, not discoverable</li>
+          <li>No clear ownership when work spans repos</li>
+          <li>Sessions end and planning context is lost; <code>HANDOFF.md</code> is one file, manually maintained</li>
+        </ul>
+      </div>
+      <div class="grounding-card">
+        <h3>Confirmed Mechanics</h3>
+        <ul>
+          <li>Claude Code walks <em>up</em> the dir tree from CWD, loading all <code>CLAUDE.md</code> files (concatenated)</li>
+          <li><code>@path/to/file</code> import syntax: max 4 hops, relative from importing file</li>
+          <li>Planning Repo Pattern: parent git repo <code>.gitignore</code>s nested repos — well-documented community pattern</li>
+        </ul>
+      </div>
+      <div class="grounding-card full">
+        <h3>External Patterns Surveyed</h3>
+        <div class="pattern-row">
+          <span class="pattern-chip">Meta-Repo / Repo-of-Repos</span>
+          <span class="pattern-chip">Spine Pattern</span>
+          <span class="pattern-chip">Planning Repo Pattern</span>
+          <span class="pattern-chip">Virtual Monorepo Pattern</span>
+          <span class="pattern-chip">Dotfiles-as-code sync</span>
+          <span class="pattern-chip">Push-sync via GitHub Actions</span>
+        </div>
+        <p style="font-size:13.5px; margin-top:10px; color:var(--text-muted);">All four major patterns agree: cross-repo planning docs live at the workspace/meta level, CLAUDE.md files layer hierarchically, and session continuity is a recognized problem solved by committable plan files.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Topic Axes ── -->
+  <section id="axes">
+    <h2>Topic Axes</h2>
+    <div class="axes-list">
+      <div class="axis-chip"><span class="axis-num">1</span>Storage location — which repo(s) CE outputs physically live in</div>
+      <div class="axis-chip"><span class="axis-num">2</span>CLAUDE.md / context hierarchy — how AI context composes across repos</div>
+      <div class="axis-chip"><span class="axis-num">3</span>Session continuity — how planning artifacts survive session boundaries</div>
+      <div class="axis-chip"><span class="axis-num">4</span>Discoverability — how team members find and reference cross-repo plans</div>
+      <div class="axis-chip"><span class="axis-num">5</span>Artifact lifecycle — how CE outputs transition to issues, decisions, and code</div>
+    </div>
+  </section>
+
+  <!-- ── Ranked Ideas ── -->
+  <section id="ranked-ideas">
+    <h2>Ranked Ideas</h2>
+
+    <div class="jump-list">
+      <h3>Ideas at a glance</h3>
+      <ol>
+        <li>
+          <span class="rank">1</span>
+          <a href="#idea-b1">The Workspace Root Becomes the Repo</a>
+          <div class="chips"><span class="chip axis">storage location</span><span class="chip conf-high">High conf</span><span class="chip cx-low">Low Cx</span></div>
+        </li>
+        <li>
+          <span class="rank">2</span>
+          <a href="#idea-a2">Three-Tier CLAUDE.md Hierarchy</a>
+          <div class="chips"><span class="chip axis">context hierarchy</span><span class="chip conf-high">High conf</span><span class="chip cx-low">Low Cx</span></div>
+        </li>
+        <li>
+          <span class="rank">3</span>
+          <a href="#idea-b3"><code>repos:</code> Frontmatter on CE Outputs</a>
+          <div class="chips"><span class="chip axis">discoverability</span><span class="chip conf-high">High conf</span><span class="chip cx-low">Low Cx</span></div>
+        </li>
+        <li>
+          <span class="rank">4</span>
+          <a href="#idea-b8">CE Output Status Lifecycle</a>
+          <div class="chips"><span class="chip axis">artifact lifecycle</span><span class="chip conf-high">High conf</span><span class="chip cx-low">Low Cx</span></div>
+        </li>
+        <li>
+          <span class="rank">5</span>
+          <a href="#idea-a4">Committed Session Checkpoints</a>
+          <div class="chips"><span class="chip axis">session continuity</span><span class="chip conf-high">High conf</span><span class="chip cx-low">Low Cx</span></div>
+        </li>
+        <li>
+          <span class="rank">6</span>
+          <a href="#idea-a1">Dedicated GitHub Workspace Repo</a>
+          <div class="chips"><span class="chip axis">storage location</span><span class="chip conf-med">Med conf</span><span class="chip cx-med">Med Cx</span></div>
+        </li>
+        <li>
+          <span class="rank">7</span>
+          <a href="#idea-a6">Cross-Repo Skills in <code>workspace/.claude/skills/</code></a>
+          <div class="chips"><span class="chip axis">storage location</span><span class="chip conf-med">Med conf</span><span class="chip cx-low">Low Cx</span></div>
+        </li>
+      </ol>
+    </div>
+
+    <!-- ── Idea 1: B1 ── -->
+    <article class="idea-card" id="idea-b1">
+      <div class="card-header">
+        <div class="rank-chip">1</div>
+        <div>
+          <div class="card-title">The Workspace Root Becomes the Repo</div>
+          <div class="card-chips">
+            <span class="chip axis">Storage location</span>
+            <span class="chip conf-high">High confidence · 95%</span>
+            <span class="chip cx-low">Complexity: Low</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field">
+          <div class="field-label">Description</div>
+          <p>Run <code>git init</code> in <code>/Athian/</code> and add a <code>.gitignore</code> that excludes the nested repos under <code>projects/</code>. <code>CLAUDE.md</code>, <code>STRATEGY.md</code>, <code>HANDOFF.md</code>, <code>docs/</code>, and all CE outputs that already land there become tracked, versioned, and pushable to GitHub with a single commit. The child repos (<code>platform</code>, <code>sus-plat</code>, <code>duita</code>) remain independent git repos, untouched. This is the Planning Repo Pattern applied to existing reality.</p>
+        </div>
+
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 680 200" width="680" height="200" xmlns="http://www.w3.org/2000/svg" aria-label="Before/after: workspace root git init">
+            <defs>
+              <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                <path d="M0,0 L7,3.5 L0,7 Z" fill="#1a6e42"/>
+              </marker>
+            </defs>
+            <!-- Before -->
+            <text x="135" y="22" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="600" fill="#71717a" letter-spacing="0.07em" text-decoration="none">BEFORE</text>
+            <rect x="20" y="32" width="230" height="150" rx="6" fill="#f7f7f5" stroke="#e4e4e1" stroke-width="1.5"/>
+            <text x="135" y="55" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" fill="#18181b" font-weight="500">/Athian/</text>
+            <text x="44" y="75" font-family="JetBrains Mono,monospace" font-size="11" fill="#ef4444">✗ not a git repo</text>
+            <text x="44" y="98" font-family="JetBrains Mono,monospace" font-size="11" fill="#71717a">  CLAUDE.md</text>
+            <text x="44" y="115" font-family="JetBrains Mono,monospace" font-size="11" fill="#71717a">  STRATEGY.md</text>
+            <text x="44" y="132" font-family="JetBrains Mono,monospace" font-size="11" fill="#71717a">  docs/</text>
+            <text x="44" y="149" font-family="JetBrains Mono,monospace" font-size="11" fill="#71717a">  projects/</text>
+            <text x="60" y="167" font-family="JetBrains Mono,monospace" font-size="11" fill="#9ca3af">  platform/  sus-plat/</text>
+            <text x="118" y="97" font-family="Inter,sans-serif" font-size="10" fill="#ef4444" font-weight="600">← untracked</text>
+            <text x="118" y="114" font-family="Inter,sans-serif" font-size="10" fill="#ef4444" font-weight="600">← untracked</text>
+            <text x="86" y="131" font-family="Inter,sans-serif" font-size="10" fill="#ef4444" font-weight="600">← untracked</text>
+            <!-- Arrow -->
+            <path d="M262,110 L318,110" stroke="#1a6e42" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+            <text x="290" y="103" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#1a6e42" font-weight="600">git init</text>
+            <!-- After -->
+            <text x="505" y="22" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="600" fill="#71717a" letter-spacing="0.07em">AFTER</text>
+            <rect x="330" y="32" width="330" height="150" rx="6" fill="#eaf4ef" stroke="#c6dfcc" stroke-width="1.5"/>
+            <text x="495" y="55" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" fill="#18181b" font-weight="500">/Athian/</text>
+            <text x="354" y="75" font-family="JetBrains Mono,monospace" font-size="11" fill="#1a6e42" font-weight="600">✓ git repo (athian-ai/athian-ws)</text>
+            <text x="354" y="98" font-family="JetBrains Mono,monospace" font-size="11" fill="#18181b">  .gitignore  ← excludes projects/</text>
+            <text x="354" y="115" font-family="JetBrains Mono,monospace" font-size="11" fill="#18181b">  CLAUDE.md  ← tracked</text>
+            <text x="354" y="132" font-family="JetBrains Mono,monospace" font-size="11" fill="#18181b">  docs/      ← tracked</text>
+            <text x="354" y="149" font-family="JetBrains Mono,monospace" font-size="11" fill="#9ca3af">  projects/  (gitignored)</text>
+            <text x="370" y="167" font-family="JetBrains Mono,monospace" font-size="11" fill="#9ca3af">  platform/  sus-plat/  duita/</text>
+          </svg>
+        </div>
+
+        <div class="field">
+          <div class="field-label">Basis</div>
+          <div class="basis-block">
+            <span class="basis-tag">direct:</span> <code>/Athian/</code> already contains <code>CLAUDE.md</code>, <code>STRATEGY.md</code>, <code>HANDOFF.md</code>, and <code>docs/</code> with 20+ CE artifacts — all confirmed untracked. The Planning Repo Pattern (external research) documents exactly this setup: "parent git repo that <code>.gitignore</code>s all nested repos."
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">Rationale</div>
+          <p>Zero workflow change. Nothing about where CE outputs land needs to change — the directory structure, the docs path, the session habits all stay identical. The only delta is a <code>git init</code>, a <code>.gitignore</code>, and a GitHub remote. Every artifact produced over the past month becomes tracked in one commit. Claude Code's directory-walk loading already makes this the natural context root — formalizing it into a git repo makes it the team's shared source of truth.</p>
+        </div>
+        <div class="field">
+          <div class="field-label">Downsides</div>
+          <div class="downsides-block">The workspace repo and the product repos are on separate git histories — cross-repo changes (e.g., a plan doc and its corresponding code) live in different commits. Discipline required to not accidentally commit large files (ideation HTMLs are fine; raw PDFs are not). Engineers who clone only the product repos won't see workspace docs without a separate clone.</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 2: A2 ── -->
+    <article class="idea-card" id="idea-a2">
+      <div class="card-header">
+        <div class="rank-chip">2</div>
+        <div>
+          <div class="card-title">Three-Tier CLAUDE.md Hierarchy</div>
+          <div class="card-chips">
+            <span class="chip axis">CLAUDE.md / context hierarchy</span>
+            <span class="chip conf-high">High confidence · 90%</span>
+            <span class="chip cx-low">Complexity: Low</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field">
+          <div class="field-label">Description</div>
+          <p>Formalize the workspace <code>CLAUDE.md</code> at <code>/Athian/CLAUDE.md</code> as the deliberate middle tier between the global (<code>~/.claude/CLAUDE.md</code>) and per-repo files. The workspace layer owns: org context (team roster, repo map, active cross-repo projects, shared tool conventions). Per-repo files own: stack-specific architecture, domain models, commands, patterns. Claude Code's directory-walk loads these in order from root to CWD — the missing piece is treating the workspace layer as authoritative infrastructure, not an incidental landing file.</p>
+        </div>
+
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 520 210" width="520" height="210" xmlns="http://www.w3.org/2000/svg" aria-label="Three-tier CLAUDE.md hierarchy">
+            <defs>
+              <marker id="arr2" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                <path d="M0,0 L7,3.5 L0,7 Z" fill="#71717a"/>
+              </marker>
+            </defs>
+            <!-- Tier 1: Global -->
+            <rect x="60" y="10" width="400" height="46" rx="6" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1.5"/>
+            <text x="108" y="30" font-family="JetBrains Mono,monospace" font-size="12" fill="#075985" font-weight="500">~/.claude/CLAUDE.md</text>
+            <text x="108" y="47" font-family="Inter,sans-serif" font-size="11" fill="#71717a">Voice, personal prefs, global conventions — applies to every project</text>
+            <text x="62" y="32" font-family="Inter,sans-serif" font-size="10" fill="#075985" font-weight="700">G</text>
+            <!-- Arrow down -->
+            <line x1="260" y1="58" x2="260" y2="80" stroke="#d1d5db" stroke-width="1.5" marker-end="url(#arr2)"/>
+            <text x="268" y="72" font-family="Inter,sans-serif" font-size="10" fill="#9ca3af">inherits</text>
+            <!-- Tier 2: Workspace (new, highlighted) -->
+            <rect x="60" y="82" width="400" height="52" rx="6" fill="#eaf4ef" stroke="#1a6e42" stroke-width="2"/>
+            <text x="108" y="102" font-family="JetBrains Mono,monospace" font-size="12" fill="#1a6e42" font-weight="600">/Athian/CLAUDE.md</text>
+            <text x="108" y="119" font-family="Inter,sans-serif" font-size="11" fill="#145a35">Org context, team roster, repo map, active cross-repo projects, shared tools</text>
+            <text x="62" y="111" font-family="Inter,sans-serif" font-size="10" fill="#1a6e42" font-weight="700">W</text>
+            <rect x="390" y="87" width="64" height="18" rx="9" fill="#1a6e42"/>
+            <text x="422" y="100" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#ffffff" font-weight="600">NEW LAYER</text>
+            <!-- Arrow down -->
+            <line x1="260" y1="136" x2="260" y2="158" stroke="#d1d5db" stroke-width="1.5" marker-end="url(#arr2)"/>
+            <text x="268" y="150" font-family="Inter,sans-serif" font-size="10" fill="#9ca3af">inherits</text>
+            <!-- Tier 3: Per-repo -->
+            <rect x="20" y="160" width="220" height="40" rx="6" fill="#f7f7f5" stroke="#e4e4e1" stroke-width="1.5"/>
+            <text x="36" y="176" font-family="JetBrains Mono,monospace" font-size="11" fill="#18181b">sus-plat/CLAUDE.md</text>
+            <text x="36" y="192" font-family="Inter,sans-serif" font-size="10" fill="#71717a">Stack, Nx layout, domain, cmds</text>
+            <rect x="280" y="160" width="220" height="40" rx="6" fill="#f7f7f5" stroke="#e4e4e1" stroke-width="1.5"/>
+            <text x="296" y="176" font-family="JetBrains Mono,monospace" font-size="11" fill="#18181b">duita/CLAUDE.md</text>
+            <text x="296" y="192" font-family="Inter,sans-serif" font-size="10" fill="#71717a">Service patterns, domain, cmds</text>
+          </svg>
+        </div>
+
+        <div class="field">
+          <div class="field-label">Basis</div>
+          <div class="basis-block">
+            <span class="basis-tag">direct:</span> sus-plat and duita both have <code>CLAUDE.md</code> files with repo-specific arch docs. <code>/Athian/CLAUDE.md</code> exists but is untracked and has no defined workspace role. <span class="basis-tag" style="margin-left:8px">external:</span> Spine Pattern three-tier hierarchy and the official Claude Code docs both document this exact load order: global → project → per-directory.
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">Rationale</div>
+          <p>Right now cross-repo context either lives in your head or gets re-explained from scratch at each session start. A stable workspace <code>CLAUDE.md</code> means every Claude Code session — on any repo, by any engineer — opens with the org map already in context. The compounding value: as you add repos, each adds one <code>CLAUDE.md</code>; the workspace layer gets one pointer. Second-order effect: every engineer's AI sessions benefit from it automatically, without any additional setup per-developer per-repo.</p>
+        </div>
+        <div class="field">
+          <div class="field-label">Downsides</div>
+          <div class="downsides-block">Requires discipline to keep the three tiers non-redundant — content that lives in the workspace layer should not be duplicated in per-repo files. The workspace <code>CLAUDE.md</code> loads for every session regardless of which repo you're working in, so it shouldn't grow too large (target under ~150 lines). A team unfamiliar with the three-tier model may not know where to add new instructions.</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 3: B3 ── -->
+    <article class="idea-card" id="idea-b3">
+      <div class="card-header">
+        <div class="rank-chip">3</div>
+        <div>
+          <div class="card-title"><code>repos:</code> Frontmatter on CE Outputs</div>
+          <div class="card-chips">
+            <span class="chip axis">Discoverability</span>
+            <span class="chip conf-high">High confidence · 90%</span>
+            <span class="chip cx-low">Complexity: Low</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field">
+          <div class="field-label">Description</div>
+          <p>Extend the existing <code>docs/solutions/</code> YAML frontmatter convention — which already uses <code>module</code>, <code>tags</code>, and <code>problem_type</code> — by adding a <code>repos:</code> field to CE planning and strategy outputs. Every plan doc, ideation artifact, and strategy memo declares which repos it touches: <code>repos: [duita, sustainability-platform]</code>. A second field, <code>status:</code>, tracks lifecycle state (see idea 4). A five-line shell script can then list every artifact that touches a given repo. No new directories, no new conventions, no tooling required on day one.</p>
+        </div>
+        <div class="field">
+          <div class="field-label">Basis</div>
+          <div class="basis-block">
+            <span class="basis-tag">direct:</span> <code>docs/solutions/</code> YAML frontmatter is confirmed working — the field structure (<code>module</code>, <code>tags</code>, <code>problem_type</code>, etc.) is already in use. The Nestle pilot is a real, named cross-repo case spanning duita and sus-plat with no current ownership anchor. Extending an existing pattern requires no adoption friction — the team already reads and writes this frontmatter.
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">Rationale</div>
+          <p>The cross-repo ownership problem — "where does this plan live when it spans two repos?" — is solved without choosing a structural answer. Plans stay in <code>docs/</code>; frontmatter declares scope. The second-order effect: once <code>repos:</code> exists, a simple script can generate a per-repo index of all plans that touch it, surfacing cross-repo context automatically during onboarding or project kickoffs. Zero tooling required on day one; tooling becomes optional later.</p>
+        </div>
+        <div class="field">
+          <div class="field-label">Downsides</div>
+          <div class="downsides-block">Only as good as the discipline to fill it in. <code>repos:</code> fields can go stale if plans pivot scope mid-execution. Doesn't help a new engineer find plans they don't know exist — relies on either a generated index (not yet built) or knowing to grep frontmatter. HTML ideation artifacts (like this one) don't carry YAML frontmatter natively, so the convention applies mainly to markdown plan and strategy docs.</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 4: B8 ── -->
+    <article class="idea-card" id="idea-b8">
+      <div class="card-header">
+        <div class="rank-chip">4</div>
+        <div>
+          <div class="card-title">CE Output Status Lifecycle</div>
+          <div class="card-chips">
+            <span class="chip axis">Artifact lifecycle</span>
+            <span class="chip conf-high">High confidence · 88%</span>
+            <span class="chip cx-low">Complexity: Low</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field">
+          <div class="field-label">Description</div>
+          <p>Add a <code>status:</code> field to CE output frontmatter with four states: <code>draft</code> (plan exists, work not started), <code>in-progress</code> (work underway, Linear/Jira issue open), <code>shipped</code> (work done, code merged), <code>archived</code> (superseded or abandoned). A generated index of all non-archived docs — producible by a simple script or a CE hook — becomes the engineering team's living roadmap and release record. The "what did we ship and why" question, which currently requires a Slack archaeology dig, has an answer.</p>
+        </div>
+
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 460 80" width="460" height="80" xmlns="http://www.w3.org/2000/svg" aria-label="Status lifecycle: draft to in-progress to shipped or archived">
+            <defs>
+              <marker id="arr3" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                <path d="M0,0 L7,3.5 L0,7 Z" fill="#71717a"/>
+              </marker>
+            </defs>
+            <!-- draft -->
+            <rect x="10" y="20" width="80" height="36" rx="18" fill="#f4f4f2" stroke="#d1d5db" stroke-width="1.5"/>
+            <text x="50" y="40" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="600" fill="#6b7280">draft</text>
+            <!-- arrow -->
+            <line x1="92" y1="38" x2="130" y2="38" stroke="#d1d5db" stroke-width="1.5" marker-end="url(#arr3)"/>
+            <text x="111" y="29" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#9ca3af">issue open</text>
+            <!-- in-progress -->
+            <rect x="132" y="20" width="110" height="36" rx="18" fill="#fef9ec" stroke="#fde68a" stroke-width="1.5"/>
+            <text x="187" y="40" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="600" fill="#92400e">in-progress</text>
+            <!-- arrow to shipped -->
+            <line x1="244" y1="34" x2="282" y2="22" stroke="#d1d5db" stroke-width="1.5" marker-end="url(#arr3)"/>
+            <text x="263" y="20" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#9ca3af">PR merged</text>
+            <!-- arrow to archived -->
+            <line x1="244" y1="44" x2="282" y2="60" stroke="#d1d5db" stroke-width="1.5" marker-end="url(#arr3)"/>
+            <text x="263" y="65" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#9ca3af">abandoned</text>
+            <!-- shipped -->
+            <rect x="284" y="6" width="80" height="32" rx="16" fill="#edfaf3" stroke="#bbf7d0" stroke-width="1.5"/>
+            <text x="324" y="25" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="600" fill="#166534">shipped</text>
+            <!-- archived -->
+            <rect x="284" y="50" width="80" height="26" rx="13" fill="#f4f4f2" stroke="#e4e4e1" stroke-width="1.5"/>
+            <text x="324" y="67" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#9ca3af">archived</text>
+            <!-- index note -->
+            <text x="380" y="20" font-family="Inter,sans-serif" font-size="10" fill="#1a6e42" font-weight="600">→ index shows</text>
+            <text x="380" y="33" font-family="Inter,sans-serif" font-size="10" fill="#1a6e42">  non-archived only</text>
+          </svg>
+        </div>
+
+        <div class="field">
+          <div class="field-label">Basis</div>
+          <div class="basis-block">
+            <span class="basis-tag">direct:</span> <code>docs/solutions/</code> YAML frontmatter infrastructure already exists — a <code>status:</code> field requires no new tooling. The "what did engineering ship" question is a real, recurring need from Sales, Customer Success, and the board. <span class="basis-tag" style="margin-left:8px">reasoned:</span> Status as frontmatter means a plan in <code>in-progress</code> that stays there too long becomes visible without any process overhead.
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">Rationale</div>
+          <p>CE outputs stop being planning debris and become a live engineering record. The promoted <code>shipped</code> docs answer the recurring "what's new" question for non-engineering stakeholders without requiring anyone to translate Linear tickets. Works in tandem with idea 3: a plan doc with both <code>repos:</code> and <code>status:</code> is queryable two ways — by which repos it touches and by where it is in its lifecycle.</p>
+        </div>
+        <div class="field">
+          <div class="field-label">Downsides</div>
+          <div class="downsides-block">Requires a human to update the status field as work progresses — it won't self-update. In practice, <code>in-progress</code> plans may sit stale after the sprint ends. The index is only as accurate as the last time someone ran the generation script. Works better as a lightweight convention than a formal process.</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 5: A4 ── -->
+    <article class="idea-card" id="idea-a4">
+      <div class="card-header">
+        <div class="rank-chip">5</div>
+        <div>
+          <div class="card-title">Committed Session Checkpoints</div>
+          <div class="card-chips">
+            <span class="chip axis">Session continuity</span>
+            <span class="chip conf-high">High confidence · 85%</span>
+            <span class="chip cx-low">Complexity: Low</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field">
+          <div class="field-label">Description</div>
+          <p>When a CE session ends, copy the V17 checkpoint file (which CE writes to <code>/tmp/compound-engineering/...</code>) into the workspace repo under <code>_sessions/YYYY-MM-DD-&lt;slug&gt;.md</code> and commit it. The checkpoint captures the full session state: active grounding, candidate ideas, decisions made, open questions, next steps. Opening it in the next session re-establishes context without re-running Phase 1 grounding. Plan docs in <code>docs/</code> link to their checkpoint via a <code>session_id:</code> frontmatter field. <code>HANDOFF.md</code> becomes a pointer to the most recent committed checkpoint, rather than the checkpoint itself.</p>
+        </div>
+
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 560 100" width="560" height="100" xmlns="http://www.w3.org/2000/svg" aria-label="Session checkpoint flow from tmp to workspace repo">
+            <defs>
+              <marker id="arr4" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                <path d="M0,0 L7,3.5 L0,7 Z" fill="#1a6e42"/>
+              </marker>
+            </defs>
+            <!-- CE Session -->
+            <rect x="10" y="30" width="110" height="40" rx="6" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1.5"/>
+            <text x="65" y="48" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="600" fill="#075985">CE Session</text>
+            <text x="65" y="63" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#71717a">ends / pauses</text>
+            <!-- arrow to tmp -->
+            <line x1="122" y1="50" x2="156" y2="50" stroke="#d1d5db" stroke-width="1.5" marker-end="url(#arr4)"/>
+            <!-- tmp checkpoint -->
+            <rect x="158" y="30" width="130" height="40" rx="6" fill="#f7f7f5" stroke="#e4e4e1" stroke-width="1.5"/>
+            <text x="223" y="47" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#18181b">/tmp/compound-</text>
+            <text x="223" y="61" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#71717a">engineering/...</text>
+            <text x="285" y="38" font-family="Inter,sans-serif" font-size="9" fill="#ef4444" font-weight="600">ephemeral</text>
+            <!-- arrow to workspace -->
+            <line x1="290" y1="50" x2="332" y2="50" stroke="#1a6e42" stroke-width="2" marker-end="url(#arr4)"/>
+            <text x="311" y="43" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#1a6e42" font-weight="600">commit</text>
+            <!-- workspace checkpoint -->
+            <rect x="334" y="22" width="210" height="56" rx="6" fill="#eaf4ef" stroke="#1a6e42" stroke-width="1.5"/>
+            <text x="439" y="42" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#145a35" font-weight="600">/Athian/_sessions/</text>
+            <text x="439" y="57" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#18181b">2026-06-24-nestle.md</text>
+            <text x="439" y="71" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#1a6e42">tracked · shareable · resumable</text>
+          </svg>
+        </div>
+
+        <div class="field">
+          <div class="field-label">Basis</div>
+          <div class="basis-block">
+            <span class="basis-tag">direct:</span> <code>HANDOFF.md</code> exists as a single, manually-maintained session log — confirmed as the current continuity mechanism, limited to one concurrent session and untracked. CE V17 checkpoints are already written to <code>/tmp/</code> during sessions. <span class="basis-tag" style="margin-left:8px">external:</span> Spine Pattern explicitly uses <code>_tasks/</code> files as resumable artifacts to survive session boundaries.
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">Rationale</div>
+          <p>Session context becomes as durable as code. When a second engineer picks up a cross-repo plan, they don't start from zero — they open the checkpoint and resume. This is the highest-leverage answer to the session continuity problem without requiring new tooling beyond a copy command and a commit. Works especially well for the Nestle pilot pattern: one long-running cross-repo initiative with multiple CE sessions across multiple weeks.</p>
+        </div>
+        <div class="field">
+          <div class="field-label">Downsides</div>
+          <div class="downsides-block">Requires a two-minute copy-and-commit step at the end of each meaningful CE session — likely to be skipped when sessions end abruptly. Checkpoint files are verbose (full grounding, raw candidate lists, phase notes) and may accumulate quickly. The <code>_sessions/</code> directory could become noisy without a cleanup convention for old sessions.</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 6: A1 ── -->
+    <article class="idea-card" id="idea-a1">
+      <div class="card-header">
+        <div class="rank-chip">6</div>
+        <div>
+          <div class="card-title">Dedicated GitHub Workspace Repo</div>
+          <div class="card-chips">
+            <span class="chip axis">Storage location</span>
+            <span class="chip conf-med">Medium confidence · 72%</span>
+            <span class="chip cx-med">Complexity: Medium</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field">
+          <div class="field-label">Description</div>
+          <p>Create <code>athian-ai/athian-workspace</code> (private) as a dedicated orchestration repo with no application code. It holds: a root <code>CLAUDE.md</code>, <code>docs/</code> for cross-repo plans and decisions, <code>_sessions/</code> for CE checkpoints, <code>.claude/skills/</code> for cross-repo skills, and a <code>scripts/setup.sh</code> that clones all child repos into a sibling directory and reconstitutes the full workspace. Any engineer can run <code>./scripts/setup.sh</code> to get a working cross-repo development environment in minutes. This is a more structured, explicit version of idea 1.</p>
+        </div>
+        <div class="field">
+          <div class="field-label">Basis</div>
+          <div class="basis-block">
+            <span class="basis-tag">external:</span> Meta-Repo / Repo-of-Repos pattern and Spine Pattern both document this structure with clone scripts (e.g., a <code>.repos</code> script that clones all repos). <span class="basis-tag" style="margin-left:8px">direct:</span> <code>/Athian/</code> is the natural working root and already serves this role informally — formalizing it as a GitHub repo makes it team-accessible and cloneable.
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">Rationale</div>
+          <p>The clone script is the key differentiator from idea 1. It means a new engineer — or an engineer picking up an unfamiliar repo — can reconstitute the full cross-repo development context in minutes rather than figuring out which repos to clone and where to put them. Positioning it as a genuine GitHub repo rather than just a local <code>git init</code> makes it more sustainable as the team grows and as the repo count increases past three.</p>
+        </div>
+        <div class="field">
+          <div class="field-label">Downsides</div>
+          <div class="downsides-block">More setup than idea 1 — requires creating the GitHub repo, writing the clone script, and establishing the convention across the team. The clone script needs maintenance as repos are added. Medium complexity relative to idea 1's near-zero effort. May feel like over-engineering at three repos. Ideas 1–5 can be implemented first and this can be a natural evolution once the patterns are established.</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 7: A6 ── -->
+    <article class="idea-card" id="idea-a6">
+      <div class="card-header">
+        <div class="rank-chip">7</div>
+        <div>
+          <div class="card-title">Cross-Repo Skills in <code>workspace/.claude/skills/</code></div>
+          <div class="card-chips">
+            <span class="chip axis">Storage location</span>
+            <span class="chip conf-med">Medium confidence · 70%</span>
+            <span class="chip cx-low">Complexity: Low</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field">
+          <div class="field-label">Description</div>
+          <p>Establish <code>/Athian/.claude/skills/</code> (or the workspace repo's <code>.claude/skills/</code>) as the canonical location for Claude Code skills whose scope spans multiple repos. Per-repo skills stay in each repo's <code>.claude/skills/</code>. The workspace <code>CLAUDE.md</code> registers all active cross-repo skills explicitly. The immediate candidate: the <code>add-protocol-skill</code>, which ingests a PDF and scaffolds code across both <code>platform</code> and <code>sus-plat</code>, currently has no declared home.</p>
+        </div>
+        <div class="field">
+          <div class="field-label">Basis</div>
+          <div class="basis-block">
+            <span class="basis-tag">direct:</span> <code>add-protocol-skill</code> is an active project listed in the workspace <code>CLAUDE.md</code> as an active project with no declared location. <code>/Athian/.claude/</code> already exists with <code>settings.json</code>. <span class="basis-tag" style="margin-left:8px">reasoned:</span> Skills with cross-repo scope don't belong in any single product repo's <code>.claude/</code> — that would imply ownership by one repo over work that spans both.
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">Rationale</div>
+          <p>Resolves the ownership ambiguity for the <code>add-protocol-skill</code> immediately and establishes a pattern for any future multi-repo agents. Every future skill whose scope isn't bounded by one repo (the Feedback Hub Claude query interface, future protocol skills) has a declared home. The workspace <code>CLAUDE.md</code>'s registration of cross-repo skills also makes the full AI toolset discoverable to every engineer at session start.</p>
+        </div>
+        <div class="field">
+          <div class="field-label">Downsides</div>
+          <div class="downsides-block">Depends on idea 1 or 6 — the workspace directory needs to be a git repo first for this location to be tracked and shared. Without that, the skill lives on one person's local machine, which is the problem we're solving. Small surface area compared to ideas 1–5, but unlocks naturally once the workspace repo exists.</div>
+        </div>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- ── Rejection Summary ── -->
+  <section id="rejection-summary">
+    <h2>Rejection Summary</h2>
+    <table class="rejection-table">
+      <thead>
+        <tr>
+          <th style="width:32%">Idea</th>
+          <th>Reason Rejected</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="idea-name">A3 · <code>_plans/</code> Frontmatter Directory</td>
+          <td class="reason">Duplicates idea 3 (B3). B3 is strictly stronger — it extends the existing <code>docs/solutions/</code> pattern rather than creating a parallel directory that splits the information architecture.</td>
+        </tr>
+        <tr>
+          <td class="idea-name">A5 · <code>docs/decisions/</code> ADR Store</td>
+          <td class="reason"><code>docs/solutions/tooling-decisions/</code> already exists (verified: the Linear MCP skills decision is filed there). A second decisions directory would fragment what's already working. The existing YAML frontmatter is flexible enough to encode decision types.</td>
+        </tr>
+        <tr>
+          <td class="idea-name">A7 · <code>repo-map.md</code> Living System Diagram</td>
+          <td class="reason">The workspace <code>CLAUDE.md</code> (idea 2) already serves as the system map, and per-repo <code>CLAUDE.md</code> files contain repo layout. A third document for the same information creates drift without adding surface area.</td>
+        </tr>
+        <tr>
+          <td class="idea-name">B2 · CLAUDE.md as Auto-Updated CE Index</td>
+          <td class="reason">The auto-update premise introduces write-contention on a file Claude Code loads at session start. The navigation value is real but better served by a separate index file generated on demand, not by polluting the always-loaded context file.</td>
+        </tr>
+        <tr>
+          <td class="idea-name">B4 · Session Continuity via Git Commits</td>
+          <td class="reason">Refuted: replacing <code>HANDOFF.md</code> with git commit history degrades the primary use case — <code>HANDOFF.md</code> is directly readable by Claude Code at session start, whereas hunting through commit messages for session context is strictly worse UX. Idea 5 (committed checkpoint files that remain directly readable) is the correct fix.</td>
+        </tr>
+        <tr>
+          <td class="idea-name">B5 · CE Outputs as Primary Artifact (<code>plan_ref:</code> in commits)</td>
+          <td class="reason">Cultural intervention requiring team enforcement this org doesn't have bandwidth for. <code>plan_ref:</code> in commit messages is hard to query and easy to omit. The why-documentation problem is better addressed by ideas 3 and 4 (frontmatter and status lifecycle) than by restructuring commit conventions.</td>
+        </tr>
+        <tr>
+          <td class="idea-name">B6 · Collapse Per-Repo CLAUDE.md into One File</td>
+          <td class="reason"><strong>Refuted:</strong> Per-repo CLAUDE.md files contain repo-specific architecture that is only useful when Claude Code is working inside that repo. Collapsing into one file means every session loads all repos' architecture regardless of CWD — wastes context window and actively undermines Claude Code's scoped loading model, which is designed to deliver narrowed context.</td>
+        </tr>
+        <tr>
+          <td class="idea-name">B7 · <code>repos.yaml</code> Machine-Readable Manifest</td>
+          <td class="reason">Premature at three repos. A YAML manifest only pays off when tooling consumes it, and no such tooling is described. The discovery problem it solves doesn't exist yet at this org's scale. Worth revisiting past five repos.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+</div><!-- end .page -->
+
+<footer class="composition-signal">
+  <div class="page" style="padding-top:0; padding-bottom:32px">
+    Composed 2026-06-24 by <code>ce-ideate</code> · 15 raw candidates across 5 axes · 2 of 5 ideation agents completed (3 hit session limits; axis coverage verified complete) · Basis verifier: fresh-context pass · Run ID: a3f7c9b2
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Athian Compliance — Assumption-Breaking Ideation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --ground:       #0F1419;
+    --ground-2:     #161D24;
+    --ground-3:     #1E2730;
+    --text:         #E8EAE6;
+    --text-dim:     #8A9199;
+    --text-muted:   #4A5560;
+    --accent:       #2E7D8C;
+    --accent-light: #3E9BAD;
+    --accent-dim:   rgba(46,125,140,0.15);
+    --stamp:        #C44B2B;
+    --stamp-dim:    rgba(196,75,43,0.12);
+    --rule:         rgba(255,255,255,0.08);
+    --rule-accent:  rgba(46,125,140,0.35);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+
+  body {
+    background-color: var(--ground);
+    color: var(--text);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .site-header {
+    border-bottom: 1px solid var(--rule);
+    padding: 48px 48px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .site-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 100% 0%, rgba(46,125,140,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .header-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .header-eyebrow::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .header-title {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: clamp(30px, 4vw, 50px);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    max-width: 680px;
+    margin-bottom: 28px;
+  }
+
+  .header-title em {
+    font-style: italic;
+    color: var(--accent-light);
+  }
+
+  .constraint-block {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    border: 1px solid var(--rule);
+    margin-top: 36px;
+    max-width: 720px;
+  }
+
+  .constraint-item {
+    padding: 14px 18px;
+    border-right: 1px solid var(--rule);
+  }
+
+  .constraint-item:last-child { border-right: none; }
+
+  .constraint-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .constraint-value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  /* FRAME BAND */
+  .frame-section {
+    padding: 32px 48px;
+    border-bottom: 1px solid var(--rule);
+    background: var(--ground-2);
+  }
+
+  .frame-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  .frame-text {
+    font-size: 14px;
+    color: var(--text-dim);
+    max-width: 680px;
+    line-height: 1.7;
+    margin-bottom: 18px;
+  }
+
+  .broken-assumptions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .assumption-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 5px 10px;
+    border: 1px solid var(--rule-accent);
+    color: var(--accent-light);
+    background: var(--accent-dim);
+  }
+
+  /* LEGEND */
+  .legend-strip {
+    padding: 16px 48px;
+    border-bottom: 1px solid var(--rule);
+    background: var(--ground-2);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .legend-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .legend-text {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* IDEAS CONTAINER */
+  .ideas-container { padding: 48px; }
+
+  .axis-group { margin-bottom: 64px; }
+
+  .axis-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--rule-accent);
+  }
+
+  .axis-number {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .axis-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .axis-count {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-left: auto;
+  }
+
+  .ideas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 2px;
+  }
+
+  /* IDEA CARD */
+  .idea-card {
+    background: var(--ground-2);
+    border: 1px solid var(--rule);
+    transition: border-color 0.2s ease;
+  }
+
+  .idea-card:hover { border-color: rgba(46,125,140,0.4); }
+
+  .idea-card:focus-within {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .card-header {
+    padding: 18px 22px 16px;
+    border-bottom: 1px solid var(--rule);
+    background: var(--ground-3);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .card-index {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    padding-top: 3px;
+  }
+
+  .card-title {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.25;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  .card-body { padding: 20px 22px; }
+
+  .card-field { margin-bottom: 16px; }
+  .card-field:last-child { margin-bottom: 0; }
+
+  .field-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .field-value {
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--text-dim);
+  }
+
+  .basis-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    background: var(--ground);
+    border: 1px solid var(--rule);
+    color: var(--accent);
+    display: inline-block;
+    margin-bottom: 6px;
+  }
+
+  .why-matters {
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  /* MEETING TEST: stamp accent — the aesthetic risk */
+  .meeting-test-field {
+    border-top: 1px solid var(--rule);
+    margin: 16px -22px 0;
+    padding: 16px 22px 0;
+  }
+
+  .meeting-test-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--stamp);
+    display: block;
+    margin-bottom: 6px;
+    opacity: 0.85;
+  }
+
+  .meeting-test-value {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-style: italic;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text);
+    font-weight: 300;
+    background: var(--stamp-dim);
+    padding: 10px 12px;
+    border-left: 2px solid var(--stamp);
+  }
+
+  /* FOOTER */
+  .site-footer {
+    border-top: 1px solid var(--rule);
+    padding: 24px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .footer-next {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+  }
+
+  @media (max-width: 700px) {
+    .site-header,
+    .frame-section,
+    .ideas-container,
+    .site-footer,
+    .legend-strip { padding-left: 20px; padding-right: 20px; }
+
+    .ideas-grid { grid-template-columns: 1fr; }
+
+    .constraint-block { grid-template-columns: 1fr; }
+
+    .constraint-item { border-right: none; border-bottom: 1px solid var(--rule); }
+    .constraint-item:last-child { border-bottom: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .idea-card { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-eyebrow">Athian Compliance · Product Ideation</div>
+  <h1 class="header-title">Breaking the frame on <em>supplier compliance</em></h1>
+  <div class="constraint-block">
+    <div class="constraint-item">
+      <span class="constraint-label">Frame</span>
+      <span class="constraint-value">assumption-breaking</span>
+    </div>
+    <div class="constraint-item">
+      <span class="constraint-label">Ideas</span>
+      <span class="constraint-value">12 candidates</span>
+    </div>
+    <div class="constraint-item">
+      <span class="constraint-label">Axes covered</span>
+      <span class="constraint-value">5 / 5</span>
+    </div>
+    <div class="constraint-item">
+      <span class="constraint-label">Generated</span>
+      <span class="constraint-value">2026-06-22</span>
+    </div>
+  </div>
+</header>
+
+<section class="frame-section">
+  <div class="frame-label">Broken assumptions</div>
+  <p class="frame-text">
+    Four fixed assumptions drive the current mental model. Each idea below breaks at least one.
+    The specialist is the center of gravity. Suppliers submit evidence. The standard is the source of truth.
+    Evidence collection requires supplier action.
+  </p>
+  <div class="broken-assumptions">
+    <span class="assumption-tag">specialist ≠ primary user</span>
+    <span class="assumption-tag">supplier action ≠ required</span>
+    <span class="assumption-tag">standard ≠ source of truth</span>
+    <span class="assumption-tag">output ≠ pass / fail</span>
+  </div>
+</section>
+
+<div class="legend-strip">
+  <div class="legend-item"><div class="legend-dot"></div><span class="legend-text">Standard encoding</span></div>
+  <div class="legend-item"><div class="legend-dot"></div><span class="legend-text">Evidence collection</span></div>
+  <div class="legend-item"><div class="legend-dot"></div><span class="legend-text">Supplier experience</span></div>
+  <div class="legend-item"><div class="legend-dot"></div><span class="legend-text">Review &amp; reporting</span></div>
+  <div class="legend-item"><div class="legend-dot"></div><span class="legend-text">Standard lifecycle</span></div>
+</div>
+
+<main class="ideas-container">
+
+  <!-- AXIS 1: STANDARD ENCODING -->
+  <div class="axis-group">
+    <div class="axis-header">
+      <span class="axis-number">01</span>
+      <span class="axis-name">Standard Encoding</span>
+      <span class="axis-count">3 ideas</span>
+    </div>
+    <div class="ideas-grid">
+
+      <article class="idea-card">
+        <div class="card-header">
+          <span class="card-index">01</span>
+          <h2 class="card-title">Evidence-First Requirement Modeling</h2>
+        </div>
+        <div class="card-body">
+          <div class="card-field">
+            <span class="field-label">Summary</span>
+            <p class="field-value">Instead of encoding compliance requirements from standard language ("supplier must hold SQF Level 2"), the platform models requirements from what is actually verifiable — structured as cert_type, issuer, verification_endpoint, expiry_window. The published standard becomes one input to reconcile against the evidence graph, not the primary specification. Requirements that have no verification path are explicitly tagged as audit-only, giving CPG teams a clear picture of their actual versus stated verification coverage.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Basis</span>
+            <span class="basis-tag">reasoned:</span>
+            <p class="field-value">Standard language is optimized for human readability, not machine evaluation. Encoding from the evidence structure — what exists and can be fetched — inverts the dependency and makes the spec more accurate than the published standard itself.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Why it matters</span>
+            <p class="why-matters">Most compliance programs contain a mix of verifiable and unverifiable requirements that are never surfaced as distinct. Making that boundary explicit changes how CPG buyers understand and price their actual compliance coverage.</p>
+          </div>
+          <div class="meeting-test-field">
+            <span class="meeting-test-label">Meeting test</span>
+            <p class="meeting-test-value">"Our spec tells buyers not just what's required but exactly what's verifiable without picking up the phone — and for the first time they can see the gap between those two things."</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="idea-card">
+        <div class="card-header">
+          <span class="card-index">02</span>
+          <h2 class="card-title">Applicability Engine (The Aviation AD Model)</h2>
+        </div>
+        <div class="card-body">
+          <div class="card-field">
+            <span class="field-label">Summary</span>
+            <p class="field-value">Aviation airworthiness directives apply automatically to aircraft matching a type and serial number range — no human triages applicability. Athian Compliance encodes requirements with explicit applicability rules: commodity type, certification tier, geography, production method. When a standard revision is published, the engine evaluates every supplier-requirement pair in the database and flags exactly which ones are affected — without specialist triage. Applicability is a first-class data field on every requirement, not implicit context.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Basis</span>
+            <span class="basis-tag">external:</span>
+            <p class="field-value">FAA ADs encode explicit applicability predicates (aircraft type certificate + serial range) that the airworthiness database evaluates automatically. The pattern is well-documented in MRO software (Flydocs, CAMP, Traxxall); the compliance software world has no direct equivalent.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Why it matters</span>
+            <p class="why-matters">The compliance specialist's most error-prone job is deciding which suppliers are affected when a standard changes. Automating that triage removes the highest-risk manual step and makes spec versioning a product feature rather than a coordination burden.</p>
+          </div>
+          <div class="meeting-test-field">
+            <span class="meeting-test-label">Meeting test</span>
+            <p class="meeting-test-value">"FSSC 22000 version 6 drops and in 30 seconds the platform shows exactly which suppliers and which requirements are affected — the specialist never has to read the diff."</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="idea-card">
+        <div class="card-header">
+          <span class="card-index">03</span>
+          <h2 class="card-title">Verifiability Coverage Report</h2>
+        </div>
+        <div class="card-body">
+          <div class="card-field">
+            <span class="field-label">Summary</span>
+            <p class="field-value">The platform generates a verifiability map of the entire compliance spec: each requirement scored as auto-verifiable (primary source exists and is queryable), document-verifiable (can be extracted from uploaded evidence), or audit-only (requires physical inspection). CPG companies see their actual verification coverage percentage for the first time, rather than conflating "we have documentation" with "this is verified." The map updates automatically as new registry connectors are added.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Basis</span>
+            <span class="basis-tag">reasoned:</span>
+            <p class="field-value">No current compliance software distinguishes between verified claims and documented claims — the distinction only surfaces after a food safety incident or regulatory action. Making it visible proactively reframes what "compliant" actually means.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Why it matters</span>
+            <p class="why-matters">CPG companies facing regulatory scrutiny discover in the worst possible moment that their "compliance documentation" was supplier-submitted self-attestation. A coverage report gives them defensible, auditable accuracy claims before that moment arrives.</p>
+          </div>
+          <div class="meeting-test-field">
+            <span class="meeting-test-label">Meeting test</span>
+            <p class="meeting-test-value">"We can tell a CPG buyer that 64% of their spec is machine-verified against primary sources and 36% is based on supplier-submitted documents — no one in this industry has ever been able to make that distinction."</p>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <!-- AXIS 2: EVIDENCE COLLECTION -->
+  <div class="axis-group">
+    <div class="axis-header">
+      <span class="axis-number">02</span>
+      <span class="axis-name">Evidence Collection</span>
+      <span class="axis-count">3 ideas</span>
+    </div>
+    <div class="ideas-grid">
+
+      <article class="idea-card">
+        <div class="card-header">
+          <span class="card-index">04</span>
+          <h2 class="card-title">Registry Connector Network (Primary-Source Verification)</h2>
+        </div>
+        <div class="card-body">
+          <div class="card-field">
+            <span class="field-label">Summary</span>
+            <p class="field-value">Medical credentialing organizations query the issuing body directly — the state medical board, DEA, specialty boards — rather than accepting practitioner-submitted documents. Athian Compliance builds this connector layer for the certification registries that already publish queryable databases: FSSC 22000 Public Register Plus (confirmed API as of 2026), GlobalG.A.P. CertifierOS API (launched November 2025), NSF, USDA Organic (ORCA), Sedex. A supplier authorizes the platform once; on onboarding and renewal, the platform fetches their certifications from source. They never upload a cert they've already earned elsewhere.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Basis</span>
+            <span class="basis-tag">external:</span>
+            <p class="field-value">FSSC 22000 and GlobalG.A.P. both have live APIs confirmed in 2025–2026. Verifiable (medical credentialing) reports 97% of PSVs are automated direct-to-source queries returning results in seconds. NCQA and URAC require this model by standard. The infrastructure exists in food/ag; no platform has connected to it yet.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Why it matters</span>
+            <p class="why-matters">Document upload is the most friction-heavy part of supplier onboarding and the most common failure mode. Eliminating upload for machine-readable registries removes the failure entirely and produces evidence with higher integrity than a supplier-submitted PDF — because the source is the issuing body, not the supplier.</p>
+          </div>
+          <div class="meeting-test-field">
+            <span class="meeting-test-label">Meeting test</span>
+            <p class="meeting-test-value">"A supplier with SQF, USDA Organic, and GlobalG.A.P. certs onboards in four minutes because we fetched all three from the registries — they never uploaded a single document."</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="idea-card">
+        <div class="card-header">
+          <span class="card-index">05</span>
+          <h2 class="card-title">Open Authorization Flow for Certification Pull</h2>
+        </div>
+        <div class="card-body">
+          <div class="card-field">
+            <span class="field-label">Summary</span>
+            <p class="field-value">Modeled on open banking (PSD2 / CFPB Section 1033): the supplier authorizes Athian Compliance to pull their certification records directly from issuing bodies, rather than uploading documents themselves. The authorization is the product — a signed, time-bounded token that lets the platform fetch and re-verify on renewal cycles without the supplier taking any action. Suppliers manage a single authorization dashboard that shows which buyers are pulling which data; they can revoke access per-buyer at any time.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Basis</span>
+            <span class="basis-tag">external:</span>
+            <p class="field-value">CFPB Section 1033 (finalized October 2024) codifies OAuth-style authorization for financial data. The structural preconditions for an equivalent "open compliance" pattern are identical: queryable registries, multiple-buyer problem, consent management. No one has applied this architecture to food/ag certification data.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Why it matters</span>
+            <p class="why-matters">Authorization-as-product inverts the supplier relationship from passive evidence submitter to active consent manager. It also creates the infrastructure for the multi-buyer compliance profile — you cannot have one profile shared across buyers without the authorization layer underneath it.</p>
+          </div>
+          <div class="meeting-test-field">
+            <span class="meeting-test-label">Meeting test</span>
+            <p class="meeting-test-value">"The supplier authorizes once, and for the next two years every CPG buyer who needs their SQF cert gets it automatically on renewal — the supplier never touches it again."</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="idea-card">
+        <div class="card-header">
+          <span class="card-index">06</span>
+          <h2 class="card-title">Adverse Signal Aggregation Layer</h2>
+        </div>
+        <div class="card-body">
+          <div class="card-field">
+            <span class="field-label">Summary</span>
+            <p class="field-value">Compliance-relevant evidence already exists in public databases without supplier action: FDA warning letters and import alerts (OASIS), EPA violations (ECHO), USDA FSIS inspection records, trade databases (Panjiva, ImportGenius) for supply chain provenance, and commercial lab network results (Eurofins, Mérieux NutriSciences, NSF). The platform builds a continuous aggregation layer against these sources, flagging adverse signals in a supplier's public record automatically. Compliance becomes intelligence, not just documentation — and it runs continuously rather than at point-in-time submission.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Basis</span>
+            <span class="basis-tag">external:</span>
+            <p class="field-value">FDA OASIS, EPA ECHO, and USDA FSIS all publish machine-readable public records. Financial intelligence firms (D&amp;B, Coface) aggregate similar signals for credit underwriting. No compliance platform currently synthesizes public regulatory signals into a supplier risk picture.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Why it matters</span>
+            <p class="why-matters">A supplier can be perfectly compliant on paper while carrying active FDA warning letters or ongoing EPA violations. Current compliance workflows don't surface these signals because they sit outside the document submission loop. Continuous aggregation makes compliance a living state rather than a snapshot.</p>
+          </div>
+          <div class="meeting-test-field">
+            <span class="meeting-test-label">Meeting test</span>
+            <p class="meeting-test-value">"The platform flags that a supplier received an FDA warning letter 60 days ago — a fact no one on the CPG team knew — without anyone submitting anything."</p>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <!-- AXIS 3: SUPPLIER EXPERIENCE -->
+  <div class="axis-group">
+    <div class="axis-header">
+      <span class="axis-number">03</span>
+      <span class="axis-name">Supplier Experience</span>
+      <span class="axis-count">2 ideas</span>
+    </div>
+    <div class="ideas-grid">
+
+      <article class="idea-card">
+        <div class="card-header">
+          <span class="card-index">07</span>
+          <h2 class="card-title">The Portable Compliance Profile (Multi-Buyer Network)</h2>
+        </div>
+        <div class="card-body">
+          <div class="card-field">
+            <span class="field-label">Summary</span>
+            <p class="field-value">Suppliers today submit the same evidence to 5, 10, 20 different CPG buyers. Athian Compliance lets a supplier build a compliance profile once and make it queryable by multiple buyers — changing the economic model from "buyer pays per submission request" to "supplier pays to maintain and publish the profile; buyers pay to query it." Each buyer sets their own threshold requirements; the platform maps the supplier's profile against each buyer's spec without any additional supplier action. Compliance status becomes an asset the supplier owns, not a tax they pay repeatedly.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Basis</span>
+            <span class="basis-tag">external:</span>
+            <p class="field-value">Sedex SMETA audits demonstrate buyers accept shared audit data when the framework is agreed — one audit report is shared with multiple buyers via the platform. Assent's supplier portal similarly positions itself as a unified inbox for managing compliance requests from multiple customers. The pattern is proven in labor standards and conflict minerals; no equivalent exists for food safety or GHG certifications.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Why it matters</span>
+            <p class="why-matters">This is the fundamental economic reframe: it turns suppliers from passive compliance subjects into active participants with real incentive to maintain their profile. It also creates a network effect — the more buyers query the platform, the more valuable a supplier's investment in their profile becomes.</p>
+          </div>
+          <div class="meeting-test-field">
+            <span class="meeting-test-label">Meeting test</span>
+            <p class="meeting-test-value">"A supplier builds their compliance profile once and sells access to 12 CPG buyers — they've turned a compliance cost center into a sales asset."</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="idea-card">
+        <div class="card-header">
+          <span class="card-index">08</span>
+          <h2 class="card-title">Certification Investment Advisor (Supplier as Buyer)</h2>
+        </div>
+        <div class="card-body">
+          <div class="card-field">
+            <span class="field-label">Summary</span>
+            <p class="field-value">Rather than showing a supplier what they're missing against a specific buyer's spec, the platform shows what certifications would unlock the most buyers across the entire network — treating compliance investment as a strategic decision. A supplier considering SQF Level 3 can see exactly how many buyers in the network require it, how much faster onboarding moves with it, and what it's worth in expanded market access. The platform functions as a certification ROI advisor for suppliers, with data no individual CPG buyer relationship could provide.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Basis</span>
+            <span class="basis-tag">reasoned:</span>
+            <p class="field-value">Suppliers make certification investment decisions largely blind — they don't know what a cert is worth across the buyer landscape. A platform operating across multiple CPG buyers has unique aggregate data to answer that question. This is the natural supply-side data product of a multi-buyer network.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Why it matters</span>
+            <p class="why-matters">It gives Athian Compliance a supplier-facing value proposition independent of any specific CPG buyer relationship — suppliers have a reason to engage with the platform proactively before a buyer asks them to. That changes the company's distribution economics entirely.</p>
+          </div>
+          <div class="meeting-test-field">
+            <span class="meeting-test-label">Meeting test</span>
+            <p class="meeting-test-value">"Suppliers are signing up for Athian Compliance before any of their CPG buyers asked them to — because the platform shows them exactly what certifications would open new markets."</p>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <!-- AXIS 4: REVIEW AND REPORTING -->
+  <div class="axis-group">
+    <div class="axis-header">
+      <span class="axis-number">04</span>
+      <span class="axis-name">Review &amp; Reporting</span>
+      <span class="axis-count">2 ideas</span>
+    </div>
+    <div class="ideas-grid">
+
+      <article class="idea-card">
+        <div class="card-header">
+          <span class="card-index">09</span>
+          <h2 class="card-title">Compliance Confidence Score (Continuous, Threshold-Settable)</h2>
+        </div>
+        <div class="card-body">
+          <div class="card-field">
+            <span class="field-label">Summary</span>
+            <p class="field-value">Binary pass/fail compliance replaced by a continuous score from 0–100. The score improves as evidence accrues — a supplier with a year of clean audit history scores higher than one who just passed their first review with minimum documentation. CPG buyers set their own minimum score threshold rather than working from a binary gate; different buyers set different floors for different commodity categories. The score degrades as evidence approaches expiry or as adverse public signals are detected, creating a dynamic compliance state rather than a point-in-time snapshot.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Basis</span>
+            <span class="basis-tag">external:</span>
+            <p class="field-value">FICO replaced binary creditworthiness with continuous scoring. ESG rating platforms (Sustainalytics, MSCI ESG) apply the same model to corporate sustainability. Risk-tiered supplier monitoring is already emerging inside buyer platforms in 2025 — but scores exist only within buyer systems, are not portable, and are not supplier-owned. The credit-score analogue with a supplier-facing dimension does not yet exist.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Why it matters</span>
+            <p class="why-matters">A continuous, portable score unlocks new use cases that binary compliance cannot support: supplier financing (lenders set their own compliance floor), insurance underwriting, tiered pricing from CPG buyers. The data product becomes a reference asset that financial institutions can index against, not just a procurement gate.</p>
+          </div>
+          <div class="meeting-test-field">
+            <span class="meeting-test-label">Meeting test</span>
+            <p class="meeting-test-value">"A bank is using Athian Compliance scores to underwrite supplier financing — the same data that previously only answered 'can we source from them' is now answering 'what interest rate do we charge them.'"</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="idea-card">
+        <div class="card-header">
+          <span class="card-index">10</span>
+          <h2 class="card-title">Exception Queue (Specialist as Exception Handler)</h2>
+        </div>
+        <div class="card-body">
+          <div class="card-field">
+            <span class="field-label">Summary</span>
+            <p class="field-value">The compliance specialist's interface is not a list of suppliers to review — it's a priority queue of decisions the AI cannot resolve with sufficient confidence. AI pre-assessment handles everything it can: verifiable certifications against primary sources, quantitative thresholds, non-expiring documents, clean history. What surfaces to the specialist is only the genuinely uncertain cases: ambiguous evidence, borderline scores, qualitative process requirements, expired certs under renewal, first-time suppliers with thin history. The specialist never opens a case the system can close automatically.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Basis</span>
+            <span class="basis-tag">reasoned:</span>
+            <p class="field-value">Clinical decision support, fraud review, and content moderation have all scaled without growing specialist headcount proportionally by routing only genuinely uncertain cases to humans. The compliance specialist-as-reviewer model assumes uniform attention across all suppliers — the opposite of where expertise is valuable.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Why it matters</span>
+            <p class="why-matters">A compliance team of one specialist can manage 10x more suppliers if they only handle cases that actually need their judgment. The platform's capacity story becomes "how accurately can the AI pre-assess" rather than "how many specialists do you have." That changes the unit economics of the business.</p>
+          </div>
+          <div class="meeting-test-field">
+            <span class="meeting-test-label">Meeting test</span>
+            <p class="meeting-test-value">"One specialist is managing 400 active suppliers — because the AI handles 92% of evaluations automatically and she only reviews the 32 cases where the evidence was genuinely ambiguous."</p>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <!-- AXIS 5: STANDARD LIFECYCLE -->
+  <div class="axis-group">
+    <div class="axis-header">
+      <span class="axis-number">05</span>
+      <span class="axis-name">Standard Lifecycle</span>
+      <span class="axis-count">2 ideas</span>
+    </div>
+    <div class="ideas-grid">
+
+      <article class="idea-card">
+        <div class="card-header">
+          <span class="card-index">11</span>
+          <h2 class="card-title">Versioned Standard Registry with Automated Propagation</h2>
+        </div>
+        <div class="card-body">
+          <div class="card-field">
+            <span class="field-label">Summary</span>
+            <p class="field-value">Standards are versioned as first-class objects: FSSC 22000 v5.1 and FSSC 22000 v6.0 are distinct entities with explicit diff relationships. When a new version is published, the platform ingests the diff (AI-extracted from the standard document), maps it against the requirement graph, applies applicability rules against every active supplier, and generates a propagation plan: which requirements changed, which suppliers are affected, what re-evaluation is required, by when. The specialist reviews a ranked propagation plan, not an undifferentiated list of potentially-affected suppliers.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Basis</span>
+            <span class="basis-tag">reasoned:</span>
+            <p class="field-value">Current compliance software treats standard versioning as a template configuration problem — the propagation burden (which existing evaluations are now wrong) is left entirely to human triage. Software dependency graphs solve the equivalent problem in code: semantic diff, affected dependency identification, required updates surfaced automatically. No one has applied this pattern to compliance standard lifecycle management.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Why it matters</span>
+            <p class="why-matters">Standard changes are currently a fire drill: specialists learn about revisions informally, manually audit which suppliers are affected, and re-evaluate retroactively under time pressure. Automated propagation makes a standard change a managed workflow event rather than an organizational crisis.</p>
+          </div>
+          <div class="meeting-test-field">
+            <span class="meeting-test-label">Meeting test</span>
+            <p class="meeting-test-value">"GFSI issues a scope expansion and within 24 hours the platform has identified 47 affected suppliers ranked by risk with re-evaluation tasks queued — without anyone reading the diff manually."</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="idea-card">
+        <div class="card-header">
+          <span class="card-index">12</span>
+          <h2 class="card-title">Multi-Standard Equivalence Mapping</h2>
+        </div>
+        <div class="card-body">
+          <div class="card-field">
+            <span class="field-label">Summary</span>
+            <p class="field-value">SQF Edition 9 and FSSC 22000 share large portions of their food safety management requirements. GFSI explicitly benchmarks and documents equivalence between member schemes. Athian Compliance operationalizes these relationships as machine-readable inference rules: if a supplier satisfies requirement X in SQF, the platform automatically satisfies the equivalent requirement Y in FSSC 22000 — without re-submission. A CPG buyer requiring FSSC 22000 can source from an SQF-certified supplier with a machine-reasoned, auditable equivalence bridge rather than demanding re-certification. Buyers can optionally restrict this if primary certification is required.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Basis</span>
+            <span class="basis-tag">external:</span>
+            <p class="field-value">GFSI explicitly benchmarks and recognizes equivalence between SQF, FSSC 22000, BRC, and GlobalG.A.P. — the relationships are documented in GFSI Guidance Documents. No compliance platform has operationalized these equivalence relationships as automated inference rules despite the published documentation existing.</p>
+          </div>
+          <div class="card-field">
+            <span class="field-label">Why it matters</span>
+            <p class="why-matters">Multi-standard re-certification is a major cost burden for suppliers working with multiple CPG buyers with different requirements. Equivalence mapping reduces that overhead and expands the available supply base for CPG companies — which makes the platform valuable to both sides of the network simultaneously.</p>
+          </div>
+          <div class="meeting-test-field">
+            <span class="meeting-test-label">Meeting test</span>
+            <p class="meeting-test-value">"A CPG buyer requiring FSSC 22000 can now source from 40% more suppliers because the platform proves their SQF certs satisfy the overlapping requirements — verified, auditable, and defensible in an FDA inspection."</p>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-meta">Athian Compliance · 12 ideas · 5 axes · 2026-06-22</div>
+  <div class="footer-next">Next: /ce-brainstorm → /ce-plan</div>
+</footer>
+
+</body>
+</html>

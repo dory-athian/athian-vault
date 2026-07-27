@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ideation: Athian Compliance — Assumption-Breaking &amp; Leverage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  /* === Token system === */
+  :root {
+    --ground: #F5F0E8;
+    --ground-2: #EDE7D8;
+    --ground-3: #E2D9C8;
+    --text: #1C1A16;
+    --text-muted: #5A5448;
+    --text-faint: #9A9082;
+    --accent: #2A7A6F;
+    --accent-soft: #D4EAE7;
+    --accent-2: #8B5E3C;
+    --accent-2-soft: #EDE0D4;
+    --rule: #C8BFB0;
+    --rule-strong: #A8A090;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--ground);
+    color: var(--text);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* === Layout === */
+  .doc-wrap {
+    max-width: 1000px;
+    margin-inline: auto;
+    padding: 0 2rem 6rem;
+  }
+
+  /* === Header === */
+  .doc-header {
+    padding: 3.5rem 0 2rem;
+    border-bottom: 1.5px solid var(--rule-strong);
+    margin-bottom: 2.5rem;
+  }
+
+  .doc-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    text-transform: lowercase;
+    margin-bottom: 0.85rem;
+    display: block;
+  }
+
+  .doc-title {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: clamp(1.9rem, 4vw, 2.8rem);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    max-width: 680px;
+    margin-bottom: 1.25rem;
+  }
+
+  .doc-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.5rem;
+    align-items: baseline;
+  }
+
+  .doc-meta-item {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--text-muted);
+  }
+
+  .doc-meta-item span {
+    color: var(--text-faint);
+    margin-right: 0.3em;
+  }
+
+  /* === Stats strip === */
+  .stats-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 3rem;
+  }
+
+  .stat-cell {
+    background: var(--ground);
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .stat-value {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.9rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text);
+  }
+
+  .stat-label {
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  /* === Section anatomy === */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--accent);
+    text-transform: lowercase;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  /* === Topic context block === */
+  .context-block {
+    background: var(--ground-2);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 3rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem 2.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .context-block { grid-template-columns: 1fr; }
+  }
+
+  .context-group-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--accent);
+    text-transform: lowercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+
+  .context-group p,
+  .context-group li {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .context-group ul {
+    padding-left: 1.1rem;
+  }
+
+  .context-group li + li { margin-top: 0.25rem; }
+
+  /* === Axes === */
+  .axes-section {
+    margin-bottom: 3rem;
+  }
+
+  .axes-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .axis-chip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid rgba(42, 122, 111, 0.2);
+    border-radius: 3px;
+    padding: 0.3rem 0.65rem;
+    letter-spacing: 0.03em;
+  }
+
+  /* === Jump list === */
+  .jump-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: 2.5rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--ground-2);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+  }
+
+  .jump-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: var(--text);
+  }
+
+  .jump-item:hover .jump-title { color: var(--accent); }
+  .jump-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+
+  .jump-rank {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-faint);
+    flex-shrink: 0;
+    width: 1.5rem;
+  }
+
+  .jump-title {
+    font-size: 14px;
+    font-weight: 500;
+    flex: 1;
+    transition: color 0.15s;
+  }
+
+  .jump-chips {
+    display: flex;
+    gap: 0.4rem;
+    flex-shrink: 0;
+  }
+
+  .chip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    border-radius: 3px;
+    padding: 0.15rem 0.45rem;
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+
+  .chip-axis {
+    color: var(--text-muted);
+    background: var(--ground-3);
+    border-color: var(--rule);
+  }
+
+  .chip-conf-high {
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-color: rgba(42, 122, 111, 0.2);
+  }
+
+  .chip-conf-med {
+    color: var(--accent-2);
+    background: var(--accent-2-soft);
+    border-color: rgba(139, 94, 60, 0.2);
+  }
+
+  .chip-cx-s { color: var(--text-faint); background: transparent; border-color: var(--rule); }
+  .chip-cx-m { color: var(--text-muted); background: transparent; border-color: var(--rule); }
+  .chip-cx-l { color: var(--text); background: transparent; border-color: var(--rule-strong); }
+
+  /* === Idea cards === */
+  .ideas-section {
+    margin-bottom: 3.5rem;
+  }
+
+  .idea-card {
+    background: var(--ground);
+    border: 1px solid var(--rule);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    transition: border-color 0.15s;
+  }
+
+  .idea-card:target {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(42, 122, 111, 0.12);
+  }
+
+  .idea-header {
+    padding: 1.25rem 1.5rem 1rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .idea-annotation {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--text-faint);
+    margin-bottom: 0.5rem;
+    display: block;
+    word-break: break-word;
+  }
+
+  .idea-annotation .key { color: var(--accent-2); }
+  .idea-annotation .value { color: var(--text-muted); }
+
+  .idea-rank-title {
+    display: flex;
+    align-items: baseline;
+    gap: 0.65rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .idea-rank {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+    flex-shrink: 0;
+  }
+
+  .idea-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--text);
+  }
+
+  .idea-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .idea-frame-chip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    border: 1px solid transparent;
+  }
+
+  .frame-assumption {
+    color: #7A4520;
+    background: #F2E0D0;
+    border-color: rgba(122, 69, 32, 0.15);
+  }
+
+  .frame-leverage {
+    color: #1E6B61;
+    background: var(--accent-soft);
+    border-color: rgba(42, 122, 111, 0.2);
+  }
+
+  /* === Details sections === */
+  .idea-body {
+    padding: 0;
+  }
+
+  .idea-summary-prose {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--rule);
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--text);
+    max-width: 72ch;
+  }
+
+  .idea-details {
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .idea-details:last-child {
+    border-bottom: none;
+  }
+
+  .idea-details summary {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+    transition: color 0.12s, background 0.12s;
+  }
+
+  .idea-details summary::-webkit-details-marker { display: none; }
+
+  .idea-details summary::before {
+    content: '+';
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--text-faint);
+    transition: transform 0.15s, color 0.12s;
+    flex-shrink: 0;
+    width: 1rem;
+    text-align: center;
+  }
+
+  .idea-details[open] summary::before {
+    content: '−';
+    color: var(--accent);
+  }
+
+  .idea-details summary:hover { color: var(--text); background: var(--ground-2); }
+
+  .idea-details-body {
+    padding: 0 1.5rem 1.25rem;
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+
+  .idea-dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1.25rem;
+    align-items: start;
+  }
+
+  .idea-dl dt {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--text-faint);
+    text-transform: lowercase;
+    letter-spacing: 0.04em;
+    padding-top: 0.15rem;
+    white-space: nowrap;
+  }
+
+  .idea-dl dd {
+    color: var(--text-muted);
+    font-size: 13.5px;
+    line-height: 1.65;
+  }
+
+  .basis-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--accent-2);
+    background: var(--accent-2-soft);
+    border: 1px solid rgba(139, 94, 60, 0.15);
+    border-radius: 3px;
+    padding: 0.1rem 0.4rem;
+    margin-right: 0.4rem;
+    vertical-align: middle;
+  }
+
+  .meeting-test-callout {
+    margin-top: 1rem;
+    background: var(--ground-2);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 3px 3px 0;
+    padding: 0.65rem 1rem;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--text-muted);
+  }
+
+  /* === Diagram === */
+  .diagram-wrap {
+    margin: 1.25rem 0;
+    overflow-x: auto;
+  }
+
+  /* === Rejection table === */
+  .rejection-section {
+    margin-bottom: 3rem;
+  }
+
+  .rejection-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .rejection-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: lowercase;
+    letter-spacing: 0.05em;
+    color: var(--text-faint);
+    text-align: left;
+    padding: 0.6rem 1rem 0.6rem 0;
+    border-bottom: 1.5px solid var(--rule-strong);
+  }
+
+  .rejection-table td {
+    padding: 0.65rem 1rem 0.65rem 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    color: var(--text-muted);
+  }
+
+  .rejection-table tr:last-child td { border-bottom: none; }
+
+  .rejection-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    text-decoration: line-through;
+    text-decoration-color: var(--text-faint);
+  }
+
+  /* === Footer === */
+  .composition-signal {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    margin-top: 4rem;
+  }
+
+  /* === Responsive === */
+  @media (max-width: 640px) {
+    .doc-wrap { padding: 0 1.25rem 4rem; }
+    .doc-header { padding: 2rem 0 1.5rem; }
+    .jump-chips { display: none; }
+    .idea-dl { grid-template-columns: 1fr; }
+    .idea-dl dt { padding-bottom: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0ms !important; }
+  }
+</style>
+</head>
+<body>
+<div class="doc-wrap">
+
+  <!-- Header -->
+  <header class="doc-header">
+    <span class="doc-eyebrow">ce-ideate · elsewhere-software · 2026-06-22</span>
+    <h1 class="doc-title">Athian Compliance: What We're Treating as Fixed</h1>
+    <div class="doc-meta-row">
+      <span class="doc-meta-item"><span>focus:</span>assumption-breaking + leverage/compounding</span>
+      <span class="doc-meta-item"><span>domain:</span>Scope 3 livestock supply chain compliance</span>
+      <span class="doc-meta-item"><span>primary user:</span>compliance specialist at volume</span>
+    </div>
+  </header>
+
+  <!-- Stats strip -->
+  <div class="stats-strip" role="region" aria-label="Summary counts">
+    <div class="stat-cell">
+      <span class="stat-value">7</span>
+      <span class="stat-label">ranked survivors</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-value">8</span>
+      <span class="stat-label">raw candidates</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-value">5</span>
+      <span class="stat-label">axes covered</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-value">10</span>
+      <span class="stat-label">design assumptions named</span>
+    </div>
+  </div>
+
+  <!-- Topic Context -->
+  <section class="axes-section" aria-labelledby="context-heading">
+    <div class="section-header">
+      <span class="section-label">topic_context</span>
+      <h2 class="section-title" id="context-heading">Grounding Context</h2>
+    </div>
+    <div class="context-block">
+      <div class="context-group">
+        <p class="context-group-title">product</p>
+        <p>DSL-first compliance platform for CPG companies managing Scope 3 supplier emissions in the livestock supply chain. Requirements are machine-readable, typed with unit, threshold, time window, and accepted source. AI pre-reviews evidence; the compliance specialist is reviewer/approver at volume.</p>
+      </div>
+      <div class="context-group">
+        <p class="context-group-title">key assumptions in scope</p>
+        <ul>
+          <li>Suppliers push evidence to the platform</li>
+          <li>Specialists review each supplier individually</li>
+          <li>Standards are authored externally and imported</li>
+          <li>Compliance is periodic, not continuous</li>
+          <li>The DSL is designed by engineers</li>
+          <li>A supplier passes or fails each requirement</li>
+          <li>The published standard is the authority</li>
+        </ul>
+      </div>
+      <div class="context-group">
+        <p class="context-group-title">external signals used</p>
+        <ul>
+          <li>NIST OSCAL catalog → profile → plan separation</li>
+          <li>W3C Verifiable Credentials (issued once, verified anywhere)</li>
+          <li>Vanta/Drata continuous evidence monitoring</li>
+          <li>SBOM pattern: format as the leverage point</li>
+          <li>EcoVadis fixed schema = incumbent's structural constraint</li>
+          <li>CSDDD July 2029 deadline as forcing function</li>
+          <li>60% of compliance failures from third parties (Gartner 2023)</li>
+          <li>Large suppliers managing 15–30 simultaneous portals</li>
+        </ul>
+      </div>
+      <div class="context-group">
+        <p class="context-group-title">frames applied</p>
+        <ul>
+          <li><strong>Assumption-breaking:</strong> invert a design assumption, design from its opposite</li>
+          <li><strong>Leverage &amp; compounding:</strong> decisions that make every subsequent move cheaper or stronger</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Topic Axes -->
+  <section class="axes-section" aria-labelledby="axes-heading">
+    <div class="section-header">
+      <span class="section-label">topic_axes</span>
+      <h2 class="section-title" id="axes-heading">Topic Axes</h2>
+    </div>
+    <div class="axes-grid">
+      <span class="axis-chip">standard encoding</span>
+      <span class="axis-chip">evidence collection</span>
+      <span class="axis-chip">supplier experience</span>
+      <span class="axis-chip">review and reporting</span>
+      <span class="axis-chip">standard lifecycle</span>
+    </div>
+  </section>
+
+  <!-- Ranked Ideas -->
+  <section class="ideas-section" aria-labelledby="ideas-heading">
+    <div class="section-header">
+      <span class="section-label">ranked_ideas</span>
+      <h2 class="section-title" id="ideas-heading">Ranked Ideas</h2>
+    </div>
+
+    <!-- Jump list -->
+    <nav class="jump-list" aria-label="Jump to idea">
+      <a href="#i1" class="jump-item">
+        <span class="jump-rank">01</span>
+        <span class="jump-title">Evidence Does Not Come from the Supplier</span>
+        <span class="jump-chips">
+          <span class="chip chip-axis">evidence collection</span>
+          <span class="chip chip-conf-high">high conf</span>
+          <span class="chip chip-cx-m">cx M</span>
+        </span>
+      </a>
+      <a href="#i2" class="jump-item">
+        <span class="jump-rank">02</span>
+        <span class="jump-title">Cross-Buyer Requirement Normalization as a Data Flywheel</span>
+        <span class="jump-chips">
+          <span class="chip chip-axis">standard encoding</span>
+          <span class="chip chip-conf-high">high conf</span>
+          <span class="chip chip-cx-m">cx M</span>
+        </span>
+      </a>
+      <a href="#i3" class="jump-item">
+        <span class="jump-rank">03</span>
+        <span class="jump-title">Verifiable Credential Issuance for Satisfied Controls</span>
+        <span class="jump-chips">
+          <span class="chip chip-axis">supplier experience</span>
+          <span class="chip chip-conf-high">high conf</span>
+          <span class="chip chip-cx-l">cx L</span>
+        </span>
+      </a>
+      <a href="#i4" class="jump-item">
+        <span class="jump-rank">04</span>
+        <span class="jump-title">The Specialist Doesn't Review Suppliers</span>
+        <span class="jump-chips">
+          <span class="chip chip-axis">review and reporting</span>
+          <span class="chip chip-conf-high">high conf</span>
+          <span class="chip chip-cx-m">cx M</span>
+        </span>
+      </a>
+      <a href="#i5" class="jump-item">
+        <span class="jump-rank">05</span>
+        <span class="jump-title">The Standard Is Not the Source of Truth</span>
+        <span class="jump-chips">
+          <span class="chip chip-axis">standard lifecycle</span>
+          <span class="chip chip-conf-med">med conf</span>
+          <span class="chip chip-cx-l">cx L</span>
+        </span>
+      </a>
+      <a href="#i6" class="jump-item">
+        <span class="jump-rank">06</span>
+        <span class="jump-title">The DSL Is Not Designed by Engineers</span>
+        <span class="jump-chips">
+          <span class="chip chip-axis">standard encoding</span>
+          <span class="chip chip-conf-high">high conf</span>
+          <span class="chip chip-cx-s">cx S</span>
+        </span>
+      </a>
+      <a href="#i7" class="jump-item">
+        <span class="jump-rank">07</span>
+        <span class="jump-title">Standard Change Diff Engine with Auto-Reprofile</span>
+        <span class="jump-chips">
+          <span class="chip chip-axis">standard lifecycle</span>
+          <span class="chip chip-conf-high">high conf</span>
+          <span class="chip chip-cx-m">cx M</span>
+        </span>
+      </a>
+    </nav>
+
+    <!-- Idea 1 -->
+    <article id="i1" class="idea-card">
+      <div class="idea-header">
+        <span class="idea-annotation"><span class="key">broken_assumption:</span> <span class="value">"supplier pushes evidence to the platform"</span></span>
+        <div class="idea-rank-title">
+          <span class="idea-rank">01</span>
+          <h3 class="idea-title">Evidence Does Not Come from the Supplier</h3>
+        </div>
+        <div class="idea-chip-row">
+          <span class="chip frame-assumption">assumption-breaking</span>
+          <span class="chip chip-axis">evidence collection</span>
+          <span class="chip chip-conf-high">confidence 88%</span>
+          <span class="chip chip-cx-m">complexity M</span>
+        </div>
+      </div>
+      <div class="idea-body">
+        <p class="idea-summary-prose">
+          The DSL's <code>accepted_sources</code> field for each requirement already encodes who can attest to what. Invert the submission model: Athian queries those authoritative third-party sources directly on a schedule — USDA certification databases, lab testing registries, third-party auditors' APIs — and pre-populates compliance evidence before suppliers are ever prompted. Suppliers confirm or annotate; they do not submit from scratch. The compliance specialist's queue fills with pre-matched evidence, not blank requests.
+        </p>
+
+        <!-- Diagram: push vs pull -->
+        <div class="diagram-wrap" role="img" aria-label="Evidence flow comparison: push model vs pull model">
+          <svg viewBox="0 0 680 160" width="680" height="160" style="max-width:100%;display:block;" xmlns="http://www.w3.org/2000/svg" font-family="'DM Sans', sans-serif" font-size="13">
+            <!-- Push model (left) -->
+            <rect x="20" y="30" width="110" height="36" rx="4" fill="#EDE7D8" stroke="#C8BFB0" stroke-width="1"/>
+            <text x="75" y="53" text-anchor="middle" fill="#1C1A16" font-weight="500">Supplier</text>
+            <line x1="130" y1="48" x2="195" y2="48" stroke="#C8BFB0" stroke-width="1.5" marker-end="url(#arrow-muted)"/>
+            <rect x="196" y="30" width="118" height="36" rx="4" fill="#EDE7D8" stroke="#C8BFB0" stroke-width="1"/>
+            <text x="255" y="53" text-anchor="middle" fill="#1C1A16" font-weight="500">Platform</text>
+            <text x="160" y="43" text-anchor="middle" fill="#9A9082" font-size="11">submits</text>
+            <text x="150" y="90" text-anchor="middle" fill="#9A9082" font-size="11">CURRENT: push model</text>
+
+            <!-- Divider -->
+            <line x1="345" y1="20" x2="345" y2="140" stroke="#C8BFB0" stroke-width="1" stroke-dasharray="4,3"/>
+
+            <!-- Pull model (right) -->
+            <rect x="375" y="12" width="110" height="36" rx="4" fill="#EDE7D8" stroke="#C8BFB0" stroke-width="1"/>
+            <text x="430" y="35" text-anchor="middle" fill="#5A5448" font-size="12">USDA DB · Lab APIs</text>
+            <text x="430" y="50" text-anchor="middle" fill="#5A5448" font-size="11">Third-party auditors</text>
+
+            <rect x="375" y="70" width="110" height="36" rx="4" fill="#D4EAE7" stroke="rgba(42,122,111,0.3)" stroke-width="1.5"/>
+            <text x="430" y="93" text-anchor="middle" fill="#1C1A16" font-weight="600">Athian</text>
+
+            <rect x="555" y="70" width="105" height="36" rx="4" fill="#EDE7D8" stroke="#C8BFB0" stroke-width="1"/>
+            <text x="608" y="93" text-anchor="middle" fill="#1C1A16" font-weight="500">Specialist</text>
+
+            <line x1="430" y1="48" x2="430" y2="70" stroke="rgba(42,122,111,0.5)" stroke-width="1.5" marker-end="url(#arrow-accent)"/>
+            <line x1="485" y1="88" x2="555" y2="88" stroke="rgba(42,122,111,0.5)" stroke-width="1.5" marker-end="url(#arrow-accent)"/>
+            <text x="520" y="83" text-anchor="middle" fill="#2A7A6F" font-size="11">pre-matched</text>
+
+            <text x="492" y="128" text-anchor="middle" fill="#2A7A6F" font-size="11" font-weight="500">PROPOSED: pull model</text>
+
+            <defs>
+              <marker id="arrow-muted" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L8,3 z" fill="#C8BFB0"/>
+              </marker>
+              <marker id="arrow-accent" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L8,3 z" fill="rgba(42,122,111,0.7)"/>
+              </marker>
+            </defs>
+          </svg>
+        </div>
+
+        <details class="idea-details">
+          <summary>Basis, rationale &amp; downsides</summary>
+          <div class="idea-details-body">
+            <dl class="idea-dl">
+              <dt>basis</dt>
+              <dd><span class="basis-tag">external:</span> Vanta and Drata both pull evidence from cloud APIs rather than waiting for operators to upload — the architectural lesson is that "accepted sources" typed in the DSL are pull targets, not just validators. Corroborated by the SBOM pattern: once you name what a compliant artifact looks like, tooling emerges to generate and consume it automatically.</dd>
+              <dt>rationale</dt>
+              <dd>60% of compliance failures originate from third parties (Gartner 2023), yet the current model relies on those same third parties to submit evidence voluntarily. Moving to a pull model means evidence quality depends on Athian's integrations, not supplier diligence. Every new accepted-source integration compounds: each API added improves every requirement that references that source.</dd>
+              <dt>downsides</dt>
+              <dd>Integration surface is wide — each data source needs a connector. Some sources (small local auditors, paper-based certification bodies) have no API. Supplier expectations shift: they may resist losing control over what gets submitted.</dd>
+            </dl>
+            <div class="meeting-test-callout">Would we rather build the integration layer once or ask 400 suppliers to figure out how to submit PDFs correctly every year?</div>
+          </div>
+        </details>
+      </div>
+    </article>
+
+    <!-- Idea 2 -->
+    <article id="i2" class="idea-card">
+      <div class="idea-header">
+        <span class="idea-annotation"><span class="key">compounding_mechanism:</span> <span class="value">"each new buyer's DSL profile makes cross-buyer normalization more precise"</span></span>
+        <div class="idea-rank-title">
+          <span class="idea-rank">02</span>
+          <h3 class="idea-title">Cross-Buyer Requirement Normalization as a Data Flywheel</h3>
+        </div>
+        <div class="idea-chip-row">
+          <span class="chip frame-leverage">leverage &amp; compounding</span>
+          <span class="chip chip-axis">standard encoding</span>
+          <span class="chip chip-conf-high">confidence 90%</span>
+          <span class="chip chip-cx-m">complexity M</span>
+        </div>
+      </div>
+      <div class="idea-body">
+        <p class="idea-summary-prose">
+          When a supplier manages 15–30 compliance portals simultaneously, most of those requirements overlap — different buyers asking for the same underlying thing in different formats. Because Athian's DSL types every requirement with unit and threshold, the platform can compute when two requirements from different buyers are semantically equivalent. Over time, the accumulated buyer profiles create a requirement graph: one piece of evidence satisfies N requirements across M buyers automatically. This flywheel only works because of the DSL — EcoVadis cannot do it.
+        </p>
+        <details class="idea-details">
+          <summary>Basis, rationale &amp; downsides</summary>
+          <div class="idea-details-body">
+            <dl class="idea-dl">
+              <dt>basis</dt>
+              <dd><span class="basis-tag">external:</span> EcoVadis uses a fixed schema per standard — adding a new standard requires vendor development. That's the constraint; the opportunity is a DSL where requirement equivalence is computable rather than curated. Large suppliers managing 15–30 simultaneous portals have the demand signal: the compliance burden is duplicated across all their buyers, and a platform that collapses it gains direct supplier-side pull independent of any single buyer.</dd>
+              <dt>rationale</dt>
+              <dd>The flywheel runs on buyer volume: buyer #1 generates no normalization; buyer #50 means the platform has seen most requirement patterns and can pre-match new suppliers' overlaps automatically. The DSL's typed units and thresholds are what make semantic equivalence computable — this is a moat that is structural, not operational.</dd>
+              <dt>downsides</dt>
+              <dd>Cross-buyer normalization requires enough buyer volume to be useful — it's a slow-start flywheel. Equivalence decisions may be contested by buyers who believe their threshold is meaningfully different from another buyer's superficially similar requirement. Privacy considerations if buyers don't want their requirement language visible to each other.</dd>
+            </dl>
+            <div class="meeting-test-callout">If we can show a supplier that signing up with Athian collapses their 12-portal burden to one, we've created buyer-independent supplier demand. Does the DSL's type system already support equivalence computation?</div>
+          </div>
+        </details>
+      </div>
+    </article>
+
+    <!-- Idea 3 -->
+    <article id="i3" class="idea-card">
+      <div class="idea-header">
+        <span class="idea-annotation"><span class="key">compounding_mechanism:</span> <span class="value">"each satisfied control issues a credential; credential value compounds as relying-party count grows"</span></span>
+        <div class="idea-rank-title">
+          <span class="idea-rank">03</span>
+          <h3 class="idea-title">Verifiable Credential Issuance for Satisfied Controls</h3>
+        </div>
+        <div class="idea-chip-row">
+          <span class="chip frame-leverage">leverage &amp; compounding</span>
+          <span class="chip chip-axis">supplier experience</span>
+          <span class="chip chip-conf-high">confidence 88%</span>
+          <span class="chip chip-cx-l">complexity L</span>
+        </div>
+      </div>
+      <div class="idea-body">
+        <p class="idea-summary-prose">
+          When a supplier satisfies a DSL-typed requirement, Athian issues a W3C Verifiable Credential — a cryptographically signed machine-readable token — attesting to that satisfaction. The VC is portable: any buyer whose requirement maps to the same DSL control can verify it directly without re-auditing the supplier. The supplier proves once; the credential is reused everywhere that control appears. This transforms Athian from a compliance gate into a credential authority, which is a different and more durable market position.
+        </p>
+        <details class="idea-details">
+          <summary>Basis, rationale &amp; downsides</summary>
+          <div class="idea-details-body">
+            <dl class="idea-dl">
+              <dt>basis</dt>
+              <dd><span class="basis-tag">external:</span> W3C Verifiable Credentials standard (VC Data Model 2.0, 2024): a credential issued once is verifiable anywhere without contacting the issuer. The W3C Verifiable Supply Chain Community Group launched February 2026 — the ecosystem formation window is open. SOC 2's shared responsibility model is the operational analog: a vendor's SOC 2 inherits to customers, so compliance propagates through the stack.</dd>
+              <dt>rationale</dt>
+              <dd>Credential value compounds as the number of relying parties grows — each new buyer who accepts Athian-issued VCs increases the value of every existing credential in the system. The supplier-side demand mirrors the 15–30 portal problem: if a Bovaer adoption credential issued by Athian is accepted by any buyer who requires it, the supplier stops duplicating proof.</dd>
+              <dt>downsides</dt>
+              <dd>W3C VC infrastructure is still maturing in enterprise supply chains — buyer adoption requires a commitment to accept Athian-issued credentials, which may require commercial agreements. Credential revocation on standard changes needs careful design: a credential for "Bovaer adoption ≥ 90 days" issued under standard v1 may not satisfy standard v2. Complexity is genuinely high.</dd>
+            </dl>
+            <div class="meeting-test-callout">If we issue VCs today, do we become the verification authority for livestock Scope 3 credentials before anyone else? What does it take to get one buyer to accept them?</div>
+          </div>
+        </details>
+      </div>
+    </article>
+
+    <!-- Idea 4 -->
+    <article id="i4" class="idea-card">
+      <div class="idea-header">
+        <span class="idea-annotation"><span class="key">broken_assumption:</span> <span class="value">"the compliance specialist reviews each supplier"</span></span>
+        <div class="idea-rank-title">
+          <span class="idea-rank">04</span>
+          <h3 class="idea-title">The Specialist Doesn't Review Suppliers</h3>
+        </div>
+        <div class="idea-chip-row">
+          <span class="chip frame-assumption">assumption-breaking</span>
+          <span class="chip chip-axis">review and reporting</span>
+          <span class="chip chip-conf-high">confidence 85%</span>
+          <span class="chip chip-cx-m">complexity M</span>
+        </div>
+      </div>
+      <div class="idea-body">
+        <p class="idea-summary-prose">
+          The specialist's job is not to review suppliers — it's to set the quality bar. When DSL types are precise enough, the AI can auto-resolve clean matches: evidence maps to a typed requirement, threshold is met, confidence is high. The specialist reviews only exceptions. Every exception decision becomes a labeled training example: the specialist is teaching the model, not making the same judgment repeatedly. Review time per supplier falls toward zero for clean portfolios; the specialist's attention concentrates on the ambiguous cases where their judgment actually matters.
+        </p>
+        <details class="idea-details">
+          <summary>Basis, rationale &amp; downsides</summary>
+          <div class="idea-details-body">
+            <dl class="idea-dl">
+              <dt>basis</dt>
+              <dd><span class="basis-tag">external:</span> OSCAL machine-readability reduces audit duration from months to minutes by automating the mapping of evidence to controls. Academic accreditation is the structural analog: the accreditor defines outcomes (the DSL), not the path — the specialist's role is outcome verification, not process supervision. <span class="basis-tag">reasoned:</span> If a requirement is typed with unit, threshold, and accepted source, the match is binary and automatable. The specialist's judgment is only required at the boundary: evidence that partially satisfies, sources that aren't in the accepted list, threshold edge cases.</dd>
+              <dt>rationale</dt>
+              <dd>The compliance specialist is the bottleneck at scale. Auto-resolving clean matches removes the bottleneck for the easy cases — which, once the DSL is well-typed, should be the majority. The specialist's queue becomes a curated set of genuine ambiguity, and their decision time becomes training data. Each exceptional decision improves future auto-resolution.</dd>
+              <dt>downsides</dt>
+              <dd>Liability for auto-resolved decisions — who is responsible when a clean-match auto-resolution turns out wrong? Regulators may require human sign-off on all determinations regardless of confidence. Supplier gaming: once auto-resolution logic is understood, suppliers may optimize for algorithmic match rather than genuine compliance.</dd>
+            </dl>
+            <div class="meeting-test-callout">If we auto-resolve 80% of requirements, what does the liability structure look like? Does the specialist's sign-off on a batch still count as review?</div>
+          </div>
+        </details>
+      </div>
+    </article>
+
+    <!-- Idea 5 -->
+    <article id="i5" class="idea-card">
+      <div class="idea-header">
+        <span class="idea-annotation"><span class="key">broken_assumption:</span> <span class="value">"the published standard is the authority for what matters"</span></span>
+        <div class="idea-rank-title">
+          <span class="idea-rank">05</span>
+          <h3 class="idea-title">The Standard Is Not the Source of Truth</h3>
+        </div>
+        <div class="idea-chip-row">
+          <span class="chip frame-assumption">assumption-breaking</span>
+          <span class="chip chip-axis">standard lifecycle</span>
+          <span class="chip chip-conf-med">confidence 78%</span>
+          <span class="chip chip-cx-l">complexity L</span>
+        </div>
+      </div>
+      <div class="idea-body">
+        <p class="idea-summary-prose">
+          Over time, Athian's cross-customer compliance data reveals what actually predicts emissions outcomes — which thresholds matter, which requirements have low signal-to-noise. That empirical record can function as a parallel benchmark alongside the published standard: not replacing the standard, but annotating it with performance reality. A buyer could choose to weight requirements by predictive validity rather than treating every line item equally. This is the credit-scoring inversion: the standard body defines the schema, but the score is computed from a record, not self-reported.
+        </p>
+        <details class="idea-details">
+          <summary>Basis, rationale &amp; downsides</summary>
+          <div class="idea-details-body">
+            <dl class="idea-dl">
+              <dt>basis</dt>
+              <dd><span class="basis-tag">external:</span> Credit scoring replaces self-attestation with third-party record — the entity being scored does not control the inputs. EcoVadis's fixed schema means it cannot evolve its standard based on outcome data; its schema is the standard body's, not EcoVadis's. Athian, with a DSL that owns the control mapping, has the structural position to annotate requirements with empirical validity — not just compliance status but predictive signal. <span class="basis-tag">reasoned:</span> If requirement A has high variance across otherwise-similar suppliers and correlates poorly with actual GHG outcomes, a sophisticated buyer should weight it differently. That's data Athian will accumulate and others won't.</dd>
+              <dt>rationale</dt>
+              <dd>This is a long-range positioning move. It requires significant data accumulation and outcome validation, but once built it's a durable moat: Athian becomes not just a compliance platform but an empirical authority on what on-farm interventions actually reduce emissions, at scale. The standard body writes requirements; Athian tells you which ones are load-bearing.</dd>
+              <dt>downsides</dt>
+              <dd>Requires large cross-customer dataset before the signal is meaningful. Standard bodies and buyers may resist a platform that positions itself as a second-order authority on their own standards. Emily's science validation would be load-bearing here — this is a significant scientific and commercial commitment.</dd>
+            </dl>
+            <div class="meeting-test-callout">Does Emily think the data we'll accumulate is sufficient to say something meaningful about requirement validity? And would any buyer trust that signal over the published standard?</div>
+          </div>
+        </details>
+      </div>
+    </article>
+
+    <!-- Idea 6 -->
+    <article id="i6" class="idea-card">
+      <div class="idea-header">
+        <span class="idea-annotation"><span class="key">broken_assumption:</span> <span class="value">"the DSL schema is designed by engineers"</span></span>
+        <div class="idea-rank-title">
+          <span class="idea-rank">06</span>
+          <h3 class="idea-title">The DSL Is Not Designed by Engineers</h3>
+        </div>
+        <div class="idea-chip-row">
+          <span class="chip frame-assumption">assumption-breaking</span>
+          <span class="chip chip-axis">standard encoding</span>
+          <span class="chip chip-conf-high">confidence 87%</span>
+          <span class="chip chip-cx-s">complexity S</span>
+        </div>
+      </div>
+      <div class="idea-body">
+        <p class="idea-summary-prose">
+          Protocol experts like Emily know what a requirement means — the unit, the threshold, the accepted measurement conditions, the exceptions — but cannot currently author a DSL entry without engineering involvement. Invert this: specialists author requirements in structured natural language, and the platform generates the DSL entry. Emily describes a Bovaer adoption requirement in a structured form; the AI produces a typed DSL node; she reviews and approves it. Engineering validates the schema; specialists own the content.
+        </p>
+        <details class="idea-details">
+          <summary>Basis, rationale &amp; downsides</summary>
+          <div class="idea-details-body">
+            <dl class="idea-dl">
+              <dt>basis</dt>
+              <dd><span class="basis-tag">external:</span> NIST OSCAL's catalog layer separates requirement authorship from implementation: the catalog is owned by the standard body, not the compliance system. That separation is what makes OSCAL's reusability work. <span class="basis-tag">reasoned:</span> The current design creates a bottleneck where every new protocol update — and Athian is adding protocols regularly — requires an engineering cycle to model the DSL entry. Making that accessible to specialists directly is both a velocity improvement and a quality improvement: the domain expert closest to the requirement's meaning is now writing it.</dd>
+              <dt>rationale</dt>
+              <dd>This is the lowest-complexity idea in the set — it's a workflow change backed by a natural-language-to-DSL generation layer. The compounding effect is significant: each protocol Emily can update herself is a cycle engineering doesn't spend. As the protocol library grows, the leverage increases.</dd>
+              <dt>downsides</dt>
+              <dd>AI-generated DSL entries may have subtle errors that domain experts don't catch during review (unit ambiguity, threshold off-by-one). Requires a review workflow where specialists can see and validate the generated DSL, not just the natural language input. Schema validation tooling becomes more critical if the authorship circle widens.</dd>
+            </dl>
+            <div class="meeting-test-callout">Emily, how often do you wait on engineering to model a protocol change you already understand fully? What would it take for you to own that directly?</div>
+          </div>
+        </details>
+      </div>
+    </article>
+
+    <!-- Idea 7 -->
+    <article id="i7" class="idea-card">
+      <div class="idea-header">
+        <span class="idea-annotation"><span class="key">compounding_mechanism:</span> <span class="value">"standard changes become machine-computable diffs; remediation is structured, not manual"</span></span>
+        <div class="idea-rank-title">
+          <span class="idea-rank">07</span>
+          <h3 class="idea-title">Standard Change Diff Engine with Auto-Reprofile</h3>
+        </div>
+        <div class="idea-chip-row">
+          <span class="chip frame-leverage">leverage &amp; compounding</span>
+          <span class="chip chip-axis">standard lifecycle</span>
+          <span class="chip chip-conf-high">confidence 87%</span>
+          <span class="chip chip-cx-m">complexity M</span>
+        </div>
+      </div>
+      <div class="idea-body">
+        <p class="idea-summary-prose">
+          When a standard changes, the DSL's structured representation makes the delta machine-computable: which requirements changed thresholds, which were added, which were removed. The platform can run a diff across all affected supplier plans and surface exactly which suppliers are now out-of-compliance, which are unaffected, and what evidence needs to be collected for newly required controls. Standard updates stop being a manual triage exercise and become a structured remediation queue. The OSCAL catalog → profile → plan separation is what makes this possible — without layer separation, every standard change requires human triage.
+        </p>
+        <details class="idea-details">
+          <summary>Basis, rationale &amp; downsides</summary>
+          <div class="idea-details-body">
+            <dl class="idea-dl">
+              <dt>basis</dt>
+              <dd><span class="basis-tag">external:</span> NIST OSCAL's layer separation (catalog → profile → plan) is explicitly designed to enable re-profiling: a catalog change propagates through profiles to plans in a structured way. The key insight from the OSCAL literature is that separating "what requirements exist" from "which apply here" from "how we satisfy them" is what reduces audit time from months to minutes. Athian's DSL has this structure; the diff engine operationalizes it for the standard-change case.</dd>
+              <dt>rationale</dt>
+              <dd>CSDDD (July 2029) and emerging Scope 3 reporting mandates will produce multiple standard updates over the next three years. Each one, today, requires manual triage. A diff engine makes Athian the platform that makes standard changes survivable at scale — rather than a source of audit panic, they become a structured remediation workflow. This compounds: each standard update increases the value of being on Athian versus running compliance manually.</dd>
+              <dt>downsides</dt>
+              <dd>Requires the catalog → profile → plan layer separation to be enforced in the DSL already. If plans are not cleanly separated from profiles, the diff is not automatable. Also requires standards to be in the DSL (not just imported as PDFs) — so this compounds with idea #6 (specialist authorship).</dd>
+            </dl>
+            <div class="meeting-test-callout">When CSDDD drops a v2 in 2027, what happens to all our existing compliance plans? Does the current DSL structure make that computable or is it still manual triage?</div>
+          </div>
+        </details>
+      </div>
+    </article>
+  </section>
+
+  <!-- Rejection Summary -->
+  <section class="rejection-section" aria-labelledby="rejection-heading">
+    <div class="section-header">
+      <span class="section-label">rejection_summary</span>
+      <h2 class="section-title" id="rejection-heading">Rejection Summary</h2>
+    </div>
+    <table class="rejection-table">
+      <thead>
+        <tr>
+          <th style="width:35%">idea</th>
+          <th>reason rejected</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="rejection-title">Requirement Profiles for Multi-Standard Overlap Detection</span></td>
+          <td>Sound architectural concept, but functions as an infrastructure prerequisite for ideas 2 and 7 rather than a standalone product direction. Better surfaced in ce-plan once a direction is chosen.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer class="composition-signal">
+    Composed 2026-06-22 by ce-ideate · Athian Compliance · assumption-breaking + leverage/compounding frames
+  </footer>
+
+</div>
+</body>
+</html>

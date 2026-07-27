@@ -1,0 +1,852 @@
+
+<title>Ideation: Athian Compliance — Cross-Domain Analogy, Pass 2</title>
+<style>
+  /* ── Tokens ─────────────────────────────── */
+  :root {
+    --ground:       #0D1117;
+    --ground-2:     #151C27;
+    --ground-3:     #1E2839;
+    --text:         #E8EBF0;
+    --text-mid:     #A0AABF;
+    --text-dim:     #5E6A82;
+    --accent:       #39FF6A;
+    --accent-dim:   #1A7A32;
+    --accent-faint: rgba(57,255,106,0.08);
+    --accent2:      #5B8CFF;
+    --accent2-dim:  #2A4899;
+    --accent2-faint:rgba(91,140,255,0.08);
+    --border:       #1E2839;
+    --border-mid:   #2D3A52;
+    --border-strong:#4A5875;
+    --display:      'Libre Baskerville', Georgia, serif;
+    --body:         'Source Serif 4', Georgia, serif;
+    --mono:         'JetBrains Mono', 'Fira Mono', monospace;
+    --radius:       3px;
+  }
+
+  /* ── Reset ───────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    background: var(--ground);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+  /* ── Page shell ──────────────────────────── */
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 28px 100px;
+  }
+
+  /* ── Header ──────────────────────────────── */
+  .doc-header {
+    padding: 56px 0 40px;
+    border-bottom: 1px solid var(--border-mid);
+    margin-bottom: 44px;
+  }
+  .doc-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .doc-eyebrow::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent-dim) 0%, transparent 80%);
+  }
+  .doc-title {
+    font-family: var(--display);
+    font-size: 2.25rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+  .doc-subtitle {
+    font-family: var(--body);
+    font-size: 1rem;
+    color: var(--text-mid);
+    line-height: 1.6;
+    max-width: 68ch;
+    margin-bottom: 28px;
+  }
+  .doc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 20px;
+  }
+  .meta-item {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--text-dim);
+  }
+  .meta-item strong {
+    color: var(--text-mid);
+    font-weight: 400;
+  }
+
+  /* ── Context callout ─────────────────────── */
+  .context-block {
+    border: 1px solid var(--border-mid);
+    border-left: 2px solid var(--accent-dim);
+    background: var(--ground-2);
+    padding: 16px 20px;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    margin-bottom: 48px;
+    font-size: 0.875rem;
+    color: var(--text-mid);
+    line-height: 1.65;
+  }
+  .context-block strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* ── Jump nav ────────────────────────────── */
+  .jump-nav {
+    margin-bottom: 52px;
+  }
+  .jump-nav-label {
+    font-family: var(--mono);
+    font-size: 0.67rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+  .jump-nav-list {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-mid);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .jump-item {
+    display: grid;
+    grid-template-columns: 44px 1fr auto;
+    align-items: center;
+    gap: 0;
+    padding: 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    transition: background 0.1s;
+  }
+  .jump-item:last-child { border-bottom: none; }
+  .jump-item:hover { background: var(--ground-2); }
+  .jump-item:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .jump-num {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    text-align: center;
+    padding: 11px 0;
+    border-right: 1px solid var(--border);
+  }
+  .jump-title {
+    font-size: 0.84rem;
+    color: var(--text-mid);
+    padding: 11px 16px;
+  }
+  .jump-item:hover .jump-title { color: var(--text); }
+  .jump-axis {
+    font-family: var(--mono);
+    font-size: 0.63rem;
+    color: var(--text-dim);
+    padding: 11px 14px 11px 0;
+    white-space: nowrap;
+  }
+
+  /* ── Section label ───────────────────────── */
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.67rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 28px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── Idea card ───────────────────────────── */
+  .idea-card {
+    position: relative;
+    border: 1px solid var(--border-mid);
+    border-radius: var(--radius);
+    margin-bottom: 32px;
+    background: var(--ground-2);
+    overflow: hidden;
+  }
+  .card-accent-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+  }
+  .bar-standard { background: var(--accent); }
+  .bar-evidence { background: var(--accent2); }
+  .bar-supplier { background: #FF8C42; }
+  .bar-review   { background: #D4A7FF; }
+  .bar-encoding { background: #5CF0FF; }
+
+  .card-body {
+    padding: 24px 26px 24px 30px;
+  }
+  .card-top-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    gap: 12px;
+  }
+  .card-axis-tag {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 2px 8px;
+    border-radius: 2px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .tag-standard { background: var(--accent-faint); color: var(--accent); border: 1px solid var(--accent-dim); }
+  .tag-evidence { background: var(--accent2-faint); color: var(--accent2); border: 1px solid var(--accent2-dim); }
+  .tag-supplier { background: rgba(255,140,66,0.08); color: #FF8C42; border: 1px solid rgba(255,140,66,0.3); }
+  .tag-review   { background: rgba(212,167,255,0.08); color: #D4A7FF; border: 1px solid rgba(212,167,255,0.3); }
+  .tag-encoding { background: rgba(92,240,255,0.08); color: #5CF0FF; border: 1px solid rgba(92,240,255,0.3); }
+
+  .card-title {
+    font-family: var(--display);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+  .card-analogy {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    margin-bottom: 14px;
+  }
+  .card-description {
+    font-size: 0.905rem;
+    color: var(--text-mid);
+    line-height: 1.72;
+    margin-bottom: 20px;
+    max-width: 72ch;
+  }
+
+  /* diagram slot */
+  .card-diagram {
+    margin: 0 0 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--ground);
+    overflow: hidden;
+  }
+  .card-diagram svg,
+  .card-diagram canvas {
+    display: block;
+    width: 100%;
+  }
+
+  /* basis + fields */
+  .card-basis {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--ground);
+    border: 1px solid var(--border-mid);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    margin-bottom: 18px;
+  }
+  .basis-tag {
+    font-family: var(--mono);
+    font-size: 0.63rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 2px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 1px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .basis-tag.ext { background: rgba(57,255,106,0.12); color: var(--accent); }
+  .basis-tag.rsn { background: rgba(91,140,255,0.12); color: var(--accent2); }
+  .basis-text {
+    font-size: 0.82rem;
+    color: var(--text-mid);
+    line-height: 1.6;
+  }
+
+  .card-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .card-field {
+    background: var(--ground);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 13px;
+  }
+  .field-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 5px;
+  }
+  .field-value {
+    font-size: 0.83rem;
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .card-field.full { grid-column: 1 / -1; }
+
+  .card-meeting-test {
+    border-top: 1px solid var(--border);
+    padding-top: 13px;
+    margin-top: 4px;
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+  .card-meeting-test strong {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--accent);
+    margin-right: 7px;
+  }
+
+  /* ── Rejection table ─────────────────────── */
+  .rejection-section {
+    margin-top: 60px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border-mid);
+  }
+  .rejection-section .section-label {
+    margin-bottom: 20px;
+  }
+  .rejection-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.84rem;
+  }
+  .rejection-table th {
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-mid);
+    background: var(--ground);
+  }
+  .rejection-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--text-dim);
+    line-height: 1.55;
+  }
+  .rejection-table tr:last-child td { border-bottom: none; }
+  .rejected-title { font-weight: 600; color: var(--text-mid); display: block; margin-bottom: 2px; }
+
+  /* ── Footer ──────────────────────────────── */
+  .composition-signal {
+    margin-top: 60px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-dim);
+  }
+
+  /* ── Responsive ──────────────────────────── */
+  @media (max-width: 620px) {
+    .card-fields { grid-template-columns: 1fr; }
+    .card-field.full { grid-column: 1; }
+    .doc-title { font-size: 1.65rem; }
+    .jump-axis { display: none; }
+    .card-top-row { flex-direction: column; gap: 6px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .jump-item { transition: none; }
+  }
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<div class="page">
+
+  <header class="doc-header">
+    <div class="doc-eyebrow">Athian Compliance · Ideation · Cross-Domain Analogy · Pass 2</div>
+    <h1 class="doc-title">Eight analogies that haven't been tried yet</h1>
+    <p class="doc-subtitle">Raw generation pass — cross-domain analogy frame. Established analogies (aviation ADs, npm, JCAHO, git, insurance, eCTD, DRS, mortgage underwriting, ICD-10) excluded. Find the mechanism, not the vocabulary match.</p>
+    <div class="doc-meta">
+      <span class="meta-item"><strong>date</strong> 2026-06-22</span>
+      <span class="meta-item"><strong>frame</strong> cross-domain analogy</span>
+      <span class="meta-item"><strong>mode</strong> elsewhere-software</span>
+      <span class="meta-item"><strong>pass</strong> 2 of 2</span>
+      <span class="meta-item"><strong>status</strong> raw candidates — unranked</span>
+    </div>
+  </header>
+
+  <div class="context-block">
+    <strong>Scope:</strong> AI-native CPG supplier compliance. Core problem axes: (1) version propagation — when a standard changes, which suppliers' prior evidence still holds; (2) network effects — evidence validated for Buyer A and available to Buyer B; (3) evidence quality learning — specialist judgments as labeled training data. Structural fit required: same constraints, same failure modes — not surface vocabulary.
+  </div>
+
+  <nav class="jump-nav" aria-label="Jump to idea">
+    <div class="jump-nav-label">Raw candidates</div>
+    <div class="jump-nav-list">
+      <a class="jump-item" href="#idea-1">
+        <span class="jump-num">1</span>
+        <span class="jump-title">Bond Rating Migration Matrices — Probability-Weighted Compliance Drift</span>
+        <span class="jump-axis">standard-lifecycle</span>
+      </a>
+      <a class="jump-item" href="#idea-2">
+        <span class="jump-num">2</span>
+        <span class="jump-title">Franchise Brand Standards Audits — Reproducible Process Verification</span>
+        <span class="jump-axis">standard-encoding</span>
+      </a>
+      <a class="jump-item" href="#idea-3">
+        <span class="jump-num">3</span>
+        <span class="jump-title">Environmental Permit Modifications — Change-Scoped Re-Attestation Windows</span>
+        <span class="jump-axis">standard-lifecycle</span>
+      </a>
+      <a class="jump-item" href="#idea-4">
+        <span class="jump-num">4</span>
+        <span class="jump-title">Electrical Grid Interconnection Queues — Ordered Evidence Processing with Hold States</span>
+        <span class="jump-axis">evidence-collection</span>
+      </a>
+      <a class="jump-item" href="#idea-5">
+        <span class="jump-num">5</span>
+        <span class="jump-title">ISO Surveillance Audit Sampling — Risk-Stratified Annual Re-Verification</span>
+        <span class="jump-axis">review-and-reporting</span>
+      </a>
+      <a class="jump-item" href="#idea-6">
+        <span class="jump-num">6</span>
+        <span class="jump-title">Tax Code Grandfathering Rules — Locked Compliance Windows with Migration Timelines</span>
+        <span class="jump-axis">standard-lifecycle</span>
+      </a>
+      <a class="jump-item" href="#idea-7">
+        <span class="jump-num">7</span>
+        <span class="jump-title">Spectrum Licensing Secondary Markets — Tradeable Compliance Credits in Shared Supply Chains</span>
+        <span class="jump-axis">supplier-experience</span>
+      </a>
+      <a class="jump-item" href="#idea-8">
+        <span class="jump-num">8</span>
+        <span class="jump-title">Financial Audit Materiality Thresholds — Proportional Evidence Depth by Risk Weight</span>
+        <span class="jump-axis">review-and-reporting</span>
+      </a>
+    </div>
+  </nav>
+
+  <section aria-label="Raw idea candidates">
+    <div class="section-label">Raw candidates — cross-domain analogy frame — unranked</div>
+
+    <!-- ── Idea 1 ─────────────────────────── -->
+    <article class="idea-card" id="idea-1">
+      <div class="card-accent-bar bar-standard"></div>
+      <div class="card-body">
+        <div class="card-top-row">
+          <h2 class="card-title">Bond Rating Migration Matrices — Probability-Weighted Compliance Drift</h2>
+          <span class="card-axis-tag tag-standard">standard-lifecycle</span>
+        </div>
+        <p class="card-analogy">Analogous domain: Moody's / S&P bond rating transition matrices (credit risk modeling)</p>
+
+        <p class="card-description">Credit rating agencies publish annual migration matrices: given that a bond is rated BBB today, what is the historical probability it migrates to BB, BBB, A, or default within 12 months? This is not a prediction — it is a data-derived probability distribution over transitions, updated annually from the population of actual migrations. The compliance equivalent: when a standard updates (SQF 9.0 → 10.0), not every clause changes with equal severity, and not every supplier's evidence degrades with equal probability. A migration matrix for standards versioning would encode, for each changed clause, the historical rate at which prior-version evidence satisfied the new clause — derived from the platform's own specialist judgment history. Suppliers and buyers would see not "all evidence is stale" or "all evidence carries over" but a clause-level probability distribution: "evidence accepted under clause 4.2.1 v9 satisfies clause 4.2.1 v10 in 87% of past transitions; clause 6.1.3 carries over in only 34%." The specialist's review queue is then prioritized by transition risk, not alphabetical order.</p>
+
+        <div class="card-diagram">
+          <svg viewBox="0 0 780 130" xmlns="http://www.w3.org/2000/svg" aria-label="Migration matrix: clause-level transition probabilities from v9 to v10">
+            <rect width="780" height="130" fill="#0D1117"/>
+            <!-- header row -->
+            <text x="20" y="22" font-family="JetBrains Mono, monospace" font-size="9" fill="#5E6A82" letter-spacing="0.08em" text-anchor="start">CLAUSE → V10 OUTCOME</text>
+            <text x="300" y="22" font-family="JetBrains Mono, monospace" font-size="9" fill="#5E6A82" letter-spacing="0.05em" text-anchor="middle">CARRIES OVER</text>
+            <text x="460" y="22" font-family="JetBrains Mono, monospace" font-size="9" fill="#5E6A82" letter-spacing="0.05em" text-anchor="middle">CONDITIONAL</text>
+            <text x="620" y="22" font-family="JetBrains Mono, monospace" font-size="9" fill="#5E6A82" letter-spacing="0.05em" text-anchor="middle">RE-ATTEST REQUIRED</text>
+            <!-- row 1 -->
+            <rect x="15" y="30" width="240" height="24" fill="#151C27" rx="2"/>
+            <text x="23" y="46" font-family="JetBrains Mono, monospace" font-size="9" fill="#A0AABF">4.2.1 Pest Control Records</text>
+            <rect x="260" y="30" width="78" height="24" fill="rgba(57,255,106,0.12)" rx="2"/>
+            <text x="300" y="46" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#39FF6A" text-anchor="middle" font-weight="700">87%</text>
+            <rect x="420" y="30" width="78" height="24" fill="#151C27" rx="2"/>
+            <text x="460" y="46" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5E6A82" text-anchor="middle">10%</text>
+            <rect x="580" y="30" width="78" height="24" fill="#151C27" rx="2"/>
+            <text x="620" y="46" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5E6A82" text-anchor="middle">3%</text>
+            <!-- row 2 -->
+            <rect x="15" y="58" width="240" height="24" fill="#151C27" rx="2"/>
+            <text x="23" y="74" font-family="JetBrains Mono, monospace" font-size="9" fill="#A0AABF">6.1.3 Environmental Monitoring</text>
+            <rect x="260" y="58" width="78" height="24" fill="rgba(57,255,106,0.05)" rx="2"/>
+            <text x="300" y="74" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5E6A82" text-anchor="middle">34%</text>
+            <rect x="420" y="58" width="78" height="24" fill="rgba(212,167,255,0.08)" rx="2"/>
+            <text x="460" y="74" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#D4A7FF" text-anchor="middle">29%</text>
+            <rect x="580" y="58" width="78" height="24" fill="rgba(255,60,60,0.1)" rx="2"/>
+            <text x="620" y="74" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#FF6B6B" text-anchor="middle" font-weight="700">37%</text>
+            <!-- row 3 -->
+            <rect x="15" y="86" width="240" height="24" fill="#151C27" rx="2"/>
+            <text x="23" y="102" font-family="JetBrains Mono, monospace" font-size="9" fill="#A0AABF">2.8.1 Water Quality Testing</text>
+            <rect x="260" y="86" width="78" height="24" fill="rgba(57,255,106,0.09)" rx="2"/>
+            <text x="300" y="102" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#39FF6A" text-anchor="middle">71%</text>
+            <rect x="420" y="86" width="78" height="24" fill="rgba(212,167,255,0.06)" rx="2"/>
+            <text x="460" y="102" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#D4A7FF" text-anchor="middle">22%</text>
+            <rect x="580" y="86" width="78" height="24" fill="#151C27" rx="2"/>
+            <text x="620" y="102" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5E6A82" text-anchor="middle">7%</text>
+            <!-- caption -->
+            <text x="20" y="122" font-family="JetBrains Mono, monospace" font-size="8" fill="#3A4558">Derived from platform specialist judgment history · SQF 9.0 → 10.0 sample · n=412 transitions</text>
+          </svg>
+        </div>
+
+        <div class="card-basis">
+          <span class="basis-tag rsn">reasoned</span>
+          <span class="basis-text">The structural fit holds at the mechanism level, not just the vocabulary: both problems involve a population of assets (bonds / supplier–clause pairs) that migrate across state categories over time, with historically observable transition rates. The migration matrix solves the same failure mode — binary "all good / all bad" signals that lose the probability distribution and force over-triage. Credit agencies publish matrices annually because the rates shift; Athian would update them per standard version event.</span>
+        </div>
+
+        <div class="card-fields">
+          <div class="card-field">
+            <div class="field-label">Why it matters</div>
+            <div class="field-value">Solves the false-binary problem: "is prior evidence still valid?" becomes a clause-level probability distribution drawn from real platform data. Turns version propagation from a binary flag into a prioritized review queue — and the matrix itself compounds in value as the platform processes more transitions.</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Downsides</div>
+            <div class="field-value">Requires a meaningful base of prior transition judgments before the matrix is reliable. Cold-start problem is real — v1 would have to bootstrap from manual coding of historic assessments or from conservative defaults. Also introduces probabilistic output into a world where customers want determinate answers.</div>
+          </div>
+        </div>
+
+        <div class="card-meeting-test">
+          <strong>Meeting test</strong>Do we have enough historic specialist decisions — by clause, across a standard version change — to derive even a rough transition matrix, and if not, what would it take to generate that data?
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 2 ─────────────────────────── -->
+    <article class="idea-card" id="idea-2">
+      <div class="card-accent-bar bar-encoding"></div>
+      <div class="card-body">
+        <div class="card-top-row">
+          <h2 class="card-title">Franchise Brand Standards Audits — Reproducible Process Verification, Not Output Measurement</h2>
+          <span class="card-axis-tag tag-encoding">standard-encoding</span>
+        </div>
+        <p class="card-analogy">Analogous domain: franchise operations audits (McDonald's, Hilton brand standards)</p>
+
+        <p class="card-description">A franchise operator doesn't verify that a McDonald's produced good burgers — it verifies that the process capable of producing consistent burgers was followed: the fryer temperature log, the holding-time records, the cleaning cycle sign-off. The audit subject is the process, not the output. The evidence accepted is process documentation, not sensory evaluation. This is a structurally distinct model from "did the outcome meet the threshold?" — it is "was the system in place that reliably produces outcomes meeting the threshold?" The compliance DSL should encode this distinction explicitly: some requirements are <em>outcome requirements</em> (lab test result ≥ threshold) and others are <em>process requirements</em> (documented procedure was followed, training records exist, system was calibrated). These two requirement types have different evidence structures, different expiry logic, and different re-attestation triggers. Current platforms treat all requirements as outcome-checking; the franchise model reveals that process requirements are the dominant type in food safety standards and need their own evidence grammar.</p>
+
+        <div class="card-basis">
+          <span class="basis-tag ext">external</span>
+          <span class="basis-text">Franchise operations auditing is a deployed, high-volume discipline with a decades-long track record. The process/outcome distinction is formally encoded in ISO 22000 (food safety management systems) and HACCP, which are structurally similar to SQF requirements. The failure mode of treating process requirements as outcome requirements is well-documented in food safety literature: companies fail audits not because their food is unsafe but because their process documentation was incomplete.</span>
+        </div>
+
+        <div class="card-fields">
+          <div class="card-field">
+            <div class="field-label">Why it matters</div>
+            <div class="field-value">Adds a first-class process evidence type to the DSL — training records, calibration logs, SOPs, and procedure sign-offs become typed evidence with their own accepted-sources definitions. This is where most supplier compliance failures actually live, and most platforms can't model it.</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Downsides</div>
+            <div class="field-value">Increases DSL complexity. Requires the AI evidence extraction layer to distinguish process documentation from outcome documentation — two different extraction models. Also raises the question of which process records constitute sufficient evidence, which requires domain expertise to define per requirement.</div>
+          </div>
+        </div>
+
+        <div class="card-meeting-test">
+          <strong>Meeting test</strong>In SQF Code 9.0, what fraction of the clauses are process requirements versus outcome requirements — and does the current DSL model distinguish them?
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 3 ─────────────────────────── -->
+    <article class="idea-card" id="idea-3">
+      <div class="card-accent-bar bar-standard"></div>
+      <div class="card-body">
+        <div class="card-top-row">
+          <h2 class="card-title">Environmental Permit Modifications — Change-Scoped Re-Attestation Windows</h2>
+          <span class="card-axis-tag tag-standard">standard-lifecycle</span>
+        </div>
+        <p class="card-analogy">Analogous domain: EPA Title V operating permit modifications (40 CFR Part 70)</p>
+
+        <p class="card-description">When a facility modifies its operations — adding a new emission source, changing a process parameter — the EPA distinguishes between a <em>minor modification</em>, a <em>significant modification</em>, and a <em>major modification</em>. The key mechanism: the type of change triggers a specific, bounded re-permitting scope. A minor modification requires a 7-day notice and no new public comment period; a significant modification triggers a limited review of affected conditions; a major modification reopens the full permit. Crucially, the unaffected portions of the permit carry over automatically — the agency does not re-examine conditions that are not implicated by the change. Athian's standard version propagation should work identically: when SQF publishes a version update, the platform classifies each changed clause as minor, significant, or major, and re-attestation scope is bounded to the affected clauses at the appropriate depth. Suppliers whose prior evidence covers unaffected clauses carry that evidence forward automatically, with no re-attestation request. This eliminates the "full re-audit on every version update" failure mode that creates supplier fatigue.</p>
+
+        <div class="card-diagram">
+          <svg viewBox="0 0 780 100" xmlns="http://www.w3.org/2000/svg" aria-label="Change-scoped re-attestation: modification type determines re-attestation depth">
+            <rect width="780" height="100" fill="#0D1117"/>
+            <!-- Three columns -->
+            <!-- Minor -->
+            <rect x="20" y="18" width="220" height="62" fill="#151C27" rx="3"/>
+            <text x="130" y="35" font-family="JetBrains Mono, monospace" font-size="9" fill="#5E6A82" text-anchor="middle" letter-spacing="0.06em">MINOR MOD</text>
+            <rect x="32" y="42" width="196" height="18" fill="rgba(57,255,106,0.1)" rx="2"/>
+            <text x="130" y="55" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#39FF6A" text-anchor="middle">Wording only → carry over</text>
+            <text x="130" y="72" font-family="JetBrains Mono, monospace" font-size="8" fill="#3A4558" text-anchor="middle">No re-attestation</text>
+            <!-- Significant -->
+            <rect x="280" y="18" width="220" height="62" fill="#151C27" rx="3"/>
+            <text x="390" y="35" font-family="JetBrains Mono, monospace" font-size="9" fill="#5E6A82" text-anchor="middle" letter-spacing="0.06em">SIGNIFICANT MOD</text>
+            <rect x="292" y="42" width="196" height="18" fill="rgba(212,167,255,0.1)" rx="2"/>
+            <text x="390" y="55" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#D4A7FF" text-anchor="middle">New threshold / evidence type</text>
+            <text x="390" y="72" font-family="JetBrains Mono, monospace" font-size="8" fill="#3A4558" text-anchor="middle">Re-attest affected clauses only</text>
+            <!-- Major -->
+            <rect x="540" y="18" width="220" height="62" fill="#151C27" rx="3"/>
+            <text x="650" y="35" font-family="JetBrains Mono, monospace" font-size="9" fill="#5E6A82" text-anchor="middle" letter-spacing="0.06em">MAJOR MOD</text>
+            <rect x="552" y="42" width="196" height="18" fill="rgba(255,107,107,0.1)" rx="2"/>
+            <text x="650" y="55" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#FF6B6B" text-anchor="middle">Structural change to standard</text>
+            <text x="650" y="72" font-family="JetBrains Mono, monospace" font-size="8" fill="#3A4558" text-anchor="middle">Full re-attestation required</text>
+            <!-- arrows -->
+            <text x="254" y="52" font-family="JetBrains Mono, monospace" font-size="10" fill="#2D3A52" text-anchor="middle">→</text>
+            <text x="514" y="52" font-family="JetBrains Mono, monospace" font-size="10" fill="#2D3A52" text-anchor="middle">→</text>
+          </svg>
+        </div>
+
+        <div class="card-basis">
+          <span class="basis-tag ext">external</span>
+          <span class="basis-text">EPA Title V permits are a deployed regulatory system with 30+ years of precedent for exactly this problem: how to scope re-permitting when an existing permit is partially changed, without requiring full re-examination of unaffected conditions. The minor/significant/major classification taxonomy is codified in 40 CFR Part 70 and has been litigated and refined to be operationally precise. The structural constraint is identical: a large population of existing compliance records, partial changes that affect only some conditions, and a need to scope re-examination precisely.</span>
+        </div>
+
+        <div class="card-fields">
+          <div class="card-field">
+            <div class="field-label">Why it matters</div>
+            <div class="field-value">Solves supplier fatigue on standard updates. If SQF changes 8 of 200 clauses, suppliers should re-attest to 8 clauses, not 200. This is the correct behavior but requires the platform to classify each standard change at clause granularity — which the DSL enables but no current compliance platform does.</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Downsides</div>
+            <div class="field-value">Requires Athian to classify every changed clause as minor/significant/major — a content operation. If Athian misclassifies a major change as minor, a supplier carries over evidence that shouldn't carry over. Audit liability sits with the buyer; they need to trust Athian's change classification. Defensibility is the hard requirement.</div>
+          </div>
+        </div>
+
+        <div class="card-meeting-test">
+          <strong>Meeting test</strong>When SQF released Code 9.0, how many clauses changed — and could we classify each change as minor, significant, or major with enough precision that a buyer's compliance team would rely on that classification to decide what re-attestation to request?
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 4 ─────────────────────────── -->
+    <article class="idea-card" id="idea-4">
+      <div class="card-accent-bar bar-evidence"></div>
+      <div class="card-body">
+        <div class="card-top-row">
+          <h2 class="card-title">Electrical Grid Interconnection Queues — Ordered Evidence Processing with Hold States</h2>
+          <span class="card-axis-tag tag-evidence">evidence-collection</span>
+        </div>
+        <p class="card-analogy">Analogous domain: FERC interconnection queue management (Order 2023)</p>
+
+        <p class="card-description">Getting a new power plant connected to the electrical grid requires passing through an interconnection queue — a sequenced process where the generator must complete a feasibility study, then a system impact study, then a facilities study, in order, before proceeding. Critically, a project that fails at the feasibility stage does not move forward until that study is remediated; later-stage studies cannot be run in parallel with a failed earlier stage. FERC Order 2023 reformed this queue specifically to prevent "queue poisoning" — projects holding positions while incomplete — by imposing milestone requirements and deposit structures that force resolution of blocking issues before downstream work proceeds. CPG supplier evidence collection has the same problem: a supplier submits an incomplete package, but the review process still advances, and the compliance specialist discovers the blocking gap at the end. The platform should model evidence collection as an ordered queue with hold states: evidence requirements are staged (foundational documents → process records → third-party certifications), and a hold at stage N blocks stage N+1 from advancing. The AI pre-reviewer identifies holds automatically and notifies the supplier with the specific blocking item, not a generic "incomplete."</p>
+
+        <div class="card-basis">
+          <span class="basis-tag rsn">reasoned</span>
+          <span class="basis-text">FERC's queue problem and the compliance evidence problem share the same constraint structure: a multi-stage sequential process, an incentive for applicants to proceed optimistically past blocking conditions, a scarce human reviewer at the end of the queue who discovers the problem late, and a need for automated early-stage gate checks that create holds rather than letting incomplete submissions flow forward. The queue-poisoning mechanism is particularly sharp: compliance specialists reviewing incomplete packages at the end of the process is exactly the compliance equivalent of late-discovered infeasible interconnection requests.</span>
+        </div>
+
+        <div class="card-fields">
+          <div class="card-field">
+            <div class="field-label">Why it matters</div>
+            <div class="field-value">Eliminates the "specialist discovers a blocking gap at review time" failure mode. Foundational issues (missing certifications, expired dates) get caught at submission validation before the review queue fills with incomplete packages. Suppliers receive staged, specific feedback rather than a single end-of-process rejection.</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Downsides</div>
+            <div class="field-value">Requires modeling the dependency graph of evidence requirements — which documents must exist before which others are relevant — which is complex and standard-specific. Also adds latency to the review process for suppliers who could have submitted a complete package but instead encounter staged gates.</div>
+          </div>
+        </div>
+
+        <div class="card-meeting-test">
+          <strong>Meeting test</strong>In the current review workflow, at what stage does the compliance specialist typically discover a blocking evidence gap — and how often does that gap require sending the package back to the supplier for additional documents?
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 5 ─────────────────────────── -->
+    <article class="idea-card" id="idea-5">
+      <div class="card-accent-bar bar-review"></div>
+      <div class="card-body">
+        <div class="card-top-row">
+          <h2 class="card-title">ISO Surveillance Audit Sampling — Risk-Stratified Annual Re-Verification</h2>
+          <span class="card-axis-tag tag-review">review-and-reporting</span>
+        </div>
+        <p class="card-analogy">Analogous domain: ISO 9001/22000 surveillance audit structure (IAF MD 5)</p>
+
+        <p class="card-description">ISO certification doesn't require a full audit every year. The certification body conducts a full recertification audit every three years, and surveillance audits in the intervening years. Surveillance audits don't re-examine every clause — they sample: they always cover clauses that had nonconformities in the previous audit, always cover management review and corrective action processes, and sample the remaining clauses based on risk. The sampling scope is not random; it's risk-stratified by clause severity and historical nonconformity rate. Compliance re-verification for CPG suppliers should work identically: full re-attestation only at version change or at a defined cycle interval, with annual surveillance attestations that cover only high-risk clauses, previously nonconformant clauses, and a stratified sample of the remainder. The AI generates the surveillance scope — "for this supplier, re-verify these 14 clauses this year" — based on their risk profile and history. This is the correct model for managing annual compliance refresh at scale without re-running full audits every year.</p>
+
+        <div class="card-basis">
+          <span class="basis-tag ext">external</span>
+          <span class="basis-text">IAF MD 5 (International Accreditation Forum Mandatory Document for the Duration of ISO 9001 and ISO 14001 Audits) defines the surveillance audit scope sampling methodology as a deployed, globally recognized standard. The risk-stratified sampling approach is not a theoretical model — it is in production use by every major ISO registrar. The structural fit is direct: same constraints (many certified entities, annual re-verification required, full re-audit is impractical at scale), same failure mode (over-sampling is wasteful, under-sampling misses real nonconformities).</span>
+        </div>
+
+        <div class="card-fields">
+          <div class="card-field">
+            <div class="field-label">Why it matters</div>
+            <div class="field-value">Enables continuous compliance posture management rather than periodic binary snapshots. Buyers get a live risk-stratified view of their supply base, not just a pass/fail at the last full audit. Suppliers with clean histories get lighter annual touchpoints; high-risk suppliers get heavier coverage. This scales the specialist's time proportionally to risk.</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Downsides</div>
+            <div class="field-value">Requires buyers to accept that not every clause is re-verified every year — a cultural shift from "we verified everything" to "we verified the right things." Some buyers' legal or procurement teams may require full annual verification regardless. Surveillance scope decisions must be defensible and documented.</div>
+          </div>
+        </div>
+
+        <div class="card-meeting-test">
+          <strong>Meeting test</strong>Do our buyer customers currently run full annual re-verifications against all clauses, and if so, what is the specialist time cost — and would a risk-stratified surveillance model produce a defensible alternative they could present to their legal or procurement teams?
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 6 ─────────────────────────── -->
+    <article class="idea-card" id="idea-6">
+      <div class="card-accent-bar bar-standard"></div>
+      <div class="card-body">
+        <div class="card-top-row">
+          <h2 class="card-title">Tax Code Grandfathering Rules — Locked Compliance Windows with Defined Migration Timelines</h2>
+          <span class="card-axis-tag tag-standard">standard-lifecycle</span>
+        </div>
+        <p class="card-analogy">Analogous domain: US Internal Revenue Code transition rules and grandfathering provisions</p>
+
+        <p class="card-description">When Congress changes the tax code — a new depreciation schedule, a changed treatment of a financial instrument, a modified deduction — the legislation almost always includes transition rules: existing arrangements that met the old requirement are grandfathered for a defined period, with a specific date by which they must comply with the new rule. The grandfathered status is not perpetual; it has a compliance deadline. Critically, the IRS publishes the grandfathering rule with the change, not after confusion accumulates. The tax code never pretends the old rule still applies — it explicitly records the old requirement alongside the new requirement and the transition window. A compliance standard's versioning in the DSL should encode the same structure: when a standard changes, each affected clause carries a <em>prior_version_accepted_until</em> field — a date after which evidence meeting only the prior version no longer satisfies the requirement. Suppliers with valid prior-version evidence are flagged "grandfathered until [date]" in their compliance record, not "non-compliant." The transition window is explicit and tracked; the migration deadline generates automated notification sequences.</p>
+
+        <div class="card-basis">
+          <span class="basis-tag rsn">reasoned</span>
+          <span class="basis-text">Tax code grandfathering rules are a legally precise, large-scale mechanism for managing the transition between two versions of a requirement — with exactly the constraint set present in CPG compliance: prior-compliant entities should not be immediately penalized, transition windows should be defined and communicated, and the old requirement's status (grandfathered until X) should be machine-readable and trackable. The failure mode of not grandfathering — treating all prior evidence as immediately invalid on version change — produces the same outcome in both domains: mass non-compliance driven by transition timing, not actual non-compliance with intent.</span>
+        </div>
+
+        <div class="card-fields">
+          <div class="card-field">
+            <div class="field-label">Why it matters</div>
+            <div class="field-value">Immediately eliminates the false "non-compliant" status that currently gets assigned to suppliers when a standard updates and their prior evidence technically no longer satisfies the new wording. This is a significant buyer trust issue — a supplier who was compliant yesterday should not show as non-compliant today without a transition window. The <code>prior_version_accepted_until</code> field is a DSL-level feature no current platform has.</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Downsides</div>
+            <div class="field-value">Requires the standard bodies to publish transition windows — which some do (GFSI typically gives 18 months) and some don't. Where they don't, Athian has to derive a defensible transition window or flag the ambiguity. Also requires buyers to commit to honoring grandfathered status in their own supplier programs — an internal governance decision, not just a platform feature.</div>
+          </div>
+        </div>
+
+        <div class="card-meeting-test">
+          <strong>Meeting test</strong>When SQF Code 9.0 was published, was there a formal transition window during which Code 8 evidence was still accepted — and does our current platform model that window explicitly, or do we treat all suppliers on the prior version as immediately non-compliant?
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 7 ─────────────────────────── -->
+    <article class="idea-card" id="idea-7">
+      <div class="card-accent-bar bar-supplier"></div>
+      <div class="card-body">
+        <div class="card-top-row">
+          <h2 class="card-title">Spectrum Licensing Secondary Markets — Tradeable Compliance Credits in Shared Supply Chains</h2>
+          <span class="card-axis-tag tag-supplier">supplier-experience</span>
+        </div>
+        <p class="card-analogy">Analogous domain: FCC secondary spectrum markets and spectrum leasing (47 CFR Part 1, Subpart X)</p>
+
+        <p class="card-description">Spectrum licenses are assigned to primary licensees, but the FCC has developed a secondary market mechanism: a licensee that isn't using its spectrum can lease it to a secondary user for a defined period, under defined conditions. The key mechanism is that the primary licensee's compliance status covers the secondary user for the leased spectrum during the lease term — the secondary user doesn't need their own full license to operate. The network effect analog for CPG compliance: Supplier A is SQF-certified and has a validated compliance record on the Athian platform, verified by Buyer 1. Supplier A operates a co-packer relationship with Supplier B, who produces a product for Buyer 2. With Supplier A's consent, Buyer 2 could rely on Supplier A's compliance record for the clauses covered by the co-packing arrangement — Supplier A's certification "covers" Supplier B's operations within the defined scope, analogous to a spectrum lease. This is not fabricated compliance — it's scope-bounded compliance inheritance, with defined conditions and a consent mechanism. It directly addresses the network effect problem: compliance work done for Buyer 1 produces portable value for Buyer 2 within a defined scope.</p>
+
+        <div class="card-basis">
+          <span class="basis-tag rsn">reasoned</span>
+          <span class="basis-text">The spectrum leasing mechanism has the exact same structural elements as the compliance inheritance problem: a primary holder with a validated status, a secondary party that operates under that status within defined scope and with consent, an audit trail maintained by the primary licensee, and a termination mechanism when the arrangement ends. The failure mode is identical: an arrangement that blurs the scope boundary — leasing spectrum for use beyond the licensed area, or inheriting compliance coverage for operations not actually covered by the primary entity — invalidates the arrangement. Scope precision is the mechanism's load-bearing constraint in both domains.</span>
+        </div>
+
+        <div class="card-fields">
+          <div class="card-field">
+            <div class="field-label">Why it matters</div>
+            <div class="field-value">Directly operationalizes the "network effect" described in the grounding: compliance work done once creates portable value across buyer relationships. Co-packer arrangements are extremely common in CPG, and today every buyer re-verifies the same co-packers independently. A consent-based compliance inheritance model would be a platform-level moat — it requires a network of validated records that only Athian can provide.</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Downsides</div>
+            <div class="field-value">Compliance inheritance is legally and commercially sensitive — buyers may have contractual or regulatory obligations to independently verify their own supply chain. "Scope-bounded inheritance" is a precise concept that customers will want legal review of. This is a V3+ feature that requires both a dense network of validated suppliers and a carefully designed consent and liability model.</div>
+          </div>
+        </div>
+
+        <div class="card-meeting-test">
+          <strong>Meeting test</strong>In a co-packer arrangement where Supplier A has Athian-validated SQF certification and Supplier B operates under Supplier A's facility, should Buyer 2 be able to rely on Supplier A's compliance record for Supplier B's products — and if so, what consent and scope conditions make that defensible?
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 8 ─────────────────────────── -->
+    <article class="idea-card" id="idea-8">
+      <div class="card-accent-bar bar-review"></div>
+      <div class="card-body">
+        <div class="card-top-row">
+          <h2 class="card-title">Financial Audit Materiality Thresholds — Proportional Evidence Depth by Risk Weight</h2>
+          <span class="card-axis-tag tag-review">review-and-reporting</span>
+        </div>
+        <p class="card-analogy">Analogous domain: PCAOB/GAAS financial audit materiality (AS 2105)</p>
+
+        <p class="card-description">A financial audit does not verify every transaction to the same depth. The auditor sets a materiality threshold — typically 1-5% of pre-tax income or total assets — below which misstatements are not pursued. Within the scope above materiality, the auditor further stratifies testing depth by risk: higher-risk accounts receive substantive testing (direct verification of balances and transactions); lower-risk accounts receive only analytical procedures (trend analysis, ratio comparison). This proportionality is not laziness — it is a principled, legally defensible approach to allocating finite audit resources to the most consequential verification work. A compliance specialist's review queue should be governed by the same logic: requirements above a defined risk threshold receive direct evidence examination; requirements below threshold receive analytical review (does the supplier's historical record show consistent compliance?). The AI pre-reviewer sets the risk weight per requirement per supplier — based on requirement severity, supplier history, and industry sector — and allocates the specialist's review depth accordingly. The specialist's time is a material resource that the platform should treat as such.</p>
+
+        <div class="card-basis">
+          <span class="basis-tag ext">external</span>
+          <span class="basis-text">PCAOB AS 2105 (Consideration of Materiality in Planning and Performing an Audit) is the legally codified standard for this approach. The proportionality framework has been in operation across every public company audit since the Sarbanes-Oxley era — it is a deployed, high-stakes, legally defensible model for allocating finite review resources proportionally. The structural constraint is directly analogous: a large population of items requiring verification, finite reviewer time, heterogeneous risk levels, and a legal/regulatory requirement that the review methodology be defensible and documented.</span>
+        </div>
+
+        <div class="card-fields">
+          <div class="card-field">
+            <div class="field-label">Why it matters</div>
+            <div class="field-value">The compliance specialist's review time is the platform's scarcest resource — it is what limits how many suppliers a single specialist can manage. A materiality-based depth model directly multiplies the specialist's effective capacity without sacrificing defensibility, because the proportionality logic is explicit and auditable. It also creates a framework for the AI to explain review scope to buyers: "we performed substantive review on 23 high-risk requirements and analytical review on the remaining 47."</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Downsides</div>
+            <div class="field-value">Requires defining risk weights for each requirement — a content operation that needs domain expertise from Emily (protocol/science lead). Also requires buyers to accept that some requirements receive only analytical review — a conceptual shift that may face resistance from compliance teams accustomed to "we checked everything." The materiality concept needs to be translated out of accounting language for a food safety audience.</div>
+          </div>
+        </div>
+
+        <div class="card-meeting-test">
+          <strong>Meeting test</strong>If we stratified SQF requirements by severity — food safety critical, food safety non-critical, quality, administrative — and allocated specialist review depth proportionally, how much reviewer time could we free up per supplier assessment, and would that model be defensible to a customer's internal audit team?
+        </div>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- ── Rejection summary ──────────────────── -->
+  <section class="rejection-section" aria-label="Considered and cut">
+    <div class="section-label">Considered and cut — structural fit failed adversarial check</div>
+    <table class="rejection-table">
+      <thead>
+        <tr>
+          <th style="width:30%">Candidate</th>
+          <th>Reason cut</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="rejected-title">Clinical Trial Protocol Amendments</span>Analogous domain: FDA IND amendments (21 CFR 312.30)</td>
+          <td>Vocabulary-level only — "protocol amendment" and "standard update" share language but not mechanism. IND amendments govern whether a specific study can continue; they don't address a population of prior assessments or the evidence-portability problem. The structural problem (version propagation across an active evidence base) is not present in IND amendment workflow.</td>
+        </tr>
+        <tr>
+          <td><span class="rejected-title">Nuclear Facility License Amendments</span>Analogous domain: NRC 10 CFR 50.90</td>
+          <td>Structurally overfitted. Nuclear license amendments have a correct analogy with standard lifecycle, but the mechanism is not meaningfully different from the Environmental Permit Modifications idea (Idea 3), which captures the same change-scoped re-attestation logic more accessibly and with more operational precedent. Subsumed.</td>
+        </tr>
+        <tr>
+          <td><span class="rejected-title">Telecommunications Roaming Agreements</span>Analogous domain: ITU bilateral carrier agreements</td>
+          <td>Network-effect vocabulary match but mechanism doesn't hold. Roaming agreements address real-time routing decisions, not the reuse of prior evidence. The consent mechanism in spectrum leasing (Idea 7) is a stronger, more precise analog for the compliance inheritance problem.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer class="composition-signal">
+    Composed 2026-06-22 by ce-ideate (run a3f91c7b) · Athian Compliance · cross-domain analogy frame · pass 2
+  </footer>
+
+</div>

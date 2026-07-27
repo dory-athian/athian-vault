@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CE Artifact Lifecycle — Leverage &amp; Compounding</title>
+<style>
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; font-size: 15px; }
+
+/* ── Palette ── */
+:root {
+  --ground:       #12131A;
+  --ground-2:     #1A1C27;
+  --ground-3:     #23263A;
+  --text:         #E4E0D8;
+  --text-muted:   #9A9590;
+  --text-dim:     #52504C;
+  --accent:       #D4861A;
+  --accent-dim:   rgba(212, 134, 26, 0.13);
+  --accent-2:     #6B8FD4;
+  --accent-2-dim: rgba(107, 143, 212, 0.12);
+  --wire:         rgba(212, 134, 26, 0.35);
+  --wire-strong:  rgba(212, 134, 26, 0.65);
+  --border:       rgba(228, 224, 216, 0.07);
+  --border-mid:   rgba(228, 224, 216, 0.13);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* ── Typography ── */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+body {
+  background: var(--ground);
+  color: var(--text);
+  font-family: 'Literata', Georgia, serif;
+  font-optical-sizing: auto;
+  line-height: 1.68;
+}
+
+.display { font-family: 'Space Grotesk', system-ui, sans-serif; }
+.mono    { font-family: 'IBM Plex Mono', 'Courier New', monospace; }
+
+/* ── Page shell ── */
+.page {
+  max-width: 820px;
+  margin-inline: auto;
+  padding: 0 2rem 6rem;
+}
+
+/* ── Header ── */
+header {
+  padding: 3.5rem 0 2rem;
+  border-bottom: 1px solid var(--border-mid);
+  margin-bottom: 3.5rem;
+}
+
+.eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.eyebrow-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  animation: pulse 2.8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.35; }
+}
+
+h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(1.75rem, 4vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 1rem;
+  max-width: 600px;
+}
+
+.header-sub {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  max-width: 560px;
+  line-height: 1.6;
+}
+
+.header-meta {
+  margin-top: 1.6rem;
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.meta-item strong {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* ── Frame ── */
+.frame-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.frame-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--wire);
+}
+
+/* ── Pipeline layout ── */
+.pipeline {
+  position: relative;
+  padding-left: 2.75rem;
+}
+
+/* The continuous vertical wire */
+.pipeline::before {
+  content: '';
+  position: absolute;
+  left: 0.5rem;
+  top: 0.75rem;
+  bottom: 0.75rem;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--wire) 6%,
+    var(--wire) 94%,
+    transparent 100%
+  );
+}
+
+/* ── Idea node ── */
+.idea {
+  position: relative;
+  padding: 1.6rem 1.75rem;
+  margin-bottom: 1.25rem;
+  background: var(--ground-2);
+  border: 1px solid var(--border);
+  border-left: none;
+}
+
+/* Horizontal branch from the vertical wire to the idea */
+.idea::before {
+  content: '';
+  position: absolute;
+  left: -2.25rem;
+  top: 1.9rem;
+  width: 1.75rem;
+  height: 1px;
+  background: var(--wire-strong);
+}
+
+/* Node dot on the wire */
+.idea::after {
+  content: '';
+  position: absolute;
+  left: -2.6rem;
+  top: calc(1.9rem - 3px);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ground);
+  border: 1.5px solid var(--accent);
+}
+
+/* Highlight the top idea */
+.idea.lead {
+  border-color: rgba(212, 134, 26, 0.3);
+  background: linear-gradient(135deg, rgba(212, 134, 26, 0.06) 0%, var(--ground-2) 50%);
+}
+
+.idea.lead::after {
+  background: var(--accent);
+  border-color: var(--accent);
+  width: 9px;
+  height: 9px;
+  left: calc(-2.6rem - 1px);
+  top: calc(1.9rem - 4px);
+}
+
+/* ── Idea header ── */
+.idea-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.idea-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  flex: 1;
+  min-width: 200px;
+}
+
+.idea.lead .idea-title {
+  color: #EED89A;
+}
+
+/* ── Badges ── */
+.badge-row {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.61rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.2em 0.55em;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.badge-axis {
+  background: var(--accent-2-dim);
+  color: var(--accent-2);
+  border: 1px solid rgba(107, 143, 212, 0.25);
+}
+
+.badge-basis {
+  background: rgba(228, 224, 216, 0.04);
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+}
+
+.badge-basis.direct  { color: #7EC8A4; border-color: rgba(126, 200, 164, 0.25); background: rgba(126, 200, 164, 0.06); }
+.badge-basis.reasoned { color: #B8A4E0; border-color: rgba(184, 164, 224, 0.25); background: rgba(184, 164, 224, 0.06); }
+.badge-basis.external { color: #E0B86A; border-color: rgba(224, 184, 106, 0.25); background: rgba(224, 184, 106, 0.06); }
+
+/* ── Idea body ── */
+.idea-summary {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin-bottom: 1rem;
+}
+
+.idea-summary strong {
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* ── Detail rows ── */
+.idea-details {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.detail-row {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: 0.6rem;
+  font-size: 0.83rem;
+  line-height: 1.5;
+}
+
+.detail-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding-top: 0.08em;
+  white-space: nowrap;
+}
+
+.detail-value {
+  color: var(--text-muted);
+}
+
+.detail-value.why-matters {
+  color: var(--text);
+  font-style: italic;
+}
+
+.detail-value.meeting-test {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.76rem;
+  color: var(--accent);
+  background: var(--accent-dim);
+  padding: 0.3em 0.6em;
+  border-left: 2px solid var(--accent);
+}
+
+/* ── Rejection log ── */
+.rejection-section {
+  margin-top: 3.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.rejection-section h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-muted);
+  margin-bottom: 1.25rem;
+}
+
+.rejected-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.rejected-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.rejected-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 500;
+  color: var(--text-dim);
+  text-decoration: line-through;
+  text-decoration-color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.rejected-reason {
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+/* ── Footer ── */
+footer {
+  margin-top: 4rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.footer-note {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.next-step {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .page { padding: 0 1.25rem 4rem; }
+  .pipeline { padding-left: 2rem; }
+  .pipeline::before { left: 0.25rem; }
+  .idea::before { left: -1.75rem; width: 1.25rem; }
+  .idea::after  { left: -2.1rem; }
+  .idea.lead::after { left: calc(-2.1rem - 1px); }
+  .detail-row { grid-template-columns: 1fr; gap: 0.2rem; }
+  .detail-label { padding-top: 0; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="eyebrow">
+      <span class="eyebrow-dot" aria-hidden="true"></span>
+      CE Ideation &nbsp;·&nbsp; Leverage &amp; Compounding Frame
+    </div>
+    <h1 class="display">Making CE artifacts survive session boundaries</h1>
+    <p class="header-sub">
+      Planning and ideation outputs at Athian are created locally, never routed, and invisible to the team. These 7 ideas target the structural gaps — storage, context composition, continuity, discoverability, and artifact lifecycle — with a bias toward choices that compound over time.
+    </p>
+    <div class="header-meta">
+      <span class="meta-item"><strong>Date</strong> &nbsp;2026-06-23</span>
+      <span class="meta-item"><strong>Frame</strong> &nbsp;Leverage &amp; compounding</span>
+      <span class="meta-item"><strong>Scale</strong> &nbsp;~10 engineers</span>
+      <span class="meta-item"><strong>Next</strong> &nbsp;ce-brainstorm one survivor</span>
+    </div>
+  </header>
+
+  <div class="frame-label">
+    7 ideas — pipeline nodes — ranked by compounding potential
+  </div>
+
+  <div class="pipeline" role="list">
+
+    <!-- ══ IDEA 1 ══ -->
+    <article class="idea lead" role="listitem">
+      <div class="idea-header">
+        <h2 class="idea-title">The Canonical Session Payload Schema</h2>
+        <div class="badge-row">
+          <span class="badge badge-axis">Session continuity</span>
+          <span class="badge badge-basis direct">direct:</span>
+        </div>
+      </div>
+      <p class="idea-summary">
+        Define a single JSON schema — call it <strong>ce-session.schema.json</strong> — that any CE Stop hook can emit: run-id, timestamp, repos touched, artifact paths, axis tags derived from the YAML frontmatter vocabulary already in <code>docs/solutions/</code>, and a one-line summary. Today there is no standard payload; whoever owns this schema first owns the routing layer for every future CE session across every repo. The Feedback Hub's 22-column schema proved this team can maintain a structured schema in production — apply the same discipline here.
+      </p>
+      <div class="idea-details">
+        <div class="detail-row">
+          <span class="detail-label">Why it matters</span>
+          <span class="detail-value why-matters">Owning the schema is owning the bus: every downstream tool — n8n routing, Linear issue creation, CLAUDE.md auto-loading — becomes a consumer of one stable contract rather than a bespoke integration.</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Meeting test</span>
+          <span class="detail-value meeting-test">"Can we add a new routing destination for CE sessions without touching the hook itself?" — yes, if the schema exists; no, if it doesn't.</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- ══ IDEA 2 ══ -->
+    <article class="idea" role="listitem">
+      <div class="idea-header">
+        <h2 class="idea-title">HANDOFF.md Machine-Readable Header</h2>
+        <div class="badge-row">
+          <span class="badge badge-axis">Artifact lifecycle</span>
+          <span class="badge badge-basis direct">direct:</span>
+        </div>
+      </div>
+      <p class="idea-summary">
+        Every HANDOFF.md already gets written at session close. Add a YAML front-matter block — matching the <strong>module / tags / problem_type</strong> vocabulary already established in <code>docs/solutions/</code> — plus two new fields: <code>status: draft | review | filed</code> and <code>linear_issue:</code>. The file stays human-readable; automation now has a stable parse target. A PostToolUse hook on Write fires whenever HANDOFF.md is saved, reads the front-matter, and routes based on status. The existing YAML vocabulary is the leverage point: this extends a schema the team already knows rather than inventing a new one.
+      </p>
+      <div class="idea-details">
+        <div class="detail-row">
+          <span class="detail-label">Why it matters</span>
+          <span class="detail-value why-matters">One field change (<code>status: filed</code>) becomes the trigger for Linear issue creation, Slack notification, and docs indexing — the document's own header drives its lifecycle.</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Meeting test</span>
+          <span class="detail-value meeting-test">"How do we know when a HANDOFF is ready to become a ticket?" — the status field answers; right now nobody knows.</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- ══ IDEA 3 ══ -->
+    <article class="idea" role="listitem">
+      <div class="idea-header">
+        <h2 class="idea-title">Cross-Repo Docs Repo as the Neutral Home</h2>
+        <div class="badge-row">
+          <span class="badge badge-axis">Storage location</span>
+          <span class="badge badge-basis reasoned">reasoned:</span>
+        </div>
+      </div>
+      <p class="idea-summary">
+        Create a <strong>third repo in the Athian-ai org</strong> — call it <code>athian-ai/docs</code> — that is the canonical home for all CE outputs: ideation, brainstorms, plans, and HANDOFFs. Both <code>platform</code> and <code>sus-plat</code> have CLAUDE.md files that can reference it via the <code>@</code> import mechanism already established in the CLAUDE.md hierarchy. Today, cross-repo planning docs have no neutral home; they live on whoever's machine ran the session. A dedicated docs repo also gets GitHub-native discoverability: search, permalinks, and PR-driven review — without requiring any new tooling.
+      </p>
+      <div class="idea-details">
+        <div class="detail-row">
+          <span class="detail-label">Why it matters</span>
+          <span class="detail-value why-matters">Every future CE session that touches either repo can reference prior plans by URL rather than filename-on-disk; the repo becomes the team's institutional memory rather than a local scratch directory.</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Meeting test</span>
+          <span class="detail-value meeting-test">"Where does the plan Dory wrote last week live?" — right now: unknown. With this: a GitHub URL anyone on the team can open.</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- ══ IDEA 4 ══ -->
+    <article class="idea" role="listitem">
+      <div class="idea-header">
+        <h2 class="idea-title">CLAUDE.md as a Deliberate Composition Layer</h2>
+        <div class="badge-row">
+          <span class="badge badge-axis">Context hierarchy</span>
+          <span class="badge badge-basis direct">direct:</span>
+        </div>
+      </div>
+      <p class="idea-summary">
+        The <code>@voice/</code> import pattern already works in the global CLAUDE.md — it composes context from named files. Apply this deliberately to engineering context: the root <code>/Athian/CLAUDE.md</code> imports <code>@docs/ACTIVE_PLAN.md</code> (the current cross-repo plan) and <code>@docs/OPEN_HANDOFFS.md</code> (a generated index of unresolved HANDOFFs). Repo-level CLAUDE.md files inherit this and add repo-specific overlays. Every CE session in any repo automatically loads the current plan as grounding — without the user having to paste it. This is not a new mechanism; it's deliberate design of a hierarchy that already exists but isn't being used intentionally.
+      </p>
+      <div class="idea-details">
+        <div class="detail-row">
+          <span class="detail-label">Why it matters</span>
+          <span class="detail-value why-matters">Every CE session across any repo starts with the current plan in context automatically; the cost of "loading grounding" drops to zero and stays there.</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Meeting test</span>
+          <span class="detail-value meeting-test">"Does Claude know what we were planning last week when I start a new session?" — with deliberate CLAUDE.md composition, yes; without it, no.</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- ══ IDEA 5 ══ -->
+    <article class="idea" role="listitem">
+      <div class="idea-header">
+        <h2 class="idea-title">PostToolUse Hook as the Universal Capture Layer</h2>
+        <div class="badge-row">
+          <span class="badge badge-axis">Session continuity</span>
+          <span class="badge badge-basis direct">direct:</span>
+        </div>
+      </div>
+      <p class="idea-summary">
+        The <code>PostToolUse</code> hook in <code>.claude/settings.json</code> fires after every Write from Claude Code. Configure it to watch for CE artifact filenames — <code>HANDOFF.md</code>, <code>docs/ideation/*.html</code>, <code>docs/plans/*.md</code> — and on match, emit a structured JSON event (following the canonical schema from Idea 1) to a local queue file or directly to an n8n webhook. This is one hook, one pattern match, one emit — but it fires on every future CE session across every repo that loads this settings file. The capture layer compounds silently: every session adds to the index without anyone remembering to do it.
+      </p>
+      <div class="idea-details">
+        <div class="detail-row">
+          <span class="detail-label">Why it matters</span>
+          <span class="detail-value why-matters">Capture happens at the point of creation, not as a separate filing step — which means it actually happens, every time, at zero marginal effort.</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Meeting test</span>
+          <span class="detail-value meeting-test">"Did this session's artifacts get indexed?" — with the hook: always; without it: only when someone remembers to file them.</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- ══ IDEA 6 ══ -->
+    <article class="idea" role="listitem">
+      <div class="idea-header">
+        <h2 class="idea-title">The CE Artifact Index as a Living Google Sheet</h2>
+        <div class="badge-row">
+          <span class="badge badge-axis">Discoverability</span>
+          <span class="badge badge-basis reasoned">reasoned:</span>
+        </div>
+      </div>
+      <p class="idea-summary">
+        The Feedback Hub already routes Granola → n8n → Google Sheets → Claude. Reuse the same pipeline: CE artifact events (from the PostToolUse hook) flow through n8n into a second sheet — same infrastructure, different columns. Columns: artifact type, subject, axis tags, repo, session date, artifact path or GitHub URL, status, linked Linear issue. Claude can then answer "what have we planned about auth in the last 60 days?" by querying this sheet exactly as it queries the Feedback Hub. Discoverability becomes a natural language query rather than a file system search.
+      </p>
+      <div class="idea-details">
+        <div class="detail-row">
+          <span class="detail-label">Why it matters</span>
+          <span class="detail-value why-matters">The trusted infrastructure is already proven and maintained; the marginal cost of a second sheet is near zero, and the team already knows how to query it.</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Meeting test</span>
+          <span class="detail-value meeting-test">"What CE sessions have touched the emissions calculation module this quarter?" — answerable in 30 seconds if the index exists; not at all if it doesn't.</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- ══ IDEA 7 ══ -->
+    <article class="idea" role="listitem">
+      <div class="idea-header">
+        <h2 class="idea-title">Prior-Session Grounding via Index Lookup at Session Start</h2>
+        <div class="badge-row">
+          <span class="badge badge-axis">Session continuity</span>
+          <span class="badge badge-basis reasoned">reasoned:</span>
+        </div>
+      </div>
+      <p class="idea-summary">
+        Once the CE artifact index (Idea 6) and the canonical schema (Idea 1) exist, a <strong>PreToolUse hook on Task launch</strong> — or a CLAUDE.md injected snippet — can query the index for recent sessions on the same subject and inject a "prior context" block into the session grounding automatically. The sub-agent does not need to be told "we planned this last week"; it loads it. This is the second-order payoff of building the index: future sessions get smarter without any additional user action. Each session captured makes the next session cheaper to orient.
+      </p>
+      <div class="idea-details">
+        <div class="detail-row">
+          <span class="detail-label">Why it matters</span>
+          <span class="detail-value why-matters">Planning sessions stop re-discovering the same ground; accumulated decisions carry forward automatically, compounding the value of every past session.</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Meeting test</span>
+          <span class="detail-value meeting-test">"Does this session know what we already decided about the HANDOFF format?" — yes, if the index lookup fires at start; no, if not.</span>
+        </div>
+      </div>
+    </article>
+
+  </div><!-- /pipeline -->
+
+  <!-- ── Rejection log ── -->
+  <section class="rejection-section">
+    <h2 class="display">Ideas considered and cut</h2>
+    <div class="rejected-list">
+      <div class="rejected-item">
+        <span class="rejected-name">Git-tracked local docs</span>
+        <span class="rejected-reason">Still invisible to the team unless pushed; adds a commit step that won't always happen. Doesn't solve discoverability.</span>
+      </div>
+      <div class="rejected-item">
+        <span class="rejected-name">Per-session Slack DM summary</span>
+        <span class="rejected-reason">Creates noise without structure. Slack is not searchable by axis or module. Works as a notification layer on top of an index, not as the index itself.</span>
+      </div>
+      <div class="rejected-item">
+        <span class="rejected-name">Linear for all CE artifact tracking</span>
+        <span class="rejected-reason">Linear is the right place for filed work items, not raw ideation. Pushing every brainstorm into Linear creates noise in the issue tracker and conflates planning with execution.</span>
+      </div>
+      <div class="rejected-item">
+        <span class="rejected-name">Shared network drive / Dropbox</span>
+        <span class="rejected-reason">Solves storage but not discoverability, lifecycle, or session grounding. No metadata, no queryability, no integration with the existing toolchain.</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span class="footer-note">ce-ideate &nbsp;·&nbsp; leverage &amp; compounding frame &nbsp;·&nbsp; 2026-06-23</span>
+    <span class="next-step">→ ce-brainstorm &lt;idea title&gt; to go deep on one direction</span>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,955 @@
+
+<title>Ideation: Athian Compliance — Leverage &amp; Compounding (v2)</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ground:       #0E1420;
+    --ground-2:     #151C2D;
+    --ground-3:     #1C2640;
+    --ground-4:     #243050;
+    --text:         #E8EAF0;
+    --text-mid:     #A8ADBF;
+    --text-dim:     #616880;
+    --accent:       #C9943A;
+    --accent-light: #F0DDB0;
+    --accent-dim:   #7A5B22;
+    --accent-2:     #4A7FA5;
+    --accent-2-dim: #2A4F6A;
+    --green:        #6DBF8A;
+    --green-dim:    #2E5C3E;
+    --border:       #1F2E4A;
+    --border-bright:#2E4268;
+    --mono:         'JetBrains Mono', 'Cascadia Code', 'Fira Mono', monospace;
+    --sans:         'Inter', system-ui, sans-serif;
+    --display:      'Space Grotesk', system-ui, sans-serif;
+    --radius:       3px;
+  }
+
+  html { font-size: 15px; background: var(--ground); color: var(--text); }
+
+  body {
+    font-family: var(--sans);
+    line-height: 1.6;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+  /* ── Header ── */
+  .page-header {
+    padding: 52px 0 36px;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: end;
+  }
+
+  .header-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .page-title {
+    font-family: var(--display);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+
+  .page-title em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .header-meta {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  /* ── Frame banner ── */
+  .frame-banner {
+    margin: 32px 0 0;
+    padding: 20px 24px;
+    background: var(--ground-2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+    align-items: start;
+    border-radius: var(--radius);
+  }
+
+  .frame-label {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding-top: 2px;
+    white-space: nowrap;
+  }
+
+  .frame-desc {
+    font-size: 0.85rem;
+    color: var(--text-mid);
+    line-height: 1.6;
+  }
+
+  /* ── Stats strip ── */
+  .stats-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin: 28px 0 0;
+    overflow: hidden;
+  }
+
+  .stat-cell {
+    background: var(--ground-2);
+    padding: 16px 20px;
+  }
+
+  .stat-value {
+    font-family: var(--display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 0.63rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-top: 5px;
+  }
+
+  /* ── Section headings ── */
+  .section-heading {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 52px 0 24px;
+  }
+
+  .section-heading h2 {
+    font-family: var(--display);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  .section-rule {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── Axis nav ── */
+  .axis-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+
+  .axis-nav a {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    color: var(--text-dim);
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--ground-2);
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .axis-nav a:hover { color: var(--text-mid); border-color: var(--border-bright); }
+
+  /* ── Jump list ── */
+  .jump-list {
+    margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .jump-item {
+    display: grid;
+    grid-template-columns: 28px 1fr auto auto;
+    gap: 12px;
+    align-items: baseline;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.83rem;
+    text-decoration: none;
+    color: var(--text-mid);
+    transition: color 0.15s;
+  }
+
+  .jump-item:hover { color: var(--text); }
+  .jump-item:hover .ji-rank { color: var(--accent); }
+
+  .ji-rank {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--text-dim);
+  }
+
+  .ji-title {
+    color: inherit;
+  }
+
+  .ji-axis {
+    font-family: var(--mono);
+    font-size: 0.63rem;
+    letter-spacing: 0.06em;
+    color: var(--accent-2);
+    white-space: nowrap;
+  }
+
+  .ji-cx {
+    font-family: var(--mono);
+    font-size: 0.63rem;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  /* ── Idea cards ── */
+  .idea-card {
+    background: var(--ground-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+
+  .card-record-bar {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 9px 20px;
+    background: var(--ground-3);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    flex-wrap: wrap;
+    gap: 0;
+  }
+
+  .rb-rank {
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-right: 12px;
+  }
+
+  .rb-sep {
+    width: 1px;
+    height: 14px;
+    background: var(--border-bright);
+    margin: 0 12px;
+  }
+
+  .rb-field {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-dim);
+  }
+
+  .rb-field span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .rb-conf { margin-left: auto; }
+
+  .rb-cx span { color: var(--text-mid); }
+
+  .cx-low  { color: var(--green) !important; }
+  .cx-med  { color: var(--accent-2) !important; }
+  .cx-medh { color: var(--accent) !important; }
+  .cx-high { color: #E07070 !important; }
+
+  .card-body {
+    padding: 28px 28px 24px;
+  }
+
+  .card-title {
+    font-family: var(--display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: var(--text);
+    margin-bottom: 14px;
+    line-height: 1.25;
+  }
+
+  .card-summary {
+    font-size: 0.875rem;
+    color: var(--text-mid);
+    line-height: 1.65;
+    margin-bottom: 20px;
+  }
+
+  .card-fields {
+    display: grid;
+    gap: 14px;
+  }
+
+  .card-field {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 8px;
+    align-items: start;
+  }
+
+  .cf-label {
+    font-family: var(--mono);
+    font-size: 0.63rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding-top: 2px;
+  }
+
+  .cf-value {
+    font-size: 0.83rem;
+    color: var(--text-mid);
+    line-height: 1.55;
+  }
+
+  .cf-value.basis {
+    font-family: var(--mono);
+    font-size: 0.76rem;
+    color: var(--text-mid);
+    background: var(--ground-3);
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    border-left: 2px solid var(--accent-dim);
+    line-height: 1.55;
+  }
+
+  .basis-tag {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .cf-value.meeting-test {
+    font-style: italic;
+    color: var(--accent-light);
+    font-size: 0.84rem;
+    background: rgba(201, 148, 58, 0.06);
+    border: 1px solid var(--accent-dim);
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    line-height: 1.55;
+  }
+
+  /* ── Diagram ── */
+  .diagram-wrap {
+    margin: 20px 0 4px;
+    background: var(--ground-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    overflow-x: auto;
+  }
+
+  .diagram-wrap svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  /* ── Axis tags ── */
+  .axis-tag {
+    display: inline-flex;
+    align-items: center;
+    background: var(--ground-4);
+    border: 1px solid var(--border-bright);
+    border-radius: 2px;
+    padding: 2px 8px;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    color: var(--accent-2);
+    white-space: nowrap;
+  }
+
+  /* ── Axes section ── */
+  .axes-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .axis-chip {
+    background: var(--ground-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 6px 14px;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    color: var(--text-mid);
+  }
+
+  /* ── Grounding block ── */
+  .grounding-block {
+    background: var(--ground-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 0.83rem;
+    color: var(--text-mid);
+    line-height: 1.6;
+  }
+
+  /* ── Rejection table ── */
+  .rejection-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+  }
+
+  .rejection-table th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 0.63rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--ground-3);
+  }
+
+  .rejection-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-mid);
+    vertical-align: top;
+  }
+
+  .rejection-table td:first-child {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  .rejection-table tr:last-child td { border-bottom: none; }
+
+  .rejection-note {
+    font-size: 0.83rem;
+    color: var(--text-mid);
+    padding: 16px 20px;
+    background: var(--ground-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    line-height: 1.6;
+  }
+
+  /* ── Footer ── */
+  footer.composition-signal {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+  }
+</style>
+
+<!-- Header -->
+<header class="page-header">
+  <div>
+    <div class="header-eyebrow">Athian Compliance · Ideation v2</div>
+    <h1 class="page-title">Leverage &amp; <em>Compounding</em></h1>
+  </div>
+  <div class="header-meta">
+    <div>2026-06-22</div>
+    <div>elsewhere-software</div>
+    <div>7 survivors · 5 axes</div>
+  </div>
+</header>
+
+<!-- Frame banner -->
+<div class="frame-banner">
+  <div class="frame-label">Frame</div>
+  <div class="frame-desc">Find choices that, once made, make many future moves cheaper or stronger. Think in second-order effects, flywheels, and structural compounding. Ideas that do not compound over time do not belong here.</div>
+</div>
+
+<!-- Stats strip -->
+<div class="stats-strip">
+  <div class="stat-cell">
+    <div class="stat-value">12</div>
+    <div class="stat-label">Raw candidates</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-value">7</div>
+    <div class="stat-label">Survivors</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-value">5</div>
+    <div class="stat-label">Axes covered</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-value">v2</div>
+    <div class="stat-label">This session</div>
+  </div>
+</div>
+
+<!-- Topic Axes -->
+<div class="section-heading">
+  <h2>Topic Axes</h2>
+  <div class="section-rule"></div>
+</div>
+<div class="axes-list">
+  <div class="axis-chip">Standard encoding</div>
+  <div class="axis-chip">Evidence collection</div>
+  <div class="axis-chip">Supplier experience</div>
+  <div class="axis-chip">Review and reporting</div>
+  <div class="axis-chip">Standard lifecycle</div>
+</div>
+
+<!-- Ranked Ideas -->
+<div class="section-heading">
+  <h2>Ranked Ideas</h2>
+  <div class="section-rule"></div>
+</div>
+
+<!-- Jump list -->
+<nav class="axis-nav" aria-label="Axis filter">
+  <span style="font-family:var(--mono);font-size:0.63rem;color:var(--text-dim);padding:4px 0;">jump to:</span>
+  <a href="#idea-1">01</a>
+  <a href="#idea-2">02</a>
+  <a href="#idea-3">03</a>
+  <a href="#idea-4">04</a>
+  <a href="#idea-5">05</a>
+  <a href="#idea-6">06</a>
+  <a href="#idea-7">07</a>
+</nav>
+
+<!-- IDEA 1 -->
+<article class="idea-card" id="idea-1">
+  <div class="card-record-bar">
+    <div class="rb-rank">01</div>
+    <div class="rb-sep"></div>
+    <div class="rb-field">axis <span><span class="axis-tag">evidence collection</span></span></div>
+    <div class="rb-sep"></div>
+    <div class="rb-field rb-conf">conf <span>91%</span></div>
+    <div class="rb-sep"></div>
+    <div class="rb-field rb-cx">cx <span class="cx-medh">Medium–High</span></div>
+  </div>
+  <div class="card-body">
+    <h2 class="card-title">Continuous Evidence Monitoring Hooks</h2>
+    <p class="card-summary">Supplier compliance is currently assessed at a point in time and then assumed valid until the next audit cycle — a structural fiction. The platform should watch for real-time signals that invalidate prior compliance state: certificate revocations published by SQFI/FSSC/BRCGS, public FDA recall notices touching a monitored supplier, facility-level license suspensions, or news signals for watched entities. When a signal fires, the platform surfaces a "compliance state potentially invalidated" flag on the affected supplier-standard pair and routes it to the specialist's review queue without waiting for the next audit cycle. The CPG buyer's dashboard shows a live count of suppliers currently compliant — not compliant as of last review.</p>
+
+    <!-- Diagram: point-in-time vs. continuous state -->
+    <div class="diagram-wrap" style="margin-bottom:20px;">
+      <svg viewBox="0 0 680 130" xmlns="http://www.w3.org/2000/svg" aria-label="Point-in-time audit vs. continuous compliance state comparison">
+        <defs>
+          <marker id="arr1" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+            <polygon points="0 0,7 3.5,0 7" fill="#C9943A"/>
+          </marker>
+          <marker id="arr2b" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+            <polygon points="0 0,7 3.5,0 7" fill="#4A7FA5"/>
+          </marker>
+        </defs>
+
+        <!-- LEFT: Point-in-time -->
+        <text x="10" y="16" font-family="'JetBrains Mono',monospace" font-size="9" fill="#616880" letter-spacing="0.08em" text-transform="uppercase">TODAY</text>
+
+        <!-- Timeline bar -->
+        <line x1="10" y1="50" x2="290" y2="50" stroke="#1F2E4A" stroke-width="2"/>
+
+        <!-- Audit events (dots) -->
+        <circle cx="55" cy="50" r="5" fill="#C9943A"/>
+        <circle cx="145" cy="50" r="5" fill="#C9943A"/>
+        <circle cx="235" cy="50" r="5" fill="#C9943A"/>
+
+        <!-- Gap labels -->
+        <text x="100" y="44" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" fill="#616880">gap: 90 days</text>
+        <text x="190" y="44" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" fill="#616880">gap: 90 days</text>
+
+        <!-- Audit labels -->
+        <text x="55" y="70" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="9" fill="#A8ADBF">audit</text>
+        <text x="145" y="70" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="9" fill="#A8ADBF">audit</text>
+        <text x="235" y="70" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="9" fill="#A8ADBF">audit</text>
+
+        <!-- Recall event in the gap -->
+        <line x1="100" y1="35" x2="100" y2="65" stroke="#E07070" stroke-width="1.5" stroke-dasharray="3 2"/>
+        <text x="100" y="28" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" fill="#E07070">recall</text>
+        <text x="100" y="88" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" fill="#616880">invisible until next audit</text>
+
+        <!-- RIGHT: Continuous -->
+        <text x="360" y="16" font-family="'JetBrains Mono',monospace" font-size="9" fill="#6DBF8A" letter-spacing="0.08em">WITH MONITORING</text>
+
+        <line x1="360" y1="50" x2="640" y2="50" stroke="#2E5C3E" stroke-width="2"/>
+
+        <!-- Continuous signals -->
+        <circle cx="405" cy="50" r="3" fill="#4A7FA5"/>
+        <circle cx="440" cy="50" r="3" fill="#4A7FA5"/>
+        <circle cx="490" cy="50" r="3" fill="#4A7FA5"/>
+        <circle cx="540" cy="50" r="3" fill="#4A7FA5"/>
+        <circle cx="595" cy="50" r="3" fill="#4A7FA5"/>
+
+        <!-- Recall fires immediately -->
+        <line x1="475" y1="35" x2="475" y2="65" stroke="#E07070" stroke-width="1.5" stroke-dasharray="3 2"/>
+        <text x="475" y="28" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" fill="#E07070">recall</text>
+
+        <!-- Flag fires -->
+        <rect x="430" y="75" width="120" height="28" rx="2" fill="#1C2640" stroke="#C9943A"/>
+        <text x="490" y="87" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="9" fill="#F0DDB0" font-weight="600">flag → review queue</text>
+        <text x="490" y="98" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="#616880">same day, not next cycle</text>
+        <line x1="475" y1="65" x2="475" y2="74" stroke="#C9943A" stroke-width="1.5" marker-end="url(#arr1)"/>
+      </svg>
+    </div>
+
+    <div class="card-fields">
+      <div class="card-field">
+        <div class="cf-label">Basis</div>
+        <div class="cf-value basis"><span class="basis-tag">external:</span> Vanta/Drata structural model — compliance as a live state, not a point-in-time snapshot. Their 400+ integrations pull continuous signals from connected sources; the structural inversion (live state vs periodic audit) is the differentiating claim, not the automation of any specific check. <span class="basis-tag">external:</span> BRCGS, SQFI, and FSSC all maintain publicly accessible certificate directories and revocation notices — the data exists for automated polling. <span class="basis-tag">reasoned:</span> once the platform holds the supplier-standard-evidence mapping at the clause level (which the DSL enables), linking external signals to that mapping is architecturally straightforward — the event fires against a known structured record, not unstructured data.</div>
+      </div>
+      <div class="card-field">
+        <div class="cf-label">Why it matters</div>
+        <div class="cf-value">Every CPG buyer selling "we validate our suppliers" to their own customers is actually selling a fiction: "we validated them 90 days ago." The first platform that surfaces a certification revocation or recall signal before the buyer's next scheduled audit cycle becomes a qualitatively different product — a risk intelligence layer, not a compliance administration tool. This is also the structural inversion that makes the platform valuable to legal and procurement, not just compliance specialists. Compounding effect: as the monitored signal set expands (more certificate directories, more recall feeds, more regulatory databases), the monitoring value grows without additional supplier or specialist effort.</div>
+      </div>
+      <div class="card-field">
+        <div class="cf-label">Meeting test</div>
+        <div class="cf-value meeting-test">"If a supplier's SQF certificate is revoked on a Tuesday and a product recall follows on Thursday, and we don't know until our quarterly audit cycle, that's a liability gap — can the platform tell us the same day?"</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- IDEA 2 -->
+<article class="idea-card" id="idea-2">
+  <div class="card-record-bar">
+    <div class="rb-rank">02</div>
+    <div class="rb-sep"></div>
+    <div class="rb-field">axis <span><span class="axis-tag">standard lifecycle</span></span></div>
+    <div class="rb-sep"></div>
+    <div class="rb-field rb-conf">conf <span>88%</span></div>
+    <div class="rb-sep"></div>
+    <div class="rb-field rb-cx">cx <span class="cx-med">Medium</span></div>
+  </div>
+  <div class="card-body">
+    <h2 class="card-title">Standard Cross-Walk Engine</h2>
+    <p class="card-summary">A supplier certified under FSSC 22000 has already satisfied a meaningful subset of SQF Edition 10 requirements — both are GFSI-benchmarked and share structural overlap at the clause level. Currently, when a CPG buyer requires SQF but a supplier holds FSSC, the specialist evaluates from scratch. A cross-walk engine encodes which clauses in Standard A satisfy which requirements in Standard B with a typed confidence level (full, partial, conditional), so FSSC certification satisfies mapped SQF requirements automatically — the specialist only reviews the delta. The compounding mechanism: each new standard added to the library requires encoding n cross-walks to existing standards; each cross-walk is then reusable across every supplier evaluation in the overlap zone forever.</p>
+    <div class="card-fields">
+      <div class="card-field">
+        <div class="cf-label">Basis</div>
+        <div class="cf-value basis"><span class="basis-tag">external:</span> GFSI benchmarking is the canonical precedent — the GFSI board evaluates standards against a common reference document and grants benchmarked status when the standard is substantively equivalent. Athian's cross-walk engine does the same work at the clause level rather than the standard-totality level, producing finer-grained equivalences. <span class="basis-tag">reasoned:</span> the combinatorial math works strongly in the platform's favor: encoding k standards produces k×(k-1)/2 cross-walk pairs, and each pair is reused on every supplier evaluation for both standards — the encoding cost is bounded and one-time, the reuse is unbounded. At 10 standards in the library, 45 cross-walk pairs serve every buyer's multi-standard suppliers indefinitely.</div>
+      </div>
+      <div class="card-field">
+        <div class="cf-label">Why it matters</div>
+        <div class="cf-value">Large suppliers typically hold multiple GFSI-benchmarked certifications — they are the highest-value, highest-volume suppliers in any CPG company's base. Every multi-standard supplier the platform onboards is currently costed as full separate evaluations per standard. Cross-walks make onboarding a multi-certified supplier materially cheaper — perhaps 60–70% of the evaluation is pre-populated from the cross-walk map — making it viable to onboard suppliers the platform might otherwise price out of. Compounding: as the cross-walk library grows, the advantage increases superlinearly with standard library size.</div>
+      </div>
+      <div class="card-field">
+        <div class="cf-label">Meeting test</div>
+        <div class="cf-value meeting-test">"When a supplier is FSSC 22000 certified and a buyer also requires SQF Edition 10, how much of that second evaluation should already be answered by the first certificate? Can the platform tell us exactly which clauses are covered and which need fresh evidence?"</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- IDEA 3 -->
+<article class="idea-card" id="idea-3">
+  <div class="card-record-bar">
+    <div class="rb-rank">03</div>
+    <div class="rb-sep"></div>
+    <div class="rb-field">axis <span><span class="axis-tag">standard encoding</span></span></div>
+    <div class="rb-sep"></div>
+    <div class="rb-field rb-conf">conf <span>86%</span></div>
+    <div class="rb-sep"></div>
+    <div class="rb-field rb-cx">cx <span class="cx-med">Medium</span></div>
+  </div>
+  <div class="card-body">
+    <h2 class="card-title">Requirement Dependency Graph</h2>
+    <p class="card-summary">Food safety standards have implicit dependencies encoded nowhere in their prose: a HACCP plan at SQF clause 7.1 is a precondition for verification records at 7.3; a food safety culture assessment at 2.4.2 requires documented senior management commitment at 2.4.1 before it can be satisfied. Specialists know these dependencies; the platform doesn't. Encoding them as a typed directed acyclic graph (DAG) in the DSL makes them computable: the platform can determine minimum viable submission order, identify the specific load-bearing gap that blocks downstream clauses, and explain to a supplier not just what they're missing but why that specific missing item blocks everything else. Dependency encoding is a one-time per-standard investment; every downstream automation — gap analysis, submission checklist ordering, remediation priority — benefits from it indefinitely.</p>
+
+    <!-- Dependency DAG diagram -->
+    <div class="diagram-wrap" style="margin-bottom:20px;">
+      <svg viewBox="0 0 620 150" xmlns="http://www.w3.org/2000/svg" aria-label="Clause dependency DAG showing how missing a root clause blocks downstream evaluation">
+        <defs>
+          <marker id="dep-arr" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+            <polygon points="0 0,7 3.5,0 7" fill="#4A7FA5"/>
+          </marker>
+          <marker id="block-arr" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+            <polygon points="0 0,7 3.5,0 7" fill="#E07070"/>
+          </marker>
+        </defs>
+
+        <!-- Root: 2.4.1 senior management commitment — MISSING -->
+        <rect x="10" y="55" width="150" height="44" rx="3" fill="#1C2640" stroke="#E07070" stroke-width="1.5"/>
+        <text x="85" y="72" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#E07070" font-weight="600">2.4.1 Sr Mgmt Commitment</text>
+        <text x="85" y="87" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="8" fill="#E07070">MISSING</text>
+
+        <!-- Mid: 2.4.2 food safety culture plan — BLOCKED -->
+        <rect x="230" y="20" width="155" height="44" rx="3" fill="#1C2640" stroke="#616880" stroke-dasharray="3 2"/>
+        <text x="307" y="37" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#616880">2.4.2 Food Safety Culture</text>
+        <text x="307" y="51" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="8" fill="#616880">BLOCKED</text>
+
+        <!-- Mid: 7.1 HACCP Plan — OK -->
+        <rect x="230" y="88" width="155" height="44" rx="3" fill="#1C2640" stroke="#6DBF8A"/>
+        <text x="307" y="105" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#6DBF8A">7.1 HACCP Plan</text>
+        <text x="307" y="119" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="8" fill="#6DBF8A">SATISFIED</text>
+
+        <!-- Downstream: 7.3 verification records — BLOCKED by 2.4.1 chain -->
+        <rect x="455" y="20" width="155" height="44" rx="3" fill="#1C2640" stroke="#616880" stroke-dasharray="3 2"/>
+        <text x="532" y="37" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#616880">7.3 Verification Records</text>
+        <text x="532" y="51" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="8" fill="#616880">BLOCKED</text>
+
+        <!-- Downstream: 7.2 monitoring procedures — OK -->
+        <rect x="455" y="88" width="155" height="44" rx="3" fill="#1C2640" stroke="#6DBF8A"/>
+        <text x="532" y="105" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#6DBF8A">7.2 Monitoring Procs</text>
+        <text x="532" y="119" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="8" fill="#6DBF8A">SATISFIED</text>
+
+        <!-- Arrows: 2.4.1 → 2.4.2 (blocked) -->
+        <line x1="160" y1="68" x2="228" y2="42" stroke="#E07070" stroke-width="1.5" marker-end="url(#block-arr)"/>
+
+        <!-- Arrows: 2.4.2 → 7.3 (blocked) -->
+        <line x1="385" y1="42" x2="453" y2="42" stroke="#E07070" stroke-width="1" stroke-dasharray="3 2" marker-end="url(#block-arr)"/>
+
+        <!-- Arrows: 7.1 → 7.2, 7.1 → 7.3 -->
+        <line x1="385" y1="110" x2="453" y2="110" stroke="#4A7FA5" stroke-width="1" marker-end="url(#dep-arr)"/>
+        <line x1="385" y1="100" x2="453" y2="55" stroke="#4A7FA5" stroke-width="1" marker-end="url(#dep-arr)"/>
+
+        <!-- Legend -->
+        <rect x="10" y="120" width="8" height="8" fill="none" stroke="#E07070" stroke-width="1.5"/>
+        <text x="24" y="129" font-family="'JetBrains Mono',monospace" font-size="8" fill="#616880">missing / blocked</text>
+        <rect x="120" y="120" width="8" height="8" fill="none" stroke="#6DBF8A"/>
+        <text x="134" y="129" font-family="'JetBrains Mono',monospace" font-size="8" fill="#616880">satisfied</text>
+      </svg>
+    </div>
+
+    <div class="card-fields">
+      <div class="card-field">
+        <div class="cf-label">Basis</div>
+        <div class="cf-value basis"><span class="basis-tag">reasoned:</span> the gap analysis pattern in Athian's codebase already distinguishes load-bearing gaps from enhancement gaps — this is the encoding that makes that distinction computable rather than specialist-intuited. The DSL's TypeBox schema pattern (typed props → inferred DTOs) maps directly to encoding dependency constraints: a clause node's props include a typed `dependsOn` field pointing to other clause IDs, which the gap analysis engine traverses. The structural work is largely additive. <span class="basis-tag">external:</span> build system dependency graphs (Gradle, Bazel) are the canonical prior art — a task with unsatisfied dependencies is blocked, and the build system explains the chain of blockers, not just the immediate one. Same pattern, same value: without the DAG, you fix one gap and discover the next; with it, the full critical path is visible at once.</div>
+      </div>
+      <div class="card-field">
+        <div class="cf-label">Why it matters</div>
+        <div class="cf-value">A supplier submitting evidence without knowing the dependency structure submits in random clause order — they may satisfy 40 clauses but leave a root clause missing that blocks all 40. The specialist discovers the root gap during review, requests resubmission, and the cycle repeats. The dependency graph exposes the critical path before submission: the supplier sees exactly which clauses they must satisfy first for any others to count. Every cycle this prevents is recovered specialist time. As the standard library grows and dependency graphs are encoded for each standard, the accumulated structured knowledge becomes a competitive asset — a new entrant re-encodes the clauses but not the dependency logic.</div>
+      </div>
+      <div class="card-field">
+        <div class="cf-label">Meeting test</div>
+        <div class="cf-value meeting-test">"Right now a supplier can satisfy 45 of 50 clauses and still fail evaluation because the 5 missing ones block the other 45 — can we show them that dependency chain before they submit, rather than after we review?"</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- IDEA 4 -->
+<article class="idea-card" id="idea-4">
+  <div class="card-record-bar">
+    <div class="rb-rank">04</div>
+    <div class="rb-sep"></div>
+    <div class="rb-field">axis <span><span class="axis-tag">review and reporting</span></span></div>
+    <div class="rb-sep"></div>
+    <div class="rb-field rb-conf">conf <span>84%</span></div>
+    <div class="rb-sep"></div>
+    <div class="rb-field rb-cx">cx <span class="cx-medh">Medium–High</span></div>
+  </div>
+  <div class="card-body">
+    <h2 class="card-title">Compliance Benchmark Percentile Scoring</h2>
+    <p class="card-summary">Once the platform has evaluated enough suppliers against the same standard, it holds population-level data: score distributions, evidence quality patterns, which clause sections generate the most resubmissions, which suppliers are above or below median readiness. A percentile score — "Supplier X's SQF readiness sits at the 78th percentile of suppliers evaluated on this standard in the last 18 months" — gives CPG buyers a relative signal that fixed pass/fail thresholds cannot. The score itself is not the leverage; the leverage is that the score becomes more defensible and more differentiating with every additional evaluation. At 2,000 evaluations, it is an industry reference that no competitor without that evaluation history can replicate.</p>
+    <div class="card-fields">
+      <div class="card-field">
+        <div class="cf-label">Basis</div>
+        <div class="cf-value basis"><span class="basis-tag">external:</span> EcoVadis's percentile scoring model ($1,500–$5,000/supplier/year) is built entirely on this mechanism — the score's value is derived from the comparison population, not from the underlying assessment methodology. EcoVadis's moat is 3M suppliers in the scoring corpus, not their questionnaire design. <span class="basis-tag">reasoned:</span> the percentile score becomes a network-effects asset: the more evaluations the platform processes, the more statistically robust and credible the benchmark, which makes the platform more valuable to buyers, which attracts more evaluations. Unlike a certification (which is a binary pass/fail), a percentile score drives ongoing engagement — a supplier at the 50th percentile has continuous incentive to improve, not just pass once.</div>
+      </div>
+      <div class="card-field">
+        <div class="cf-label">Why it matters</div>
+        <div class="cf-value">A CPG buyer sourcing a new ingredient supplier doesn't just want "do they pass?" — they want "how do they compare to our current supplier base?" The percentile score answers that question in a way that is inherently comparative and therefore inherently Athian-native: it cannot be reproduced from a supplier's raw certificate set. This is also the signal that CPG buyers use when making supplier selection decisions before onboarding — a pre-evaluation screening capability the platform doesn't yet have. Confidence is 84% because the sample size required to make early percentile scores meaningful enough to be useful (rather than misleading) needs a concrete threshold decision before build.</div>
+      </div>
+      <div class="card-field">
+        <div class="cf-label">Meeting test</div>
+        <div class="cf-value meeting-test">"When a buyer is choosing between two qualified suppliers, they should be able to ask 'which one has stronger food safety compliance on average?' — does the platform give them a defensible answer to that question today?"</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- IDEA 5 -->
+<article class="idea-card" id="idea-5">
+  <div class="card-record-bar">
+    <div class="rb-rank">05</div>
+    <div class="rb-sep"></div>
+    <div class="rb-field">axis <span><span class="axis-tag">standard encoding</span></span></div>
+    <div class="rb-sep"></div>
+    <div class="rb-field rb-conf">conf <span>83%</span></div>
+    <div class="rb-sep"></div>
+    <div class="rb-field rb-cx">cx <span class="cx-low">Low–Medium</span></div>
+  </div>
+  <div class="card-body">
+    <h2 class="card-title">Clause Interpretation Version Control</h2>
+    <p class="card-summary">Standard bodies publish clauses; compliance specialists develop interpretations of those clauses over years of evaluation. What does "documented procedure" mean in SQF Section 2.4 — written procedure only, or written procedure plus training evidence? Does "electronic record" satisfy "written record" in clause 5.1? These interpretations are tribal knowledge today — they live in individual specialists' heads and are inconsistently applied between buyers, specialists, and evaluation cycles. The platform should capture every time a specialist makes an interpretation decision on an ambiguous clause as a versioned annotation on the DSL spec: buyer-specific where relevant, shared where consensus exists. A new specialist onboarding inherits the full institutional interpretation history; a new buyer sees where interpretations diverge across their peer set.</p>
+    <div class="card-fields">
+      <div class="card-field">
+        <div class="cf-label">Basis</div>
+        <div class="cf-value basis"><span class="basis-tag">reasoned:</span> interpretation decisions are already made on every evaluation — capturing them costs essentially nothing marginal; the only new piece is the indexing layer that associates each decision with its clause ID, the standard version, the specialist ID, and the buyer context. The first decision is worth 1; the 1,000th is worth 1,000 — the corpus compounds without additional cost. <span class="basis-tag">external:</span> NIST OSCAL's profile layer is the structural precedent: a profile is an overlay on a catalog, selecting and tightening control interpretations without modifying the base standard. Athian's interpretation layer is the supply chain analog — a buyer-specific overlay on the base DSL clause that encodes their specific interpretation, inheriting the base standard text and adding the interpretation on top.</div>
+      </div>
+      <div class="card-field">
+        <div class="cf-label">Why it matters</div>
+        <div class="cf-value">Inconsistent clause interpretation is both a product quality problem and a liability problem. When interpretation varies between evaluations, the compliance standard the supplier was held to is effectively undefined — that ambiguity is exactly what plaintiffs' attorneys look for in food safety liability cases. Capturing interpretations makes the platform's compliance standard explicit and defensible. It also makes specialist onboarding dramatically faster: rather than learning through 6 months of shadowing and mistakes, a new specialist starts with the accumulated institutional interpretation library as a decision support tool. This is one of the few ideas here where the value to the platform (consistency, defensibility) and the value to the customer (specialist scalability) are the same mechanism.</div>
+      </div>
+      <div class="card-field">
+        <div class="cf-label">Meeting test</div>
+        <div class="cf-value meeting-test">"If a new compliance specialist joins and asks 'how does Buyer X interpret the SQF 2.4.1 senior management commitment clause,' we should be able to show them the accumulated decision history rather than say 'go ask Sarah' — can the platform do that today?"</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- IDEA 6 -->
+<article class="idea-card" id="idea-6">
+  <div class="card-record-bar">
+    <div class="rb-rank">06</div>
+    <div class="rb-sep"></div>
+    <div class="rb-field">axis <span><span class="axis-tag">standard encoding</span></span></div>
+    <div class="rb-sep"></div>
+    <div class="rb-field rb-conf">conf <span>80%</span></div>
+    <div class="rb-sep"></div>
+    <div class="rb-field rb-cx">cx <span class="cx-med">Medium</span></div>
+  </div>
+  <div class="card-body">
+    <h2 class="card-title">Standard Encoding API for Third-Party Integrators</h2>
+    <p class="card-summary">The DSL is the platform's core asset — once a standard is encoded, every automation is possible. An external read-only API that allows third-party enterprise GRC platforms, auditors, and certification bodies to query the machine-readable requirement set for a given standard version turns the DSL into an ecosystem primitive rather than an internal implementation detail. An enterprise customer's existing GRC platform can pull the Athian-encoded requirement set for SQF Edition 10 and validate their internal controls against it; a certification body can reference the machine-readable spec when issuing certificates. The platform becomes the authoritative source of what standards require — not just the tool that evaluates against them.</p>
+    <div class="card-fields">
+      <div class="card-field">
+        <div class="cf-label">Basis</div>
+        <div class="cf-value basis"><span class="basis-tag">external:</span> NIST OSCAL open-sourced via the OSCAL Foundation is the exact precedent — by making the machine-readable format publicly accessible, OSCAL became the ecosystem default for IT compliance tooling, and adoption flowed toward OSCAL-compatible tools. Checkov/OPA policy bundles: versioned immutable artifacts distributed via public registries; downstream tools build against the registry rather than re-encoding. <span class="basis-tag">reasoned:</span> a read-only API does not expose Athian's proprietary evidence decisions or specialist judgments — it exposes only the requirement structure that standard bodies already publish in prose form. The value Athian adds is the encoding; the API distributes that value while retaining the platform moat (evidence collection, AI pre-assessment, specialist workflow) inside the product.</div>
+      </div>
+      <div class="card-field">
+        <div class="cf-label">Why it matters</div>
+        <div class="cf-value">Enterprise CPG companies already have GRC platforms (ServiceNow, MetricStream, Riskonnect) they use for other compliance domains — food safety supplier compliance is a gap in their existing tooling, not a net-new workflow. An API that lets their GRC platform pull machine-readable SQF requirements means Athian's encoding becomes part of their existing infrastructure rather than competing with it. Distribution via an existing tool the buyer already uses is cheaper than replacing that tool. Confidence is 80% because this requires a clear API security and commercial model decision before build — the product value is clear; the business model is the variable.</div>
+      </div>
+      <div class="card-field">
+        <div class="cf-label">Meeting test</div>
+        <div class="cf-value meeting-test">"If a large CPG company already uses ServiceNow for enterprise GRC, can we expose our SQF encoding as an API endpoint so their existing platform can pull machine-readable requirements without replacing their workflow?"</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- IDEA 7 -->
+<article class="idea-card" id="idea-7">
+  <div class="card-record-bar">
+    <div class="rb-rank">07</div>
+    <div class="rb-sep"></div>
+    <div class="rb-field">axis <span><span class="axis-tag">supplier experience</span></span></div>
+    <div class="rb-sep"></div>
+    <div class="rb-field rb-conf">conf <span>76%</span></div>
+    <div class="rb-sep"></div>
+    <div class="rb-field rb-cx">cx <span class="cx-medh">Medium–High</span></div>
+  </div>
+  <div class="card-body">
+    <h2 class="card-title">Supplier Tier Self-Propagation</h2>
+    <p class="card-summary">CPG companies managing Scope 3 supply chain risk — particularly under CSDDD value chain due diligence requirements — need compliance visibility not just into their direct Tier 1 ingredient suppliers but into Tier 2 ingredient sub-suppliers and critical Tier 3 components. Currently, a CPG buyer has to discover and onboard Tier 2+ suppliers manually, which is operationally infeasible for large supply networks. The platform inverts this: when a Tier 1 supplier is onboarded, they can nominate and invite their own critical sub-suppliers to submit against a buyer-defined downstream compliance profile. The Tier 1 supplier has strong incentive to do this — their own compliance status in the buyer's program depends partly on their sub-supplier practices. The CPG buyer's compliance network grows vertically through Tier 1 coordination, without the buyer needing to manage Tier 2 relationships directly.</p>
+    <div class="card-fields">
+      <div class="card-field">
+        <div class="cf-label">Basis</div>
+        <div class="cf-value basis"><span class="basis-tag">external:</span> CSDDD Omnibus I (entered force March 2026) requires Tier-1 supplier due diligence by default for companies >5,000 employees / €1.5B; but the mechanism by which buyers collect Tier-2 information flows through Tier-1 contractual obligations — the standard envisions Tier-1 as the conduit, not the buyer reaching Tier-2 directly. <span class="basis-tag">external:</span> Assent's Sustainability Network uses a similar propagation mechanic: Tier-1 suppliers invite their own sub-suppliers into the network, creating vertical network growth. The lever is supplier incentive: Tier-1 suppliers who fail to pass through compliance requirements to their own sub-suppliers risk their own compliance status, which is what the CPG buyer is evaluating. <span class="basis-tag">reasoned:</span> the coordination problem is real (getting Tier-1 suppliers to participate actively), but the incentive structure is sound — their compliance score on the buyer's platform is partly a function of their supply chain's compliance, not just their own practices.</div>
+      </div>
+      <div class="card-field">
+        <div class="cf-label">Why it matters</div>
+        <div class="cf-value">CSDDD's Tier-1 default is a floor, not a ceiling — many large CPG companies will voluntarily extend due diligence to Tier-2 to manage recall risk and brand exposure. The platform that already has a Tier-2 propagation mechanism when that demand arrives owns the conversation. The compounding mechanism is network growth: each Tier-1 supplier who nominates sub-suppliers expands the platform's supplier network without the CPG buyer bearing the discovery cost. Confidence is 76% — lower than others because the coordination mechanism (Tier-1 actively inviting Tier-2) depends on supplier engagement that isn't guaranteed, and the incentive structure needs careful design to make it durable rather than episodic.</div>
+      </div>
+      <div class="card-field">
+        <div class="cf-label">Meeting test</div>
+        <div class="cf-value meeting-test">"When CSDDD requires buyers to document their Tier-2 supply chain due diligence by 2029, the platform should already have a mechanism where Tier-1 suppliers recruit their own sub-suppliers into the compliance program — without the CPG buyer having to identify or contact Tier-2 directly."</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- Grounding Context -->
+<div class="section-heading">
+  <h2>Grounding Context</h2>
+  <div class="section-rule"></div>
+</div>
+<div class="grounding-block">
+  <p><strong style="color:var(--text-mid)">Topic:</strong> Athian Compliance — AI-native CPG supplier compliance platform. One compliance specialist evaluates many suppliers against heterogeneous food safety and sustainability standards (SQF, FSSC 22000, BRCGS, retailer private-label). Core technical bet: a DSL that encodes compliance requirements as typed, machine-readable specs — unit, threshold, time period, required data, accepted sources. AI handles evidence collection, pre-review, report generation; specialist reviews and approves.</p>
+  <p><strong style="color:var(--text-mid)">Key structural gaps targeted by this run:</strong> (1) compliance state is currently point-in-time, not continuous; (2) cross-standard equivalences are evaluated from scratch on every multi-standard supplier; (3) clause dependencies are implicit in specialist knowledge, not computable; (4) evaluation population data is siloed per evaluation, never aggregated into benchmarks; (5) clause interpretation decisions are tribal, not persistent; (6) the DSL encoding is an internal asset, not an ecosystem primitive; (7) Tier-2 supply chain visibility has no propagation mechanism.</p>
+  <p><strong style="color:var(--text-mid)">External signals:</strong> CSDDD Omnibus I entered force March 2026 (Tier-1 due diligence default, scope >5,000 employees / €1.5B, deadline July 2029). BRCGS, SQFI, and FSSC maintain public certificate directories. EcoVadis network effect precedent (3M suppliers, percentile scoring). NIST OSCAL Foundation open-source release. Assent Sustainability Network vertical propagation model. Vanta/Drata continuous compliance state inversion.</p>
+</div>
+
+<!-- Rejection Summary -->
+<div class="section-heading">
+  <h2>Rejection Summary</h2>
+  <div class="section-rule"></div>
+</div>
+<table class="rejection-table">
+  <thead>
+    <tr>
+      <th>Idea</th>
+      <th>Reason rejected</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Structured Pre-Submission Checklist Generator</td>
+      <td>Leverage is real but modest; this is a UX quality improvement rather than a structural compounding mechanism. Better captured as a feature within Requirement Dependency Graph (#3).</td>
+    </tr>
+    <tr>
+      <td>Gap Severity Triage Scoring</td>
+      <td>Useful quality-of-review improvement, but the typed severity model is a one-time encoding investment without a compounding return structure. Does not pass the frame's ambition bar.</td>
+    </tr>
+    <tr>
+      <td>Mutual Recognition Registry</td>
+      <td>Substantively subsumed by Standard Cross-Walk Engine (#2), which operates at the clause-requirement level rather than the evidence-type level — more architecturally leveraged. Keeping both would fragment the same idea.</td>
+    </tr>
+    <tr>
+      <td>AI-Drafted Corrective Action Plans</td>
+      <td>The compounding mechanism (CAP dataset improves templates over time) is real but derivative of the Specialist Decision Corpus idea already in prior ideation (v1, #4). Overlap too high to earn its place here.</td>
+    </tr>
+    <tr>
+      <td>Clause-Level Evidence Type Registry</td>
+      <td>Sound idea with legitimate leverage, but narrower than Clause Interpretation Version Control (#5), which encodes the same kind of specialist knowledge at a higher level of abstraction. Dropped in favor of the broader compounding mechanism.</td>
+    </tr>
+  </tbody>
+</table>
+
+<footer class="composition-signal">
+  Composed 2026-06-22 by ce-ideate · Athian Compliance — Leverage &amp; Compounding (v2) · 7 ideas across 5 axes
+</footer>

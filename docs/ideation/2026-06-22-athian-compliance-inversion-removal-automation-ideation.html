@@ -1,0 +1,974 @@
+<title>Ideation: Athian Compliance — Inversion, Removal &amp; Automation</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  /* ── Tokens ─────────────────────────────── */
+  :root {
+    --ground:        #0D1117;
+    --ground-2:      #151C27;
+    --ground-3:      #1E2839;
+    --ground-4:      #243041;
+    --text:          #E8EBF0;
+    --text-mid:      #A0AABF;
+    --text-dim:      #5E6A82;
+    --accent:        #39FF6A;
+    --accent-dim:    #1A7A32;
+    --accent-faint:  rgba(57,255,106,0.07);
+    --accent-faint2: rgba(57,255,106,0.12);
+    --accent2:       #5B8CFF;
+    --accent2-dim:   #2A4899;
+    --accent2-faint: rgba(91,140,255,0.08);
+    --border:        #1E2839;
+    --border-mid:    #2D3A52;
+    --border-strong: #4A5875;
+    --display:       'Libre Baskerville', Georgia, serif;
+    --body:          'Source Serif 4', Georgia, serif;
+    --mono:          'JetBrains Mono', 'Fira Mono', monospace;
+    --radius:        3px;
+
+    /* axis color binding */
+    --axis-enc:      var(--accent);
+    --axis-enc-faint:var(--accent-faint2);
+    --axis-evid:     var(--accent2);
+    --axis-evid-faint:var(--accent2-faint);
+
+    /* frame-move type colors */
+    --tag-inv:  rgba(255,180,50,0.15);
+    --tag-inv-text: #F5C060;
+    --tag-rem:  rgba(255,85,85,0.13);
+    --tag-rem-text: #FF7070;
+    --tag-aut:  rgba(91,140,255,0.13);
+    --tag-aut-text: #5B8CFF;
+  }
+
+  /* ── Reset ───────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    background: var(--ground);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+  /* ── Page shell ──────────────────────────── */
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 28px 100px;
+  }
+
+  /* ── Header ──────────────────────────────── */
+  .doc-header {
+    padding: 56px 0 44px;
+    border-bottom: 1px solid var(--border-mid);
+    margin-bottom: 48px;
+  }
+  .doc-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .doc-eyebrow::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent-dim) 0%, transparent 70%);
+  }
+  .doc-title {
+    font-family: var(--display);
+    font-size: 2.1rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.18;
+    color: var(--text);
+    margin-bottom: 16px;
+    max-width: 640px;
+  }
+  .doc-subtitle {
+    font-family: var(--body);
+    font-size: 1rem;
+    color: var(--text-mid);
+    font-weight: 300;
+    line-height: 1.55;
+    max-width: 600px;
+    margin-bottom: 28px;
+  }
+  .doc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+  .doc-meta span { color: var(--text-mid); }
+
+  /* ── Frame legend ────────────────────────── */
+  .frame-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 48px;
+    padding: 18px 20px;
+    background: var(--ground-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .frame-legend-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-right: 4px;
+    align-self: center;
+  }
+  .frame-tag {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 2px;
+  }
+  .tag-inv { background: var(--tag-inv); color: var(--tag-inv-text); }
+  .tag-rem { background: var(--tag-rem); color: var(--tag-rem-text); }
+  .tag-aut { background: var(--tag-aut); color: var(--tag-aut-text); }
+
+  .axis-chip {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+    border: 1px solid;
+  }
+  .axis-enc {
+    color: var(--axis-enc);
+    border-color: var(--accent-dim);
+    background: var(--axis-enc-faint);
+  }
+  .axis-evid {
+    color: var(--axis-evid);
+    border-color: var(--accent2-dim);
+    background: var(--axis-evid-faint);
+  }
+
+  /* ── Section headings ────────────────────── */
+  .section-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-family: var(--display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border-mid);
+  }
+
+  /* ── Axis divider ────────────────────────── */
+  .axis-divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 52px 0 32px;
+  }
+  .axis-divider-label {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding: 5px 12px;
+    border-radius: var(--radius);
+  }
+  .axis-divider-enc { color: var(--axis-enc); background: var(--axis-enc-faint); border: 1px solid var(--accent-dim); }
+  .axis-divider-evid { color: var(--axis-evid); background: var(--axis-evid-faint); border: 1px solid var(--accent2-dim); }
+  .axis-divider-line { flex: 1; height: 1px; background: var(--border-mid); }
+
+  /* ── Jump list ───────────────────────────── */
+  .jump-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 24px;
+    margin-bottom: 48px;
+    padding: 20px 22px;
+    background: var(--ground-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .jump-list a {
+    font-family: var(--body);
+    font-size: 0.82rem;
+    color: var(--text-mid);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    transition: color 0.15s;
+  }
+  .jump-list a:hover { color: var(--text); text-decoration: none; }
+  .jump-rank {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    min-width: 18px;
+  }
+
+  /* ── Idea cards ──────────────────────────── */
+  .idea-card {
+    background: var(--ground-2);
+    border: 1px solid var(--border-mid);
+    border-radius: var(--radius);
+    margin-bottom: 28px;
+    overflow: hidden;
+  }
+  .idea-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 22px 24px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .idea-rank-badge {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    min-width: 24px;
+    padding-top: 3px;
+    flex-shrink: 0;
+  }
+  .idea-title-block { flex: 1; }
+  .idea-title {
+    font-family: var(--display);
+    font-size: 1.12rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+  .idea-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+  .conf-chip, .cx-chip {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 2px;
+    border: 1px solid var(--border-strong);
+    color: var(--text-dim);
+    background: var(--ground-3);
+  }
+
+  .idea-body { padding: 20px 24px; }
+  .idea-field-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 5px;
+    margin-top: 18px;
+  }
+  .idea-field-label:first-child { margin-top: 0; }
+  .idea-body p {
+    font-size: 0.9rem;
+    color: var(--text-mid);
+    line-height: 1.65;
+    max-width: 72ch;
+  }
+  .idea-body .basis-tag {
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 2px;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .basis-direct { background: rgba(57,255,106,0.1); color: var(--accent); }
+  .basis-external { background: rgba(91,140,255,0.1); color: var(--accent2); }
+  .basis-reasoned { background: rgba(200,150,255,0.1); color: #C89AFF; }
+
+  .meeting-test-block {
+    margin-top: 18px;
+    padding: 12px 16px;
+    background: var(--ground-3);
+    border-left: 2px solid var(--accent-dim);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .meeting-test-block p {
+    font-style: italic;
+    font-size: 0.875rem;
+    color: var(--text-mid);
+    max-width: none;
+  }
+
+  /* ── Diagrams ────────────────────────────── */
+  .diagram-wrap {
+    margin: 22px 0 4px;
+    padding: 20px;
+    background: var(--ground-3);
+    border-radius: var(--radius);
+    overflow-x: auto;
+  }
+  .diagram-wrap svg { display: block; margin: 0 auto; }
+
+  /* ── Grounding + rejection sections ─────── */
+  .grounding-block {
+    background: var(--ground-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 26px;
+    margin-bottom: 40px;
+  }
+  .grounding-block dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 18px; }
+  .grounding-block dt {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding-top: 2px;
+  }
+  .grounding-block dd { font-size: 0.875rem; color: var(--text-mid); }
+
+  .grounding-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 18px;
+  }
+  .grounding-stat {
+    background: var(--ground-3);
+    border: 1px solid var(--border-mid);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+  }
+  .grounding-stat-num {
+    font-family: var(--display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .grounding-stat-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  /* rejection table */
+  .rejection-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.845rem;
+    margin-top: 8px;
+  }
+  .rejection-table th {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border-mid);
+  }
+  .rejection-table td {
+    padding: 9px 12px;
+    color: var(--text-mid);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .rejection-table tr:last-child td { border-bottom: none; }
+  .rejected-title {
+    font-family: var(--body);
+    font-size: 0.85rem;
+    color: var(--text-mid);
+  }
+  .rejected-reason { font-size: 0.82rem; color: var(--text-dim); }
+
+  /* ── Footer ──────────────────────────────── */
+  footer.composition-signal {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── Responsive ──────────────────────────── */
+  @media (max-width: 600px) {
+    .jump-list { grid-template-columns: 1fr; }
+    .grounding-grid { grid-template-columns: 1fr; }
+    .doc-title { font-size: 1.6rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+
+<div class="page">
+
+  <!-- ── Header ────────────────────────────── -->
+  <header class="doc-header">
+    <div class="doc-eyebrow">IDEATION · ATHIAN COMPLIANCE · 2026-06-22</div>
+    <h1 class="doc-title">Inversion, Removal &amp; Automation</h1>
+    <p class="doc-subtitle">Eight candidates applying the inversion/removal/automation frame to two axes: how compliance requirements get modeled as machine-readable specs, and how evidence gets gathered from suppliers and third-party sources.</p>
+    <div class="doc-meta">
+      <div>Date <span>2026-06-22</span></div>
+      <div>Mode <span>Elsewhere-software</span></div>
+      <div>Frame <span>Inversion · Removal · Automation</span></div>
+      <div>Axes <span>Standard Encoding · Evidence Collection</span></div>
+      <div>Candidates <span>8 survivors / 12 generated</span></div>
+    </div>
+  </header>
+
+  <!-- ── Frame legend ───────────────────────── -->
+  <div class="frame-legend" role="note" aria-label="Frame move type legend">
+    <span class="frame-legend-label">Frame moves:</span>
+    <span class="frame-tag tag-inv">Inversion</span>
+    <span class="frame-tag tag-rem">Removal</span>
+    <span class="frame-tag tag-aut">Automation</span>
+    &nbsp;&nbsp;
+    <span class="frame-legend-label">Axes:</span>
+    <span class="axis-chip axis-enc">Standard Encoding</span>
+    <span class="axis-chip axis-evid">Evidence Collection</span>
+  </div>
+
+  <!-- ── Grounding Context ──────────────────── -->
+  <section aria-labelledby="grounding-heading">
+    <div class="section-eyebrow">Topic Context</div>
+    <h2 class="section-title" id="grounding-heading">Grounding Context</h2>
+    <div class="grounding-block">
+      <dl>
+        <dt>Platform</dt>
+        <dd>Athian Compliance — AI-native CPG supplier compliance; DSL-first architecture; AI handles evidence collection, pre-review, and report generation; specialist is reviewer/approver only.</dd>
+        <dt>Pain at scale</dt>
+        <dd>350 compliance requests/year per company × ~3 hours each = 1,050+ hours/year in supplier-facing response burden. &lt;50% CDP supplier response rate despite 100,000+ EcoVadis network suppliers.</dd>
+        <dt>Dominant friction</dt>
+        <dd>Large suppliers manage 15–30 simultaneous compliance portals, re-entering the same data repeatedly. EcoVadis/Sedex encode their own fixed schemas — adding a new standard requires custom vendor development at $1,500–$5,000+/supplier/year.</dd>
+        <dt>Current audit structure</dt>
+        <dd>Three distinct layers (requirements catalog → applicable profile → evidence plan) collapsed into one unstructured PDF.</dd>
+        <dt>Machine-readable signals</dt>
+        <dd>EU DPP (JSON-LD/GS1/EPCIS, first categories 2027), W3C VC 2.0 (May 2025), CSRD iXBRL (live), NIST OSCAL (catalog→profile→plan, reduces IT audit from months to minutes), SBOM (US government mandate).</dd>
+        <dt>Key analogies</dt>
+        <dd>OpenAPI/JSON Schema: standard as schema, evidence as conformant document — validation becomes automated pass/fail. SBOM: supplier publishes the manifest, consumer ingests it. eCTD: structured electronic submission replaced PDF stacks.</dd>
+      </dl>
+      <div class="grounding-grid">
+        <div class="grounding-stat">
+          <div class="grounding-stat-num">1,050+</div>
+          <div class="grounding-stat-label">hrs/yr per company in compliance response</div>
+        </div>
+        <div class="grounding-stat">
+          <div class="grounding-stat-num">&lt;50%</div>
+          <div class="grounding-stat-label">CDP supplier response rate</div>
+        </div>
+        <div class="grounding-stat">
+          <div class="grounding-stat-num">15–30</div>
+          <div class="grounding-stat-label">compliance portals per large supplier</div>
+        </div>
+        <div class="grounding-stat">
+          <div class="grounding-stat-num">$5k+</div>
+          <div class="grounding-stat-label">per supplier/yr to add a new standard (EcoVadis model)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Topic Axes ─────────────────────────── -->
+  <section aria-labelledby="axes-heading">
+    <div class="section-eyebrow">Decomposition</div>
+    <h2 class="section-title" id="axes-heading">Topic Axes</h2>
+    <div class="grounding-block">
+      <dl>
+        <dt><span class="axis-chip axis-enc">Standard Encoding</span></dt>
+        <dd>How compliance requirements get modeled as machine-readable specs — who encodes them, at what layer, and in what format.</dd>
+        <dt><span class="axis-chip axis-evid">Evidence Collection</span></dt>
+        <dd>How evidence gets gathered from suppliers and third-party documents — who initiates, who owns the artifact, and what triggers the collection cycle.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── Ranked Ideas ───────────────────────── -->
+  <section aria-labelledby="ideas-heading">
+    <div class="section-eyebrow">Ranked Ideas</div>
+    <h2 class="section-title" id="ideas-heading">Ranked Ideas</h2>
+
+    <!-- Jump list -->
+    <nav class="jump-list" aria-label="Jump to idea">
+      <a href="#idea-1"><span class="jump-rank">1.</span> Open DSL Spec — Standards Bodies Publish Their Own Requirements</a>
+      <a href="#idea-2"><span class="jump-rank">2.</span> Claim-Based Compliance — Remove "The Standard" as the Atomic Unit</a>
+      <a href="#idea-3"><span class="jump-rank">3.</span> Registry-First Evidence Pre-Fill</a>
+      <a href="#idea-4"><span class="jump-rank">4.</span> Verifiable Credential Acceptance</a>
+      <a href="#idea-5"><span class="jump-rank">5.</span> Supplier-Initiated Compliance Profile</a>
+      <a href="#idea-6"><span class="jump-rank">6.</span> Standard Diff Engine — Machine-Readable Versioning</a>
+      <a href="#idea-7"><span class="jump-rank">7.</span> Evidence Gap as a Typed Object</a>
+      <a href="#idea-8"><span class="jump-rank">8.</span> AI Encoding Pipeline for Regulatory PDFs</a>
+    </nav>
+
+    <!-- ── AXIS: STANDARD ENCODING ──────────── -->
+    <div class="axis-divider">
+      <div class="axis-divider-label axis-divider-enc">Standard Encoding</div>
+      <div class="axis-divider-line"></div>
+    </div>
+
+    <!-- Idea 1 -->
+    <article class="idea-card" id="idea-1">
+      <div class="idea-card-header">
+        <div class="idea-rank-badge">01.</div>
+        <div class="idea-title-block">
+          <h3 class="idea-title">Open DSL Spec — Standards Bodies Publish Their Own Requirements</h3>
+          <div class="idea-chips">
+            <span class="frame-tag tag-rem">Removal</span>
+            <span class="axis-chip axis-enc">Standard Encoding</span>
+            <span class="conf-chip">Conf 82%</span>
+            <span class="cx-chip">Cx Medium</span>
+          </div>
+        </div>
+      </div>
+      <div class="idea-body">
+
+        <div class="diagram-wrap">
+          <svg width="680" height="120" viewBox="0 0 680 120" xmlns="http://www.w3.org/2000/svg" aria-label="Before/after diagram: vendor encodes standards vs. standards bodies publish directly">
+            <defs>
+              <marker id="arr1" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="#4A5875"/>
+              </marker>
+              <marker id="arr2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="#39FF6A"/>
+              </marker>
+            </defs>
+            <!-- BEFORE -->
+            <text x="10" y="18" font-family="'JetBrains Mono',monospace" font-size="9" fill="#5E6A82" letter-spacing="1" text-anchor="start">BEFORE</text>
+            <rect x="10" y="26" width="100" height="34" rx="2" fill="#1E2839" stroke="#2D3A52" stroke-width="1"/>
+            <text x="60" y="47" font-family="'Source Serif 4',serif" font-size="10" fill="#A0AABF" text-anchor="middle">CDP / CSRD</text>
+            <rect x="150" y="26" width="100" height="34" rx="2" fill="#1E2839" stroke="#2D3A52" stroke-width="1"/>
+            <text x="200" y="43" font-family="'Source Serif 4',serif" font-size="10" fill="#A0AABF" text-anchor="middle">Vendor analyst</text>
+            <text x="200" y="55" font-family="'Source Serif 4',serif" font-size="9" fill="#5E6A82" text-anchor="middle">(weeks, $5k+)</text>
+            <rect x="290" y="26" width="100" height="34" rx="2" fill="#1E2839" stroke="#2D3A52" stroke-width="1"/>
+            <text x="340" y="43" font-family="'Source Serif 4',serif" font-size="10" fill="#A0AABF" text-anchor="middle">Athian schema</text>
+            <text x="340" y="55" font-family="'Source Serif 4',serif" font-size="9" fill="#5E6A82" text-anchor="middle">(proprietary)</text>
+            <line x1="110" y1="43" x2="148" y2="43" stroke="#4A5875" stroke-width="1" marker-end="url(#arr1)"/>
+            <line x1="250" y1="43" x2="288" y2="43" stroke="#4A5875" stroke-width="1" marker-end="url(#arr1)"/>
+            <!-- AFTER -->
+            <text x="10" y="92" font-family="'JetBrains Mono',monospace" font-size="9" fill="#1A7A32" letter-spacing="1" text-anchor="start">AFTER</text>
+            <rect x="10" y="100" width="100" height="14" rx="2" fill="#1A7A32"/>
+            <text x="60" y="111" font-family="'Source Serif 4',serif" font-size="9" fill="#0D1117" text-anchor="middle">CDP / CSRD</text>
+            <rect x="150" y="100" width="140" height="14" rx="2" fill="#243041" stroke="#39FF6A" stroke-width="1"/>
+            <text x="220" y="111" font-family="'JetBrains Mono',monospace" font-size="9" fill="#39FF6A" text-anchor="middle">publishes DSL-conformant spec</text>
+            <rect x="340" y="100" width="100" height="14" rx="2" fill="#243041" stroke="#2D3A52" stroke-width="1"/>
+            <text x="390" y="111" font-family="'Source Serif 4',serif" font-size="9" fill="#A0AABF" text-anchor="middle">Athian validates</text>
+            <line x1="110" y1="107" x2="148" y2="107" stroke="#39FF6A" stroke-width="1" marker-end="url(#arr2)"/>
+            <line x1="290" y1="107" x2="338" y2="107" stroke="#39FF6A" stroke-width="1" marker-end="url(#arr2)"/>
+            <!-- REMOVED box -->
+            <rect x="460" y="97" width="108" height="20" rx="2" fill="rgba(255,85,85,0.1)" stroke="rgba(255,85,85,0.3)" stroke-width="1" stroke-dasharray="4 2"/>
+            <text x="514" y="110" font-family="'JetBrains Mono',monospace" font-size="8" fill="#FF7070" text-anchor="middle">vendor step removed</text>
+          </svg>
+        </div>
+
+        <div class="idea-field-label">Summary</div>
+        <p>Instead of Athian encoding each standard (EcoVadis charges $1,500–$5,000+/supplier/year partly because it re-encodes fixed schemas internally), Athian publishes an open DSL specification. Standards bodies — CDP, CSRD, GHG Protocol — publish machine-readable versions of their own requirements directly, as DSL-conformant files. Athian becomes the runtime that validates any conformant requirement file, not the librarian who maintains a proprietary schema library. Adding a new standard goes from a vendor development project to a publish event.</p>
+
+        <div class="idea-field-label">Frame Move</div>
+        <p><strong>Removal</strong> — removes Athian-as-standards-encoder. The vendor analyst who reads a standard and re-encodes it into a proprietary schema is eliminated. Analogous to OpenAPI: API providers publish their own specs; tools validate against them. No single vendor controls the schema library.</p>
+
+        <div class="idea-field-label">Basis</div>
+        <p><span class="basis-tag basis-direct">direct</span>EcoVadis fixed schema: "adding a new standard requires custom vendor development at $1,500–$5,000+/supplier/year." The cost exists because the encoding step is proprietary and centralized.</p>
+        <p><span class="basis-tag basis-external">external</span>OpenAPI/JSON Schema: the pattern of open specification + distributed publishing + runtime validation is proven at internet scale. Standards bodies already publish formal PDFs — the structural move is extending that to machine-readable format.</p>
+        <p><span class="basis-tag basis-reasoned">reasoned</span>EU DPP mandating JSON-LD/GS1/EPCIS by 2027 signals that regulators already expect structured data from standards bodies. A DSL that conforms to those emerging formats would make Athian the natural runtime layer as that wave arrives.</p>
+
+        <div class="idea-field-label">Why It Matters</div>
+        <p>The $5k/supplier/year cost in the EcoVadis model exists almost entirely at the encoding step. Remove that step and the marginal cost of adding a new standard collapses. CPG buyers can require any emerging standard — Bovaer protocol, Carbon Intensity, AMMP — without waiting for vendor roadmap cycles.</p>
+
+        <div class="meeting-test-block">
+          <p>"What if adding a new sustainability standard cost us nothing, because we don't encode them — the standards bodies do?"</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Idea 2 -->
+    <article class="idea-card" id="idea-2">
+      <div class="idea-card-header">
+        <div class="idea-rank-badge">02.</div>
+        <div class="idea-title-block">
+          <h3 class="idea-title">Claim-Based Compliance — Remove "The Standard" as the Atomic Unit</h3>
+          <div class="idea-chips">
+            <span class="frame-tag tag-rem">Removal</span>
+            <span class="axis-chip axis-enc">Standard Encoding</span>
+            <span class="conf-chip">Conf 78%</span>
+            <span class="cx-chip">Cx High</span>
+          </div>
+        </div>
+      </div>
+      <div class="idea-body">
+        <div class="idea-field-label">Summary</div>
+        <p>The entire compliance industry is organized around named standards: EcoVadis, ISO 14064, CSRD, GHG Protocol Scope 3. A supplier achieves compliance <em>with a standard</em>. This creates three structural problems at once: a versioning problem (CSRD 2025 vs. 2026 are treated as different schemas), a schema-lock problem (EcoVadis can't add fields cheaply), and a buyer-confusion problem (which standard covers what I actually need to report?). The removal: replace standard-based compliance with claim-based compliance. A claim is a typed assertion — "Scope 1 emissions below X tCO2e/head/year, verified by a qualified third party, within the last 18 months." Claims are composable. A CPG buyer assembles the exact claim set their Scope 3 reporting obligation requires. A standard becomes a named, versioned bundle of claims — diffable, extendable, and fork-able without rebuilding the schema.</p>
+
+        <div class="idea-field-label">Frame Move</div>
+        <p><strong>Removal</strong> — removes the "standard" as the atomic compliance unit. The named standard survives as a convenient bundle name, but it is no longer the schema. W3C Verifiable Credentials 2.0 works exactly this way: a credential is a claim assertion, not a standard certification. A "presentation request" specifies which claims are required — the standard is shorthand for a frequently-used claim set.</p>
+
+        <div class="idea-field-label">Basis</div>
+        <p><span class="basis-tag basis-external">external</span>W3C VC 2.0 (Recommendation status May 2025): credentials are typed claim assertions, not references to a named standard. The verifier specifies which claims it requires; the holder presents whichever credentials satisfy those claims. The structural pattern directly maps to supply chain compliance.</p>
+        <p><span class="basis-tag basis-direct">direct</span>EcoVadis and Sedex "each encode their own fixed schema — adding a new standard requires custom vendor development." The schema-lock problem is a direct consequence of building around the standard-as-schema model.</p>
+        <p><span class="basis-tag basis-reasoned">reasoned</span>Athian's DSL already types requirements with unit, threshold, time period, required data, accepted sources — that is a claim definition. The move is making the claim the API surface, with standard names as named bundles over that API.</p>
+
+        <div class="idea-field-label">Why It Matters</div>
+        <p>A CPG buyer who needs to report Scope 3 emissions under CSRD doesn't care about "GHG Protocol Scope 3 Category 11" as a schema — they care that their supplier can demonstrate "Scope 3 emissions below X, verified, dated." When the buyer's Scope 3 obligation changes next year, they update their required claim set, not their entire compliance schema. Suppliers stop re-certifying for entire standards when one field changed.</p>
+
+        <div class="meeting-test-block">
+          <p>"What if you stopped buying compliance certifications and started buying typed assertions — so that when CSRD updates next year, you only need to re-verify the claims that changed?"</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Idea 6: Standard Diff Engine -->
+    <article class="idea-card" id="idea-6">
+      <div class="idea-card-header">
+        <div class="idea-rank-badge">06.</div>
+        <div class="idea-title-block">
+          <h3 class="idea-title">Standard Diff Engine — Machine-Readable Versioning of Compliance Requirements</h3>
+          <div class="idea-chips">
+            <span class="frame-tag tag-aut">Automation</span>
+            <span class="axis-chip axis-enc">Standard Encoding</span>
+            <span class="conf-chip">Conf 72%</span>
+            <span class="cx-chip">Cx Medium</span>
+          </div>
+        </div>
+      </div>
+      <div class="idea-body">
+        <div class="idea-field-label">Summary</div>
+        <p>When a compliance standard versions — CSRD 2025 → 2026, GHG Protocol revises Category 11 thresholds — every supplier potentially faces re-audit. Today that re-audit is treated as a new engagement: new questionnaire, new evidence collection, new review cycle. The automation: because requirements are machine-readable DSL objects, Athian can diff two versions of a standard and produce a typed change report — breaking changes (new required field, changed threshold, changed accepted sources) vs. non-breaking changes (documentation clarification, added-but-not-required field). Suppliers who haven't changed the relevant practice are automatically re-certified on non-breaking changes. Only breaking changes trigger a new evidence cycle, and only for the specific claims that changed.</p>
+
+        <div class="idea-field-label">Frame Move</div>
+        <p><strong>Automation</strong> — automates the triage step when a standard updates. Currently that triage is implicit and manual: a compliance analyst reads the new version, decides which suppliers are affected, and opens new requests. The DSL makes that comparison mechanical.</p>
+
+        <div class="idea-field-label">Basis</div>
+        <p><span class="basis-tag basis-external">external</span>NIST OSCAL's 3-layer model (catalog → profile → plan) is specifically designed to support this: when a catalog (standard) updates, only the delta propagates to affected profiles and plans. The IT compliance community has been automating this for several years.</p>
+        <p><span class="basis-tag basis-direct">direct</span>Athian's DSL architecture: "compliance requirements are machine-readable (typed with unit, threshold, time period, required data, accepted sources)." A diff between two DSL requirement files is deterministic and produces a typed change set.</p>
+        <p><span class="basis-tag basis-reasoned">reasoned</span>Current audit collapses catalog/profile/evidence into one PDF. The moment those layers are separated — which the DSL-first architecture already does — versioning becomes a first-class operation rather than a document-management problem.</p>
+
+        <div class="idea-field-label">Why It Matters</div>
+        <p>Standard versioning today is an undifferentiated re-audit: everything re-opens. With a diff engine, a CPG buyer can see exactly what changed when CSRD revises — and re-certify only the affected suppliers on the affected claims. Suppliers stop resenting standard updates as arbitrary compliance cost spikes.</p>
+
+        <div class="meeting-test-block">
+          <p>"When CSRD updates next year, instead of re-auditing your entire supply chain, we show you exactly which three fields changed — and re-certify only the suppliers where those fields are non-trivial."</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Idea 8: AI Encoding Pipeline -->
+    <article class="idea-card" id="idea-8">
+      <div class="idea-card-header">
+        <div class="idea-rank-badge">08.</div>
+        <div class="idea-title-block">
+          <h3 class="idea-title">AI Encoding Pipeline for Regulatory PDFs</h3>
+          <div class="idea-chips">
+            <span class="frame-tag tag-aut">Automation</span>
+            <span class="axis-chip axis-enc">Standard Encoding</span>
+            <span class="conf-chip">Conf 68%</span>
+            <span class="cx-chip">Cx Low</span>
+          </div>
+        </div>
+      </div>
+      <div class="idea-body">
+        <div class="idea-field-label">Summary</div>
+        <p>Standard encoding today requires a human analyst to read a standard document and manually translate requirements into structured form. EcoVadis does this for each standard it supports; the result is a fixed, proprietary schema that can't be updated without vendor development cycles. The automation: AI ingests a regulatory PDF — a new GHG Protocol guidance document, a draft CSRD disclosure requirement, a CPG retailer's custom supplier code of conduct — and outputs a draft DSL requirement file with unit, threshold, time period, required data, and accepted sources already populated. A human specialist reviews and publishes. Encoding goes from weeks of vendor development to hours of specialist review. The bottleneck shifts from "can we afford to encode this standard?" to "do we want to support it?"</p>
+
+        <div class="idea-field-label">Frame Move</div>
+        <p><strong>Automation</strong> — automates the catalog-layer encoding step. NIST OSCAL demonstrated that the profile and plan layers can be automated once the catalog is machine-readable; the missing automation is catalog generation itself.</p>
+
+        <div class="idea-field-label">Basis</div>
+        <p><span class="basis-tag basis-direct">direct</span>EcoVadis "each encodes its own fixed schema — adding a new standard requires custom vendor development at $1,500–$5,000+/supplier/year." That cost exists primarily at the encoding step. Automating it doesn't eliminate the cost, but it shifts it from a recurring per-standard development project to a one-time model fine-tuning investment.</p>
+        <p><span class="basis-tag basis-external">external</span>eCTD (pharma): FDA mandated machine-readable electronic submission formats, and the tooling ecosystem rapidly developed document → eCTD conversion pipelines. The move from "submit a PDF" to "submit a structured file" was catalyzed by a mandate, not by vendor goodwill. Athian can create that forcing function internally.</p>
+        <p><span class="basis-tag basis-reasoned">reasoned</span>Athian's DSL is a typed target schema. AI models are well-suited to extraction from regulatory documents when the output type is well-defined. This is the same pattern as AI-assisted form fill, not general NLP extraction.</p>
+
+        <div class="idea-field-label">Why It Matters</div>
+        <p>It removes the vendor-development gate from standard addition. A customer asks "can you support this new retailer code of conduct?" — currently that's a multi-week scoping and development conversation. With an encoding pipeline, the answer is "upload the PDF; we'll have a draft in an hour for your specialist to review."</p>
+
+        <div class="meeting-test-block">
+          <p>"When a retailer sends you a new supplier code of conduct, we turn it into machine-readable requirements in an hour — instead of opening a vendor development ticket."</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- ── AXIS: EVIDENCE COLLECTION ─────────── -->
+    <div class="axis-divider">
+      <div class="axis-divider-label axis-divider-evid">Evidence Collection</div>
+      <div class="axis-divider-line"></div>
+    </div>
+
+    <!-- Idea 3: Registry-First Evidence Pre-Fill -->
+    <article class="idea-card" id="idea-3">
+      <div class="idea-card-header">
+        <div class="idea-rank-badge">03.</div>
+        <div class="idea-title-block">
+          <h3 class="idea-title">Registry-First Evidence Pre-Fill — AI Reads Public Data Before Touching the Supplier</h3>
+          <div class="idea-chips">
+            <span class="frame-tag tag-aut">Automation</span>
+            <span class="axis-chip axis-evid">Evidence Collection</span>
+            <span class="conf-chip">Conf 85%</span>
+            <span class="cx-chip">Cx Medium</span>
+          </div>
+        </div>
+      </div>
+      <div class="idea-body">
+
+        <div class="diagram-wrap">
+          <svg width="680" height="110" viewBox="0 0 680 110" xmlns="http://www.w3.org/2000/svg" aria-label="Evidence collection before and after: supplier as first touchpoint vs. registry as first touchpoint">
+            <defs>
+              <marker id="arr3" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="#4A5875"/>
+              </marker>
+              <marker id="arr4" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="#5B8CFF"/>
+              </marker>
+            </defs>
+            <!-- BEFORE -->
+            <text x="10" y="16" font-family="'JetBrains Mono',monospace" font-size="9" fill="#5E6A82" letter-spacing="1">BEFORE</text>
+            <rect x="10" y="24" width="90" height="30" rx="2" fill="#1E2839" stroke="#2D3A52" stroke-width="1"/>
+            <text x="55" y="43" font-family="'Source Serif 4',serif" font-size="9.5" fill="#A0AABF" text-anchor="middle">CPG buyer</text>
+            <line x1="100" y1="39" x2="140" y2="39" stroke="#4A5875" stroke-width="1" marker-end="url(#arr3)"/>
+            <rect x="140" y="24" width="120" height="30" rx="2" fill="#1E2839" stroke="#2D3A52" stroke-width="1"/>
+            <text x="200" y="37" font-family="'Source Serif 4',serif" font-size="9.5" fill="#A0AABF" text-anchor="middle">Supplier portal</text>
+            <text x="200" y="49" font-family="'Source Serif 4',serif" font-size="8.5" fill="#5E6A82" text-anchor="middle">(manual data entry)</text>
+            <line x1="260" y1="39" x2="300" y2="39" stroke="#4A5875" stroke-width="1" marker-end="url(#arr3)"/>
+            <rect x="300" y="24" width="100" height="30" rx="2" fill="#1E2839" stroke="#2D3A52" stroke-width="1"/>
+            <text x="350" y="43" font-family="'Source Serif 4',serif" font-size="9.5" fill="#A0AABF" text-anchor="middle">Evidence package</text>
+            <!-- AFTER -->
+            <text x="10" y="84" font-family="'JetBrains Mono',monospace" font-size="9" fill="#2A4899" letter-spacing="1">AFTER</text>
+            <rect x="10" y="90" width="90" height="14" rx="2" fill="#2A4899"/>
+            <text x="55" y="101" font-family="'Source Serif 4',serif" font-size="9" fill="#E8EBF0" text-anchor="middle">CPG buyer</text>
+            <line x1="100" y1="97" x2="136" y2="97" stroke="#5B8CFF" stroke-width="1" marker-end="url(#arr4)"/>
+            <rect x="136" y="90" width="120" height="14" rx="2" fill="#1E2839" stroke="#5B8CFF" stroke-width="1"/>
+            <text x="196" y="101" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#5B8CFF" text-anchor="middle">DPP / iXBRL / EcoVadis API</text>
+            <line x1="256" y1="97" x2="292" y2="97" stroke="#5B8CFF" stroke-width="1" marker-end="url(#arr4)"/>
+            <rect x="292" y="90" width="120" height="14" rx="2" fill="#243041" stroke="#4A5875" stroke-width="1"/>
+            <text x="352" y="101" font-family="'Source Serif 4',serif" font-size="9" fill="#A0AABF" text-anchor="middle">Pre-filled evidence draft</text>
+            <line x1="412" y1="97" x2="446" y2="97" stroke="#4A5875" stroke-width="1" marker-end="url(#arr3)"/>
+            <rect x="446" y="90" width="120" height="14" rx="2" fill="#243041" stroke="#4A5875" stroke-width="1"/>
+            <text x="506" y="101" font-family="'Source Serif 4',serif" font-size="9" fill="#A0AABF" text-anchor="middle">Supplier confirms gaps only</text>
+          </svg>
+        </div>
+
+        <div class="idea-field-label">Summary</div>
+        <p>Before sending a compliance request to a supplier, Athian's AI reads every available public and third-party registry source — EU Digital Product Passport endpoints, CSRD iXBRL filings, existing EcoVadis scores via API, CDP public disclosures — and pre-fills as much of the evidence plan as it can from those sources. The supplier's first interaction is not a blank questionnaire. It is a confirmation screen: "We found evidence for 11 of your 15 required claims. These 4 are missing or expired — can you provide them?" The supplier touchpoint shrinks from filling a form to correcting a draft.</p>
+
+        <div class="idea-field-label">Frame Move</div>
+        <p><strong>Automation</strong> — automates the evidence-gathering step that currently falls entirely on the supplier. The registry layer does the first pass; the supplier handles only what the registries can't answer. Analogous to how Vanta pre-fills SOC 2 evidence from cloud provider APIs before asking engineers to manually document anything.</p>
+
+        <div class="idea-field-label">Basis</div>
+        <p><span class="basis-tag basis-direct">direct</span>Less than 50% CDP supplier response rate despite 100,000+ EcoVadis network suppliers. The response rate problem is at least partly a friction problem — a pre-filled draft reduces the activation cost of responding.</p>
+        <p><span class="basis-tag basis-direct">direct</span>EU DPP mandates JSON-LD / GS1 Digital Link / EPCIS, first categories 2027. That mandate creates a machine-readable evidence layer Athian can read before touching the supplier. The data infrastructure is being built by regulatory mandate; the play is being first to consume it.</p>
+        <p><span class="basis-tag basis-external">external</span>Vanta/Drata: 400+ integrations, 1,200+ automated control tests/hour. The IT compliance analogy is direct — evidence stays attached to controls, sourced from integrations, not from manual supplier entry.</p>
+
+        <div class="idea-field-label">Why It Matters</div>
+        <p>The 1,050+ hours/year compliance burden sits almost entirely in the evidence-gathering step — not in the review. A pre-filled evidence draft reduces supplier burden from "fill out this 3-hour form" to "confirm or correct these 4 items." Response rates go up; cycle time compresses; suppliers stop resenting compliance requests as arbitrary data-entry work.</p>
+
+        <div class="meeting-test-block">
+          <p>"By the time we send your supplier a request, we've already answered 70% of it from public registries — they're just confirming the gaps."</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Idea 4: Verifiable Credential Acceptance -->
+    <article class="idea-card" id="idea-4">
+      <div class="idea-card-header">
+        <div class="idea-rank-badge">04.</div>
+        <div class="idea-title-block">
+          <h3 class="idea-title">Verifiable Credential Acceptance — Remove Evidence Collection for VC-Bearing Suppliers</h3>
+          <div class="idea-chips">
+            <span class="frame-tag tag-rem">Removal</span>
+            <span class="axis-chip axis-evid">Evidence Collection</span>
+            <span class="conf-chip">Conf 76%</span>
+            <span class="cx-chip">Cx Medium</span>
+          </div>
+        </div>
+      </div>
+      <div class="idea-body">
+        <div class="idea-field-label">Summary</div>
+        <p>For suppliers who hold W3C Verifiable Credentials — an ISO certification VC issued by an accredited body, a GHG emissions VC issued by a third-party verifier, a DPP passport issued by a registry — evidence collection is eliminated entirely. The supplier presents a VC; Athian cryptographically verifies it against the issuer's public key and checks it against the requirement definition. No evidence request is sent. No portal is opened. No form is filled. The compliance claim is satisfied at the moment of credential presentation.</p>
+
+        <div class="idea-field-label">Frame Move</div>
+        <p><strong>Removal</strong> — removes the evidence collection step itself for credential-bearing evidence. The compliance interaction becomes: supplier presents credential → Athian verifies → claim satisfied. W3C VC 2.0 is purpose-built for exactly this: a credential is a cryptographically-signed claim assertion that any verifier can check without calling the issuer.</p>
+
+        <div class="idea-field-label">Basis</div>
+        <p><span class="basis-tag basis-external">external</span>W3C Verifiable Credentials 2.0 (Recommendation status May 2025): a signed credential carries its proof with it; verification is local and cryptographic. The UN Transparency Protocol adopted VCs for greenwashing prevention — direct applicability to sustainability compliance claims.</p>
+        <p><span class="basis-tag basis-direct">direct</span>Large suppliers managing 15–30 simultaneous compliance portals re-enter the same data repeatedly. A VC issued once by a third-party verifier satisfies the same claim across every portal that accepts it. The portal fatigue problem dissolves for VC-bearing claims.</p>
+        <p><span class="basis-tag basis-reasoned">reasoned</span>The building-code inspection analogy: the inspector works from a compiled checklist; the certificate is a signed assertion. A VC <em>is</em> that signed assertion, cryptographically, without the phone call to verify the inspector's credentials.</p>
+
+        <div class="idea-field-label">Why It Matters</div>
+        <p>This is the end state of the compliance industry: a supplier earns a certification once, from a trusted third party, and presents a credential to every buyer who needs it. No re-entry, no portal, no forms. Athian accepting VCs now — before the ecosystem is mature — means suppliers and issuers can build toward a world where compliance requests shrink toward zero for well-credentialed suppliers.</p>
+
+        <div class="meeting-test-block">
+          <p>"When a supplier has a cryptographically-verified emissions certificate, we skip the evidence collection entirely — we just check the credential."</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Idea 5: Supplier-Initiated Compliance Profile -->
+    <article class="idea-card" id="idea-5">
+      <div class="idea-card-header">
+        <div class="idea-rank-badge">05.</div>
+        <div class="idea-title-block">
+          <h3 class="idea-title">Supplier-Initiated Compliance Profile — Invert Who Sends the Questionnaire</h3>
+          <div class="idea-chips">
+            <span class="frame-tag tag-inv">Inversion</span>
+            <span class="axis-chip axis-evid">Evidence Collection</span>
+            <span class="conf-chip">Conf 74%</span>
+            <span class="cx-chip">Cx Medium</span>
+          </div>
+        </div>
+      </div>
+      <div class="idea-body">
+        <div class="idea-field-label">Summary</div>
+        <p>Currently, compliance profiles are determined top-down: the CPG buyer sends a requirements questionnaire; the supplier responds. The profile of "which requirements apply to this supplier" is determined and re-encoded by the buyer in each platform they use. The inversion: the supplier owns and publishes their machine-readable compliance profile — a structured declaration of which standards they claim conformance with, at what level, with what evidence types available, and with what expiry dates. CPG buyers query the supplier's profile instead of sending a questionnaire. The buyer's compliance request becomes a match operation ("does your profile cover these requirements?"), not an interrogation.</p>
+
+        <div class="idea-field-label">Frame Move</div>
+        <p><strong>Inversion</strong> — flips who initiates and who owns the compliance artifact. Currently the buyer initiates (sends questionnaire), supplier responds. Inverted: supplier publishes (maintains profile), buyer queries. The structural analogy is SBOM: the software producer publishes the component manifest; consumers ingest and validate it. The producer is authoritative.</p>
+
+        <div class="idea-field-label">Basis</div>
+        <p><span class="basis-tag basis-direct">direct</span>Large suppliers managing 15–30 simultaneous portals re-enter the same data repeatedly. If the supplier owns the profile, they maintain it once and every CPG buyer who queries it gets the same answer. The duplication problem — same data, 30 portals — is structurally resolved.</p>
+        <p><span class="basis-tag basis-external">external</span>SBOM (EO 14028, 2021): government mandate to publish machine-readable component manifests. The structural analogy is direct — a "Sustainability Bill of Materials" where the supplier publishes their compliance claims and the buyer ingests them. SBOM adoption showed that tooling to auto-generate the manifest emerged quickly once the format was standardized.</p>
+        <p><span class="basis-tag basis-reasoned">reasoned</span>The &lt;50% CDP response rate suggests suppliers are not refusing to comply — they're refusing to re-do work they've already done. A supplier-owned profile means they do the work once and publish it; response rate ceases to be a meaningful metric because there's nothing to respond to.</p>
+
+        <div class="idea-field-label">Why It Matters</div>
+        <p>It resolves the portal fatigue problem at its root: 15–30 portals become 15–30 match queries against one published profile. It also changes the supplier's relationship with compliance from reactive (answer their questions) to proactive (publish your position). Suppliers with strong profiles become easier to source from — compliance becomes a competitive signal, not a cost.</p>
+
+        <div class="meeting-test-block">
+          <p>"Instead of sending your suppliers a questionnaire, what if they published their compliance profile and you just queried it — same as reading a software bill of materials?"</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Idea 7: Evidence Gap as Typed Object -->
+    <article class="idea-card" id="idea-7">
+      <div class="idea-card-header">
+        <div class="idea-rank-badge">07.</div>
+        <div class="idea-title-block">
+          <h3 class="idea-title">Evidence Gap as a Typed Object — Replace the Evidence Conversation with a Structured Gap Assertion</h3>
+          <div class="idea-chips">
+            <span class="frame-tag tag-rem">Removal</span>
+            <span class="axis-chip axis-evid">Evidence Collection</span>
+            <span class="conf-chip">Conf 70%</span>
+            <span class="cx-chip">Cx Low</span>
+          </div>
+        </div>
+      </div>
+      <div class="idea-body">
+        <div class="idea-field-label">Summary</div>
+        <p>When evidence collection fails — the supplier can't provide a document, the data doesn't exist, the required verification hasn't happened — the current process generates an unstructured conversation: emails, follow-up calls, status-unknown records. The removal: instead of a conversation, the gap itself becomes a typed object with a defined schema. A gap assertion specifies: the requirement it applies to, the reason (missing data, expired evidence, third-party verification not yet complete), the expected resolution date, and the interim risk posture. The specialist reviews and approves the gap assertion, not an unstructured email chain. The gap becomes auditable, trackable, and composable into supply chain risk reporting — without generating a compliance conversation that has to be reconstructed later.</p>
+
+        <div class="idea-field-label">Frame Move</div>
+        <p><strong>Removal</strong> — removes the unstructured "evidence conversation" as the handling mechanism for missing evidence. The conversation is replaced by a typed data object that the system can reason over. Analogous to how structured error handling replaced "print and check the logs" — the error becomes a first-class object in the system.</p>
+
+        <div class="idea-field-label">Basis</div>
+        <p><span class="basis-tag basis-direct">direct</span>80% of businesses still rely on email and spreadsheets for compliance management. The gap conversation is where that reliance concentrates — there's no structured format for "this evidence is missing for this reason until this date."</p>
+        <p><span class="basis-tag basis-reasoned">reasoned</span>Athian's DSL architecture already types requirements with accepted sources and required data. A gap assertion is the complement of a satisfied requirement — the same typed schema applied to a "not satisfied" outcome. If the system can express "this requirement is satisfied by this evidence," it can express "this requirement is unsatisfied for this typed reason."</p>
+        <p><span class="basis-tag basis-direct">direct</span>Current audits collapse requirements catalog, applicable profile, and evidence plan into one unstructured PDF. The gap conversation is downstream of that same structural collapse — it exists because there's no typed place for incomplete evidence to live.</p>
+
+        <div class="idea-field-label">Why It Matters</div>
+        <p>CPG buyers reporting Scope 3 emissions need to account for gaps in their supply chain evidence, not just successes. A typed gap assertion is directly usable in Scope 3 reporting — it becomes an explicit uncertainty estimate rather than an untracked email thread. Auditors can review the gap assertions as a first-class artifact.</p>
+
+        <div class="meeting-test-block">
+          <p>"When a supplier can't provide evidence, instead of opening an email thread, we create a typed gap assertion — auditable, dated, and directly usable in your Scope 3 reporting as a disclosed uncertainty."</p>
+        </div>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- ── Rejection Summary ───────────────────── -->
+  <section aria-labelledby="rejection-heading">
+    <div class="section-eyebrow">Considered and Cut</div>
+    <h2 class="section-title" id="rejection-heading">Rejection Summary</h2>
+    <table class="rejection-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Idea</th>
+          <th>Axis</th>
+          <th>Reason Rejected</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>R1</td>
+          <td class="rejected-title">AI auto-encodes standards from PDF (generic framing)</td>
+          <td><span class="axis-chip axis-enc">Std Encoding</span></td>
+          <td class="rejected-reason">Subsumed by Idea 8 (AI Encoding Pipeline), which is more specific about the DSL output contract and the specialist review step. Generic framing alone fails the ambition floor.</td>
+        </tr>
+        <tr>
+          <td>R2</td>
+          <td class="rejected-title">OSCAL 3-layer model applied to supply chain</td>
+          <td><span class="axis-chip axis-enc">Std Encoding</span></td>
+          <td class="rejected-reason">Process improvement framing, not a step-function change. Athian's DSL-first architecture already instantiates this pattern; the idea doesn't add a new move.</td>
+        </tr>
+        <tr>
+          <td>R3</td>
+          <td class="rejected-title">AI extracts evidence from supplier-submitted documents</td>
+          <td><span class="axis-chip axis-evid">Evidence Coll.</span></td>
+          <td class="rejected-reason">Not an inversion or removal — additive automation on top of existing evidence submission flow. Too close to the product's already-stated capability ("AI handles evidence collection").</td>
+        </tr>
+        <tr>
+          <td>R4</td>
+          <td class="rejected-title">Continuous evidence monitoring (vs. point-in-time)</td>
+          <td><span class="axis-chip axis-evid">Evidence Coll.</span></td>
+          <td class="rejected-reason">Additive feature framing. No inversion or removal. SOC 2 continuous monitoring is a better analogy for a separate ideation run on compliance state architecture; it doesn't belong under this frame.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ── Footer ─────────────────────────────── -->
+  <footer class="composition-signal">
+    Composed <time datetime="2026-06-22">2026-06-22</time> by ce-ideate · Frame: Inversion, Removal &amp; Automation · Athian Compliance
+  </footer>
+
+</div>

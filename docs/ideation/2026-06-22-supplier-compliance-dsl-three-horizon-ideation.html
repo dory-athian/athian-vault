@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ideation: DSL Compliance — Three-Horizon Supplier Record</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f9f9f8;
+    --surface: #ffffff;
+    --border: #e4e4e0;
+    --border-strong: #c8c8c2;
+    --text: #1a1a18;
+    --text-muted: #6b6b66;
+    --text-faint: #9b9b95;
+    --accent: #1f6e4a;
+    --accent-soft: #e8f5ee;
+    --accent-text: #145236;
+    --warn: #7a4e0a;
+    --warn-soft: #fdf3e3;
+    --info: #1a4e7a;
+    --info-soft: #e8f0f8;
+    --tag-bg: #f0f0ec;
+    --tag-text: #3a3a36;
+    --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Cascadia Code', monospace;
+    --r-s: 4px;
+    --r-m: 8px;
+    --r-l: 12px;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .page {
+    max-width: 880px;
+    margin-inline: auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* Header */
+  .doc-header {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .doc-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+  .doc-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+  .doc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  .meta-chip {
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    border-radius: var(--r-s);
+    padding: 0.2rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  /* Section headings */
+  section { margin-bottom: 2.5rem; }
+  .section-eyebrow {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.35rem;
+  }
+  h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--border);
+  }
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  /* Grounding */
+  .grounding-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  @media (max-width: 640px) {
+    .grounding-grid { grid-template-columns: 1fr; }
+  }
+  .grounding-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-m);
+    padding: 1rem;
+  }
+  .grounding-card h3 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+  .grounding-card p, .grounding-card li {
+    font-size: 0.875rem;
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .grounding-card ul {
+    padding-left: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  /* Axes */
+  .axes-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .axis-chip {
+    background: var(--accent-soft);
+    color: var(--accent-text);
+    border-radius: var(--r-s);
+    padding: 0.3rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  /* Idea card */
+  article.idea-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-l);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+  .idea-card-header {
+    background: var(--accent);
+    color: #fff;
+    padding: 1.25rem 1.5rem;
+  }
+  .idea-card-header .idea-num {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 0.3rem;
+  }
+  .idea-card-header h3 {
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    line-height: 1.25;
+  }
+  .idea-card-header .idea-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .idea-card-header .chip {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border-radius: var(--r-s);
+    padding: 0.15rem 0.55rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+  .idea-card-body {
+    padding: 1.5rem;
+  }
+  .idea-field {
+    margin-bottom: 1.25rem;
+  }
+  .idea-field:last-child { margin-bottom: 0; }
+  .field-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+  }
+  .field-body {
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--text);
+    max-width: 72ch;
+  }
+  .basis-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    border-radius: var(--r-s);
+    padding: 0.1rem 0.45rem;
+    margin-right: 0.3rem;
+    vertical-align: baseline;
+  }
+  .basis-tag.direct { background: var(--accent-soft); color: var(--accent-text); }
+  .basis-tag.external { background: var(--info-soft); color: var(--info); }
+  .basis-tag.reasoned { background: var(--warn-soft); color: var(--warn); }
+
+  .basis-item {
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+  .basis-item:last-child { margin-bottom: 0; }
+
+  /* SVG diagram */
+  .diagram-wrap {
+    margin: 1.25rem 0;
+    overflow-x: auto;
+  }
+  .diagram-caption {
+    font-size: 0.78rem;
+    color: var(--text-faint);
+    margin-top: 0.5rem;
+    font-style: italic;
+  }
+
+  /* Meeting test callout */
+  .meeting-test {
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--r-m) var(--r-m) 0;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    font-style: italic;
+    color: var(--accent-text);
+  }
+  .meeting-test-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-style: normal;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  /* Rejection table */
+  .rejection-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    overflow-x: auto;
+    display: block;
+  }
+  .rejection-table th {
+    text-align: left;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 0.5rem 0.75rem;
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+  }
+  .rejection-table td {
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .rejection-table tr:last-child td { border-bottom: none; }
+  .rejection-table td:first-child {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .rejection-table td:nth-child(2) { font-weight: 500; }
+  .rejection-table td:nth-child(3) { color: var(--text-muted); }
+
+  /* Footer */
+  footer.composition-signal {
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.75rem;
+    color: var(--text-faint);
+  }
+  footer.composition-signal code {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="doc-header">
+    <div class="doc-eyebrow">Ideation — Elsewhere-Software</div>
+    <h1 class="doc-title">DSL Compliance: Supplier Experience + Standard Lifecycle</h1>
+    <div class="doc-meta">
+      <span class="meta-chip">Date: 2026-06-22</span>
+      <span class="meta-chip">Topic: supplier-compliance-dsl-three-horizon</span>
+      <span class="meta-chip">Mode: elsewhere-software</span>
+      <span class="meta-chip">Focus: Axis 3 + Axis 5 — portability × continuous state</span>
+      <span class="meta-chip">1 survivor / 5 raw candidates</span>
+    </div>
+  </header>
+
+  <section id="grounding-context">
+    <div class="section-eyebrow">Phase 1 Grounding</div>
+    <h2>Topic Context</h2>
+    <div class="grounding-grid">
+      <div class="grounding-card">
+        <h3>Product Concept</h3>
+        <ul>
+          <li>Athian Compliance: DSL-first, AI-native compliance platform for CPG companies verifying livestock/ag suppliers</li>
+          <li>DSL requirements: typed with unit, threshold, time period, required data, accepted sources</li>
+          <li>CPG profile = selection from shared catalog; supplier plan = per-supplier evidence</li>
+          <li>Athian already operates producer incentive layer — changes behavior, not just records it</li>
+        </ul>
+      </div>
+      <div class="grounding-card">
+        <h3>Constraint Flips (given)</h3>
+        <ul>
+          <li>Primary: "One CPG, one compliance program" → shared supplier compliance state across buyers</li>
+          <li>Secondary: "Compliance is verification (point-in-time)" → continuous state / prediction</li>
+          <li>Machine-readable requirements = compliance state is a structured data object, not a PDF audit report</li>
+        </ul>
+      </div>
+      <div class="grounding-card">
+        <h3>Competitive Landscape</h3>
+        <ul>
+          <li>EcoVadis: "Assess once, unlock everywhere" — portable but document-based, annual. 1,300+ buyers share one assessment.</li>
+          <li>Risk Ledger: shared supplier profile across all clients; no commercial return to supplier beyond reduced burden</li>
+          <li>Corvian: argues credibility requires serialized, traceable, continuously-updated field-level data — not static disclosures</li>
+          <li>CSDDD 2026: continuous monitoring required; 59% of firms investing in solutions</li>
+        </ul>
+      </div>
+      <div class="grounding-card">
+        <h3>Structural Opportunity</h3>
+        <ul>
+          <li>Supplier commercial return from compliance work: currently zero</li>
+          <li>DSL requirement as executable function: given evidence(type, value, period) → evaluate(pass/fail/partial)</li>
+          <li>Credit bureau analogy: shared infrastructure, continuous update, portable signal, eliminates per-counterparty re-assessment</li>
+          <li>Athian incentive layer: intervention events (Bovaer adoption, AMMP completion) are already structured data</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="topic-axes">
+    <div class="section-eyebrow">Phase 1.5</div>
+    <h2>Topic Axes</h2>
+    <div class="axes-list">
+      <span class="axis-chip">Supplier experience (Axis 3)</span>
+      <span class="axis-chip">Standard lifecycle (Axis 5)</span>
+      <span class="axis-chip">Portability mechanism</span>
+      <span class="axis-chip">Continuous state architecture</span>
+      <span class="axis-chip">Commercial return to supplier</span>
+    </div>
+  </section>
+
+  <section id="ranked-ideas">
+    <div class="section-eyebrow">1 Survivor</div>
+    <h2>Ranked Ideas</h2>
+
+    <article class="idea-card" id="idea-1">
+      <div class="idea-card-header">
+        <div class="idea-num">Idea 1 · Survivor</div>
+        <h3>The Three-Horizon Compliance Record</h3>
+        <div class="idea-chips">
+          <span class="chip">Axis: Supplier experience + Standard lifecycle</span>
+          <span class="chip">Confidence: 88%</span>
+          <span class="chip">Complexity: High</span>
+        </div>
+      </div>
+      <div class="idea-card-body">
+
+        <div class="idea-field">
+          <div class="field-label">Description</div>
+          <div class="field-body">
+            <p>A supplier's compliance state in the DSL-first architecture is not a score or a PDF — it is a continuously-evaluated, timestamped evidence plan that exists across three time horizons simultaneously. In the <strong>past horizon</strong>, every evaluation is appended to a cryptographically-ordered history: a supplier who has maintained passing methane intensity for 18 consecutive months holds a materially stronger record than one who passed last quarter, and any new buyer can inspect that record on enrollment rather than commissioning an audit. In the <strong>present horizon</strong>, when Athian's incentive layer records an intervention event — a producer adopting Bovaer, completing an AMMP cycle, adding monitoring infrastructure — the DSL plan auto-re-evaluates every requirement that cites the intervention as accepted evidence, and the updated compliance state propagates to every buyer whose profile references that requirement. The supplier does not re-document; the system re-runs the function. In the <strong>future horizon</strong>, because DSL requirements are executable functions (typed inputs → deterministic output), the system can run a forward simulation before any evidence is collected: given a proposed intervention + a time period, what would compliance state be? A CPG can model "if we enroll this supplier in Bovaer for Q3, they will satisfy our methane intensity requirement by Q4" before committing program budget — and the supplier can see exactly which interventions would move them to full compliance with any buyer's profile.</p>
+            <p style="margin-top: 0.75rem;">The unit of portability is the evidence plan itself — not a summary score, not a document. Each requirement evaluation is a tradeline: typed requirement, current result, supporting evidence, timestamp. New buyers see both the summary state and the tradeline detail. Existing buyers receive propagated updates when evidence changes. The supplier controls the record and earns commercial leverage from its history: faster enrollment, better terms, program priority from CPG buyers who can see a long clean record rather than commissioning a fresh audit.</p>
+          </div>
+        </div>
+
+        <div class="idea-field">
+          <div class="field-label">Structural Diagram</div>
+          <div class="diagram-wrap">
+            <svg viewBox="0 0 760 320" width="760" height="320" xmlns="http://www.w3.org/2000/svg" style="max-width:100%; font-family: Inter, sans-serif;">
+              <!-- Background -->
+              <rect width="760" height="320" fill="#f9f9f8" rx="10"/>
+
+              <!-- Three horizon columns -->
+              <!-- Past -->
+              <rect x="20" y="20" width="210" height="280" rx="8" fill="#e8f5ee" stroke="#1f6e4a" stroke-width="1.5"/>
+              <text x="125" y="45" text-anchor="middle" font-size="10" font-weight="700" fill="#145236" letter-spacing="0.08em">PAST HORIZON</text>
+              <text x="125" y="62" text-anchor="middle" font-size="9" fill="#1f6e4a">History accumulation</text>
+
+              <rect x="35" y="75" width="180" height="38" rx="5" fill="#ffffff" stroke="#c8e8d8" stroke-width="1"/>
+              <text x="45" y="91" font-size="9" fill="#1a1a18">Timestamped eval log</text>
+              <text x="45" y="104" font-size="8.5" fill="#6b6b66">18 mo continuous · CH₄ intensity</text>
+
+              <rect x="35" y="122" width="180" height="38" rx="5" fill="#ffffff" stroke="#c8e8d8" stroke-width="1"/>
+              <text x="45" y="138" font-size="9" fill="#1a1a18">Intervention history</text>
+              <text x="45" y="151" font-size="8.5" fill="#6b6b66">Bovaer adopted 2025-Q2 · verified</text>
+
+              <rect x="35" y="169" width="180" height="38" rx="5" fill="#ffffff" stroke="#c8e8d8" stroke-width="1"/>
+              <text x="45" y="185" font-size="9" fill="#1a1a18">Consistency score</text>
+              <text x="45" y="198" font-size="8.5" fill="#6b6b66">Derived from record length + variance</text>
+
+              <text x="125" y="235" text-anchor="middle" font-size="8.5" fill="#145236" font-style="italic">New buyer sees history</text>
+              <text x="125" y="249" text-anchor="middle" font-size="8.5" fill="#145236" font-style="italic">without commissioning audit</text>
+
+              <!-- Present -->
+              <rect x="275" y="20" width="210" height="280" rx="8" fill="#e8f0f8" stroke="#1a4e7a" stroke-width="1.5"/>
+              <text x="380" y="45" text-anchor="middle" font-size="10" font-weight="700" fill="#1a3a60" letter-spacing="0.08em">PRESENT HORIZON</text>
+              <text x="380" y="62" text-anchor="middle" font-size="9" fill="#1a4e7a">Event-driven propagation</text>
+
+              <rect x="290" y="75" width="180" height="38" rx="5" fill="#ffffff" stroke="#c8d8e8" stroke-width="1"/>
+              <text x="300" y="91" font-size="9" fill="#1a1a18">Intervention event fires</text>
+              <text x="300" y="104" font-size="8.5" fill="#6b6b66">Athian incentive layer → structured event</text>
+
+              <!-- Arrow down -->
+              <line x1="380" y1="113" x2="380" y2="124" stroke="#1a4e7a" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+
+              <rect x="290" y="125" width="180" height="38" rx="5" fill="#ffffff" stroke="#c8d8e8" stroke-width="1"/>
+              <text x="300" y="141" font-size="9" fill="#1a1a18">DSL re-evaluates plan</text>
+              <text x="300" y="154" font-size="8.5" fill="#6b6b66">All requirements citing that evidence</text>
+
+              <line x1="380" y1="163" x2="380" y2="174" stroke="#1a4e7a" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+
+              <rect x="290" y="175" width="180" height="38" rx="5" fill="#ffffff" stroke="#c8d8e8" stroke-width="1"/>
+              <text x="300" y="191" font-size="9" fill="#1a1a18">State propagates to all buyers</text>
+              <text x="300" y="204" font-size="8.5" fill="#6b6b66">Whose profile references requirement</text>
+
+              <text x="380" y="235" text-anchor="middle" font-size="8.5" fill="#1a4e7a" font-style="italic">Supplier re-documents nothing.</text>
+              <text x="380" y="249" text-anchor="middle" font-size="8.5" fill="#1a4e7a" font-style="italic">System re-runs the function.</text>
+
+              <!-- Future -->
+              <rect x="530" y="20" width="210" height="280" rx="8" fill="#fdf3e3" stroke="#7a4e0a" stroke-width="1.5"/>
+              <text x="635" y="45" text-anchor="middle" font-size="10" font-weight="700" fill="#5a3208" letter-spacing="0.08em">FUTURE HORIZON</text>
+              <text x="635" y="62" text-anchor="middle" font-size="9" fill="#7a4e0a">Executable simulation</text>
+
+              <rect x="545" y="75" width="180" height="38" rx="5" fill="#ffffff" stroke="#e8d0a8" stroke-width="1"/>
+              <text x="555" y="91" font-size="9" fill="#1a1a18">CPG models enrollment</text>
+              <text x="555" y="104" font-size="8.5" fill="#6b6b66">Proposed intervention + time period</text>
+
+              <rect x="545" y="122" width="180" height="38" rx="5" fill="#ffffff" stroke="#e8d0a8" stroke-width="1"/>
+              <text x="555" y="138" font-size="9" fill="#1a1a18">DSL simulates compliance state</text>
+              <text x="555" y="151" font-size="8.5" fill="#6b6b66">Same function; projected evidence inputs</text>
+
+              <rect x="545" y="169" width="180" height="38" rx="5" fill="#ffffff" stroke="#e8d0a8" stroke-width="1"/>
+              <text x="555" y="185" font-size="9" fill="#1a1a18">Supplier sees path to compliance</text>
+              <text x="555" y="198" font-size="8.5" fill="#6b6b66">For any buyer profile in catalog</text>
+
+              <text x="635" y="235" text-anchor="middle" font-size="8.5" fill="#7a4e0a" font-style="italic">Impossible with PDF audits —</text>
+              <text x="635" y="249" text-anchor="middle" font-size="8.5" fill="#7a4e0a" font-style="italic">PDFs are not functions.</text>
+
+              <!-- Central connector labels -->
+              <line x1="230" y1="160" x2="273" y2="160" stroke="#c8c8c2" stroke-width="1" stroke-dasharray="4,3"/>
+              <line x1="487" y1="160" x2="529" y2="160" stroke="#c8c8c2" stroke-width="1" stroke-dasharray="4,3"/>
+
+              <!-- Arrow marker defs -->
+              <defs>
+                <marker id="arrowBlue" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                  <path d="M0,0 L0,6 L6,3 z" fill="#1a4e7a"/>
+                </marker>
+              </defs>
+            </svg>
+            <p class="diagram-caption">Illustrative — three time horizons of the same compliance record. The DSL plan is the unit; the three views are the same data read at different time offsets.</p>
+          </div>
+        </div>
+
+        <div class="idea-field">
+          <div class="field-label">Axis</div>
+          <div class="field-body">Supplier experience (Axis 3) + Standard lifecycle (Axis 5) — portability and continuous state reinforce each other here because the history record is what makes portability credible (any new buyer can inspect it), and continuous state is what makes the history worth holding (it is never stale).</div>
+        </div>
+
+        <div class="idea-field">
+          <div class="field-label">Basis</div>
+          <div>
+            <div class="basis-item">
+              <span class="basis-tag direct">direct:</span>
+              The brief states Athian "already operates producer incentive layer — changes producer behavior, not just records it." Intervention events (Bovaer adoption, AMMP completion) are structured data Athian already holds. The present-horizon propagation uses this data as the trigger for re-evaluation — no new data collection required, only a new computation.
+            </div>
+            <div class="basis-item">
+              <span class="basis-tag direct">direct:</span>
+              The brief states "because requirements are machine-readable (DSL-typed), a supplier's compliance state is a structured data object — not a PDF audit report — and can be queried, compared, and updated continuously." The executable-function property is the mechanism for both propagation and simulation: evaluation is a pure function of (requirement_spec, evidence_record, timestamp).
+            </div>
+            <div class="basis-item">
+              <span class="basis-tag external">external:</span>
+              EcoVadis "Assess once, unlock everywhere" proves the portability market exists — 1,300+ buyers share one assessment. Its structural limitation is that the unit is a PDF-backed questionnaire score, not a structured data object. Score updates require re-assessment (annual by default). A DSL-typed record updates on evidence change, not on assessment cycle. Source: EcoVadis product documentation; search results confirm 15,000+ US companies assessed 2020-2025.
+            </div>
+            <div class="basis-item">
+              <span class="basis-tag external">external:</span>
+              Risk Ledger operates a shared supplier profile model ("one supplier profile for all clients") with automatic reassessment requests. Structural limitation: security questionnaire format, not machine-readable typed requirements — cannot re-evaluate without supplier completing a new questionnaire. Source: riskledger.com/solutions.
+            </div>
+            <div class="basis-item">
+              <span class="basis-tag external">external:</span>
+              Corvian (2026): "Organizations still rely on supplier surveys, consultant models, spreadsheets, and disconnected platforms" and this "rarely provides the governed, traceable field-level data required for long-term credibility." The three-horizon record is specifically the architecture that produces "serialized, traceable sustainability data capable of audit review." Source: corvian.com/2026/02/scope-3-in-agriculture-why-infrastructure-determines-credibility.
+            </div>
+            <div class="basis-item">
+              <span class="basis-tag external">external:</span>
+              CSDDD (2026): mandates continuous monitoring, not annual audit. "Continuous monitoring enabled by digital tools means companies can respond to risks as they emerge rather than relying on static, annual assessments." The present-horizon propagation is the technical architecture that satisfies CSDDD's continuous obligation. Source: Sedex, Normative CSDDD analysis, 2026.
+            </div>
+            <div class="basis-item">
+              <span class="basis-tag reasoned">reasoned:</span>
+              The credit bureau analogy in the brief names the right structure but understates the DSL advantage. A credit bureau issues a score derived from tradelines — but the tradelines are not directly portable; lenders see a derived summary. In the DSL-first architecture, the tradelines (requirement evaluations) are the portable unit, and the score is derived from them. This means any buyer can inspect the basis of the score, not just consume the verdict. EcoVadis cannot do this: its score methodology is opaque and the evidence is not buyer-inspectable. The DSL record is more analogous to an open-tradeline credit report than to a credit score — the difference matters for high-stakes procurement decisions where buyers need to know not just the result but whether the evidence supports it.
+            </div>
+            <div class="basis-item">
+              <span class="basis-tag reasoned">reasoned:</span>
+              The simulation capability (future horizon) is structurally impossible in document-based systems. A PDF audit has no function signature — it cannot be re-run with projected inputs. A DSL requirement has an explicit type signature (evidence_type, value, threshold, time_period → pass/fail/partial). Re-running it with projected inputs is the same computation as evaluating it with real inputs. This means compliance planning ("what interventions would get this supplier to compliance?") is a first-class feature of the architecture, not a separate modeling exercise. Suppliers gain a navigation tool — they can see exactly which interventions close the gap with any buyer's profile.
+            </div>
+          </div>
+        </div>
+
+        <div class="idea-field">
+          <div class="field-label">Why It Matters</div>
+          <div class="field-body">
+            <p>This changes the product in two ways that compound. First, the supplier finally has a commercial reason to invest in the compliance record: a three-horizon history is a durable, portable asset that follows them across buyer relationships, accelerates enrollment with new buyers, and — via the simulation capability — tells them precisely which interventions are worth making. The record is theirs. Second, the standard lifecycle is no longer a buyer-side workflow. When a protocol updates its threshold (Bovaer baseline, AMMP measurement methodology), the catalog change triggers automatic re-evaluation for every affected supplier plan. No buyer needs to re-initiate an audit; no supplier needs to re-document. The standard's version propagates through the system as a computation event. This is the mechanism EcoVadis structurally cannot offer — its assessment cycle is annual and buyer-triggered by design.</p>
+            <p style="margin-top: 0.75rem;">For the market: if this works, Athian owns the compliance infrastructure layer for livestock/ag Scope 3, not just a point-solution for individual CPG programs. The network effect is real: each additional buyer who enrolls expands the value of each supplier's history record, and each additional supplier who builds a long record makes Athian's platform a more credible source of truth than any single-buyer audit.</p>
+          </div>
+        </div>
+
+        <div class="idea-field">
+          <div class="field-label">Downsides and Costs</div>
+          <div class="field-body">
+            <ul style="padding-left: 1.2rem; line-height: 1.75; font-size: 0.9rem;">
+              <li><strong>Supplier consent architecture is non-trivial.</strong> The supplier must consent to sharing their record with each buyer, and consent granularity matters — a supplier may want to share history with Buyer A but not Buyer B. This is a product design and legal challenge, not just a technical one.</li>
+              <li><strong>DSL requirement versioning is load-bearing and hard to get right.</strong> When a protocol updates, which version of the requirement does each buyer's profile reference? If Buyer A is on v1 and Buyer B is on v2, the supplier's record must evaluate against both. Requirement version management is a first-class engineering problem.</li>
+              <li><strong>Simulation accuracy depends on evidence model completeness.</strong> If the DSL requirement cites an evidence type that doesn't have a clean parametric model (e.g., practice adoption that requires on-site verification), the simulation degrades to a rough indicator rather than a defensible projection.</li>
+              <li><strong>History length creates a cold-start problem for new suppliers.</strong> The history asset takes time to build. New suppliers entering the system have no record advantage — Athian would need an onboarding path that bootstraps history from prior program participation where verifiable.</li>
+              <li><strong>Complexity is high.</strong> This is not a feature on top of the existing architecture — it is the architecture. Building it requires that the DSL evaluation engine, the event propagation layer, and the consent/sharing model all work correctly before the value of the history record becomes visible to suppliers or buyers.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="idea-field">
+          <div class="field-label">Meeting Test</div>
+          <div class="meeting-test">
+            <span class="meeting-test-label">What a strong CPG product team says when they hear this</span>
+            "Our compliance team spends weeks re-auditing suppliers who were clean with another buyer six months ago — if their record is already here and current, we could cut enrollment time by 80% and reallocate that spend to suppliers who actually need it."
+          </div>
+        </div>
+
+      </div>
+    </article>
+  </section>
+
+  <section id="rejection-summary">
+    <div class="section-eyebrow">Considered and Cut</div>
+    <h2>Rejection Summary</h2>
+    <table class="rejection-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Candidate</th>
+          <th>Reason Rejected</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>R1</td>
+          <td>Compliance Delta Feed</td>
+          <td>Narrow notification mechanism — names one downstream artifact of the three-horizon architecture without explaining what enables it or why it is non-obvious. Subsumed by the survivor.</td>
+        </tr>
+        <tr>
+          <td>R2</td>
+          <td>Standard-Version Propagation</td>
+          <td>Sound and specifically DSL-enabled, but covers only one dimension (Axis 5 / standard lifecycle) and misses the supplier-experience commercial return entirely. Subsumed by the survivor's present horizon.</td>
+        </tr>
+        <tr>
+          <td>R3</td>
+          <td>Compliance History as Portable Asset</td>
+          <td>Correctly names the compounding mechanism but describes only the past horizon. Does not address how the history stays current (propagation) or how it generates commercial return before it is long (simulation). Subsumed.</td>
+        </tr>
+        <tr>
+          <td>R4</td>
+          <td>Verifiable Compliance Tradelines</td>
+          <td>Strong framing — the "tradelines" analogy is the sharpest expression of the credit bureau constraint flip at the right level of abstraction. Retained as framing vocabulary inside the survivor rather than as a standalone idea.</td>
+        </tr>
+        <tr>
+          <td>R5</td>
+          <td>Compliance Trajectory Simulation</td>
+          <td>The strongest single dimension — the executable-function property is the clearest "DSL enables this / PDFs cannot" argument. Became the future horizon of the survivor rather than a standalone idea because its value is highest in combination with the history record (simulation with no history to validate against is a projection with no credibility anchor).</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer class="composition-signal">
+    Composed 2026-06-22 by <code>ce-ideate</code> · Athian Compliance — DSL Compliance Platform Ideation · Run <code>a3f9c21e</code>
+  </footer>
+
+</div>
+</body>
+</html>

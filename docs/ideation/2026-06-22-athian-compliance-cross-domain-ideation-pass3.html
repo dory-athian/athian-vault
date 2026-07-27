@@ -1,0 +1,1063 @@
+<title>Ideation: Athian Compliance — Cross-Domain Analogy, Pass 3</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Serif:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ── Axis ink system ──────────────────────────── */
+:root {
+  --ground:        #F7F5F1;
+  --ground-2:      #EEECEA;
+  --ground-3:      #E3E0DB;
+  --text:          #1A1C22;
+  --text-mid:      #4A4E5C;
+  --text-dim:      #7E8494;
+  --text-dimmer:   #AAB0BF;
+  --rule:          #D4D0C8;
+  --rule-strong:   #B8B3A8;
+
+  /* axis inks — the five compliance axes */
+  --ax-encoding:   #1E4ED8; /* cobalt      — standard-encoding */
+  --ax-evidence:   #15803D; /* forest       — evidence-collection */
+  --ax-supplier:   #B45309; /* amber        — supplier-experience */
+  --ax-review:     #6D28D9; /* slate-violet — review-and-reporting */
+  --ax-lifecycle:  #0E7490; /* steel-teal   — standard-lifecycle */
+
+  --ax-encoding-bg:  rgba(30,78,216, 0.07);
+  --ax-evidence-bg:  rgba(21,128,61, 0.07);
+  --ax-supplier-bg:  rgba(180,83,9,  0.07);
+  --ax-review-bg:    rgba(109,40,217,0.07);
+  --ax-lifecycle-bg: rgba(14,116,144,0.07);
+
+  --display: 'DM Serif Display', Georgia, serif;
+  --body:    'IBM Plex Serif', Georgia, serif;
+  --mono:    'IBM Plex Mono', 'Fira Mono', monospace;
+  --radius:  2px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  background: var(--ground);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--ax-encoding); text-decoration: none; }
+a:hover { text-decoration: underline; }
+a:focus-visible { outline: 2px solid var(--ax-encoding); outline-offset: 3px; border-radius: 2px; }
+
+/* ── Page shell ──────────────────────────── */
+.page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 40px 120px;
+}
+
+/* ── Header ──────────────────────────────── */
+.doc-header {
+  padding: 72px 0 52px;
+  border-bottom: 1.5px solid var(--text);
+  margin-bottom: 52px;
+}
+
+.doc-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.doc-title {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 3.25rem;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin-bottom: 20px;
+  max-width: 780px;
+}
+
+.doc-subtitle {
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--text-mid);
+  max-width: 680px;
+  margin-bottom: 32px;
+}
+
+.doc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border-top: 1px solid var(--rule);
+  padding-top: 16px;
+  margin-top: 16px;
+}
+
+.meta-item {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  padding-right: 24px;
+  letter-spacing: 0.04em;
+}
+
+.meta-item strong {
+  color: var(--text-mid);
+  font-weight: 500;
+  margin-right: 6px;
+}
+
+/* ── Axis legend ──────────────────────────── */
+.axis-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  padding: 20px 0;
+  margin-bottom: 48px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.axis-legend-label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dimmer);
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.axis-chip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--mono);
+  font-size: 0.69rem;
+  letter-spacing: 0.04em;
+  color: var(--text-mid);
+}
+
+.axis-chip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ax-encoding-dot  { background: var(--ax-encoding); }
+.ax-evidence-dot  { background: var(--ax-evidence); }
+.ax-supplier-dot  { background: var(--ax-supplier); }
+.ax-review-dot    { background: var(--ax-review); }
+.ax-lifecycle-dot { background: var(--ax-lifecycle); }
+
+/* ── Grounding context block ──────────────── */
+.context-block {
+  background: var(--ground-2);
+  border-left: 3px solid var(--rule-strong);
+  padding: 20px 24px;
+  margin-bottom: 52px;
+  font-size: 0.875rem;
+  color: var(--text-mid);
+  line-height: 1.65;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.context-block strong {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text);
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* ── Section label ────────────────────────── */
+.section-label {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--text-dimmer);
+  margin-bottom: 32px;
+}
+
+/* ── Jump nav ────────────────────────────── */
+.jump-nav {
+  margin-bottom: 56px;
+  padding: 20px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.jump-nav-label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dimmer);
+  margin-bottom: 14px;
+}
+
+.jump-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.jump-item {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items: baseline;
+  gap: 12px;
+  font-family: var(--body);
+  font-size: 0.875rem;
+  color: var(--text-mid);
+  text-decoration: none;
+  padding: 5px 0;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.jump-item:hover {
+  color: var(--text);
+  border-bottom-color: var(--rule);
+  text-decoration: none;
+}
+
+.jump-num {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text-dimmer);
+  font-weight: 600;
+}
+
+.jump-title {
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.jump-axis {
+  font-family: var(--mono);
+  font-size: 0.63rem;
+  letter-spacing: 0.06em;
+  color: var(--text-dimmer);
+  white-space: nowrap;
+}
+
+/* axis-color on jump-axis tags */
+.jump-item[data-axis="standard-encoding"] .jump-axis   { color: var(--ax-encoding); }
+.jump-item[data-axis="evidence-collection"] .jump-axis { color: var(--ax-evidence); }
+.jump-item[data-axis="supplier-experience"] .jump-axis { color: var(--ax-supplier); }
+.jump-item[data-axis="review-and-reporting"] .jump-axis{ color: var(--ax-review); }
+.jump-item[data-axis="standard-lifecycle"] .jump-axis  { color: var(--ax-lifecycle); }
+
+/* ── Idea cards ──────────────────────────── */
+.ideas-section {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.idea-card {
+  display: grid;
+  grid-template-columns: 5px 1fr;
+  gap: 0 28px;
+  border-top: 1.5px solid var(--text);
+  padding-top: 32px;
+}
+
+.card-axis-bar {
+  width: 5px;
+  border-radius: 3px;
+  align-self: stretch;
+  min-height: 60px;
+  flex-shrink: 0;
+}
+
+.card-axis-bar.ax-encoding  { background: var(--ax-encoding); }
+.card-axis-bar.ax-evidence  { background: var(--ax-evidence); }
+.card-axis-bar.ax-supplier  { background: var(--ax-supplier); }
+.card-axis-bar.ax-review    { background: var(--ax-review); }
+.card-axis-bar.ax-lifecycle { background: var(--ax-lifecycle); }
+
+.card-body {
+  min-width: 0;
+}
+
+.card-top-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 4px;
+}
+
+.card-rank {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-dimmer);
+  letter-spacing: 0.1em;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.card-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.card-title {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 1.55rem;
+  line-height: 1.2;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  flex: 1;
+}
+
+.card-axis-tag {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 2px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tag-encoding  { color: var(--ax-encoding);  background: var(--ax-encoding-bg);  }
+.tag-evidence  { color: var(--ax-evidence);  background: var(--ax-evidence-bg);  }
+.tag-supplier  { color: var(--ax-supplier);  background: var(--ax-supplier-bg);  }
+.tag-review    { color: var(--ax-review);    background: var(--ax-review-bg);    }
+.tag-lifecycle { color: var(--ax-lifecycle); background: var(--ax-lifecycle-bg); }
+
+.card-analogy {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  letter-spacing: 0.02em;
+  margin-bottom: 18px;
+}
+
+.card-description {
+  font-size: 0.9375rem;
+  line-height: 1.72;
+  color: var(--text);
+  margin-bottom: 22px;
+}
+
+/* field rows */
+.card-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border-top: 1px solid var(--rule);
+  padding-top: 18px;
+  margin-bottom: 20px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.field-label {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding-top: 2px;
+}
+
+.field-value {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-mid);
+}
+
+.field-value code {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  background: var(--ground-2);
+  padding: 1px 5px;
+  border-radius: 2px;
+  color: var(--text);
+}
+
+.field-value.basis-tag {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.basis-label {
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.basis-reasoned { background: rgba(109,40,217,0.1); color: var(--ax-review); }
+.basis-external { background: rgba(30,78,216,0.1);  color: var(--ax-encoding); }
+.basis-direct   { background: rgba(21,128,61,0.1);  color: var(--ax-evidence); }
+
+/* chips */
+.chip-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.chip {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 3px 9px;
+  border-radius: 20px;
+  border: 1px solid var(--rule-strong);
+  color: var(--text-mid);
+  background: var(--ground);
+}
+
+.chip-conf-high { border-color: var(--ax-encoding); color: var(--ax-encoding); background: var(--ax-encoding-bg); }
+.chip-conf-med  { border-color: var(--ax-supplier); color: var(--ax-supplier); background: var(--ax-supplier-bg); }
+
+/* ── Diagram ────────────────────────── */
+.card-diagram {
+  margin: 20px 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.card-diagram svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ── Meeting test callout ──────────────── */
+.meeting-test {
+  background: var(--ground-2);
+  border-left: 2px solid var(--rule-strong);
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--text-mid);
+  margin-top: 4px;
+}
+
+/* ── Rejection table ──────────────────── */
+.rejection-section {
+  margin-top: 80px;
+  border-top: 1.5px solid var(--text);
+  padding-top: 32px;
+}
+
+.rejection-section h2 {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 1.75rem;
+  margin-bottom: 24px;
+  color: var(--text);
+}
+
+.rejection-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.855rem;
+}
+
+.rejection-table th {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  font-weight: 600;
+  padding: 8px 12px 8px 0;
+  border-bottom: 1px solid var(--rule-strong);
+  text-align: left;
+}
+
+.rejection-table td {
+  padding: 10px 12px 10px 0;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+  line-height: 1.55;
+  color: var(--text-mid);
+}
+
+.rejection-table td:first-child {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+  padding-right: 16px;
+}
+
+.rejection-table td:nth-child(2) {
+  color: var(--text);
+  font-style: italic;
+  font-family: var(--display);
+  font-size: 0.95rem;
+  line-height: 1.3;
+}
+
+/* ── Footer ──────────────────────────────── */
+.doc-footer {
+  margin-top: 80px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 0.67rem;
+  color: var(--text-dimmer);
+  letter-spacing: 0.05em;
+}
+
+/* ── Responsive ──────────────────────────── */
+@media (max-width: 680px) {
+  .page { padding: 0 20px 80px; }
+  .doc-title { font-size: 2.25rem; }
+  .field-row { grid-template-columns: 1fr; gap: 3px; }
+  .card-top-row { flex-direction: column; }
+  .jump-item { grid-template-columns: 28px 1fr; }
+  .jump-axis { display: none; }
+  .idea-card { grid-template-columns: 4px 1fr; gap: 0 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+</style>
+
+<div class="page">
+
+  <header class="doc-header">
+    <div class="doc-eyebrow">Athian Compliance &nbsp;·&nbsp; Ideation &nbsp;·&nbsp; Cross-Domain Analogy &nbsp;·&nbsp; Pass 3</div>
+    <h1 class="doc-title">Seven mechanisms from fields that solved this before.</h1>
+    <p class="doc-subtitle">Each idea is an analogy where the structural fit holds — same constraints, same failure modes — not a vocabulary match. OSCAL, Vanta, bond ratings, franchise audits, grid interconnection, and spectrum licensing excluded.</p>
+    <div class="doc-meta">
+      <span class="meta-item"><strong>date</strong> 2026-06-22</span>
+      <span class="meta-item"><strong>mode</strong> elsewhere-software</span>
+      <span class="meta-item"><strong>frame</strong> cross-domain analogy</span>
+      <span class="meta-item"><strong>raw candidates</strong> 13</span>
+      <span class="meta-item"><strong>survivors</strong> 7</span>
+    </div>
+  </header>
+
+  <!-- axis legend -->
+  <div class="axis-legend" aria-label="Axis color key">
+    <div class="axis-legend-label">Axis color key</div>
+    <div class="axis-chip"><span class="axis-chip-dot ax-encoding-dot" aria-hidden="true"></span>standard-encoding</div>
+    <div class="axis-chip"><span class="axis-chip-dot ax-evidence-dot" aria-hidden="true"></span>evidence-collection</div>
+    <div class="axis-chip"><span class="axis-chip-dot ax-supplier-dot" aria-hidden="true"></span>supplier-experience</div>
+    <div class="axis-chip"><span class="axis-chip-dot ax-review-dot" aria-hidden="true"></span>review-and-reporting</div>
+    <div class="axis-chip"><span class="axis-chip-dot ax-lifecycle-dot" aria-hidden="true"></span>standard-lifecycle</div>
+  </div>
+
+  <!-- grounding context -->
+  <div class="context-block">
+    <strong>Topic context</strong>
+    Athian Compliance: DSL-first AI-native CPG supplier compliance platform. Requirements are typed fields with thresholds, time periods, and accepted sources. AI handles evidence collection and pre-review; a specialist approves. Core bets: (1) decoupling requirement definition from evidence collection breaks portal fatigue, (2) threshold-triggered state machine inverts periodic review, (3) evidence pull from authoritative sources beats evidence submission. Known pain points: no unified evidence data model, humans re-interpret standards before each audit, suppliers manage 15–30 portals, EcoVadis/Sedex have no API surface, evidence ages between batch cycles.
+  </div>
+
+  <!-- jump nav -->
+  <nav class="jump-nav" aria-label="Jump to idea">
+    <div class="jump-nav-label">Ranked survivors</div>
+    <div class="jump-nav-list">
+      <a class="jump-item" href="#idea-1" data-axis="evidence-collection">
+        <span class="jump-num">01</span>
+        <span class="jump-title">Aircraft Continuing Airworthiness — Task-Level Evidence with Live Compliance State</span>
+        <span class="jump-axis">evidence-collection</span>
+      </a>
+      <a class="jump-item" href="#idea-2" data-axis="review-and-reporting">
+        <span class="jump-num">02</span>
+        <span class="jump-title">Pathology Tumor Board — Domain-Specialist AI Ensemble Before Human Review</span>
+        <span class="jump-axis">review-and-reporting</span>
+      </a>
+      <a class="jump-item" href="#idea-3" data-axis="standard-lifecycle">
+        <span class="jump-num">03</span>
+        <span class="jump-title">Pharmacovigilance Signal Detection — Post-Compliance Drift as a First-Class Mode</span>
+        <span class="jump-axis">standard-lifecycle</span>
+      </a>
+      <a class="jump-item" href="#idea-4" data-axis="supplier-experience">
+        <span class="jump-num">04</span>
+        <span class="jump-title">Passport Biometric Binding — Holder-Bound Evidence Credentials with DID Infrastructure</span>
+        <span class="jump-axis">supplier-experience</span>
+      </a>
+      <a class="jump-item" href="#idea-5" data-axis="standard-lifecycle">
+        <span class="jump-num">05</span>
+        <span class="jump-title">GAAP–IFRS Bridge Schedules — Compliance-Impact Reports for Standard Version Migration</span>
+        <span class="jump-axis">standard-lifecycle</span>
+      </a>
+      <a class="jump-item" href="#idea-6" data-axis="supplier-experience">
+        <span class="jump-num">06</span>
+        <span class="jump-title">Clinical Trial Master Protocol — Single Enrollment, Platform-Wide Evidence Reuse</span>
+        <span class="jump-axis">supplier-experience</span>
+      </a>
+      <a class="jump-item" href="#idea-7" data-axis="evidence-collection">
+        <span class="jump-num">07</span>
+        <span class="jump-title">AML Source-of-Funds Tracing — Declared Provenance Depth as a DSL Requirement Field</span>
+        <span class="jump-axis">evidence-collection</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ideas -->
+  <section class="ideas-section" aria-label="Ranked idea cards">
+
+    <!-- ── Idea 1 ─────────────────────────────────────── -->
+    <article class="idea-card" id="idea-1">
+      <div class="card-axis-bar ax-evidence" aria-hidden="true"></div>
+      <div class="card-body">
+        <div class="card-top-row">
+          <h2 class="card-title">Aircraft Continuing Airworthiness — Task-Level Evidence with Live Compliance State</h2>
+          <span class="card-axis-tag tag-evidence">evidence-collection</span>
+        </div>
+        <p class="card-analogy">Analogous domain: FAA/EASA continuing airworthiness — MRO maintenance task records</p>
+
+        <p class="card-description">Aviation MRO compliance does not ask "is the aircraft airworthy?" on a schedule. It tracks every maintenance task against a work order, and each task closes with an authorized sign-off permanently attached to that task record. "Airworthiness" is not an audit result — it is a live state computed from the union of all task-level records, each carrying its own expiry trigger. The aircraft is never "in compliance"; it is continuously either in-tolerance or out, per directive. The structural analog for Athian: evidence is tracked at the requirement-instance level, not the assessment level. Each collected evidence item is attached to the specific requirement-instance it satisfies — with a provenance record showing source, collection method, and date — and expires per the time-period field declared in the DSL. Compliance state is a continuous computation, not a periodic verdict. The AI pre-verification result is also attached at the evidence-item level. The periodic assessment cycle disappears; what remains is a continuously maintained compliance posture that only surfaced to a human when an item expires or a new requirement triggers a gap.</p>
+
+        <!-- diagram: evidence item → requirement instance → compliance state -->
+        <div class="card-diagram" aria-label="Diagram: evidence item attaches to requirement instance with time-period expiry, aggregated into a continuous compliance state">
+          <svg viewBox="0 0 780 100" xmlns="http://www.w3.org/2000/svg">
+            <rect width="780" height="100" fill="#F7F5F1"/>
+            <!-- evidence item box -->
+            <rect x="20" y="20" width="170" height="56" fill="#EEECEA" stroke="#D4D0C8" stroke-width="1" rx="2"/>
+            <text x="105" y="38" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8.5" fill="#7E8494" letter-spacing="0.06em">EVIDENCE ITEM</text>
+            <text x="105" y="54" text-anchor="middle" font-family="IBM Plex Serif, serif" font-size="9.5" fill="#1A1C22">SQF Cert — v2024</text>
+            <text x="105" y="67" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" fill="#7E8494">provenance: issuer-signed PDF</text>
+            <!-- arrow 1 -->
+            <line x1="190" y1="48" x2="230" y2="48" stroke="#B8B3A8" stroke-width="1.5"/>
+            <polygon points="230,44 240,48 230,52" fill="#B8B3A8"/>
+            <!-- requirement instance box -->
+            <rect x="240" y="20" width="190" height="56" fill="#EEECEA" stroke="#15803D" stroke-width="1.5" rx="2"/>
+            <text x="335" y="38" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8.5" fill="#15803D" letter-spacing="0.06em">REQUIREMENT INSTANCE</text>
+            <text x="335" y="53" text-anchor="middle" font-family="IBM Plex Serif, serif" font-size="9.5" fill="#1A1C22">DSL: food-safety.certification</text>
+            <text x="335" y="67" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" fill="#7E8494">expires: +12mo from collected_at</text>
+            <!-- arrow 2 -->
+            <line x1="430" y1="48" x2="470" y2="48" stroke="#B8B3A8" stroke-width="1.5"/>
+            <polygon points="470,44 480,48 470,52" fill="#B8B3A8"/>
+            <!-- ai pre-verify box -->
+            <rect x="480" y="20" width="130" height="56" fill="#EEECEA" stroke="#D4D0C8" stroke-width="1" rx="2"/>
+            <text x="545" y="38" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8.5" fill="#7E8494" letter-spacing="0.06em">AI PRE-VERIFY</text>
+            <text x="545" y="54" text-anchor="middle" font-family="IBM Plex Serif, serif" font-size="10" fill="#15803D" font-weight="600">✓ satisfied</text>
+            <text x="545" y="67" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" fill="#7E8494">conf: 0.94</text>
+            <!-- arrow 3 -->
+            <line x1="610" y1="48" x2="648" y2="48" stroke="#B8B3A8" stroke-width="1.5"/>
+            <polygon points="648,44 658,48 648,52" fill="#B8B3A8"/>
+            <!-- live state box -->
+            <rect x="658" y="20" width="104" height="56" fill="rgba(21,128,61,0.08)" stroke="#15803D" stroke-width="1.5" rx="2"/>
+            <text x="710" y="38" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8.5" fill="#15803D" letter-spacing="0.06em">LIVE STATE</text>
+            <text x="710" y="54" text-anchor="middle" font-family="IBM Plex Serif, serif" font-size="10.5" fill="#1A1C22" font-weight="600">in-tolerance</text>
+            <text x="710" y="67" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" fill="#7E8494">expires in 214d</text>
+          </svg>
+        </div>
+
+        <div class="card-fields">
+          <div class="field-row">
+            <div class="field-label">Basis</div>
+            <div class="field-value basis-tag">
+              <span class="basis-label basis-external">external</span>
+              <span>Aviation CMMS systems (OASES, AMOS) track airworthiness directives at task level with mandatory sign-off and expiry per directive. EASA Part-CAMO requires continuous airworthiness monitoring with traceable evidence per task. The "continuing airworthiness" concept is the operational standard across all Part-145 MRO organizations.</span>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field-label">Why it matters</div>
+            <div class="field-value">Periodic audit cycles are an artifact of evidence being collected at assessment time, not maintained continuously. If evidence is attached to requirement-instances in the DSL — each with a declared expiry — the compliance state becomes computable at any moment. Portal fatigue dissolves because the supplier is never asked to resubmit evidence that hasn't expired; the platform knows what it holds. The specialist's inbox only surfaces genuine gaps, not full evidence re-assemblies.</div>
+          </div>
+          <div class="field-row">
+            <div class="field-label">Downsides</div>
+            <div class="field-value">Requires a data model that tracks evidence at fine granularity — not per-assessment but per-requirement-instance. That's a non-trivial schema change if the current model is assessment-centric. Also creates a responsibility question: who owns expiry notifications to the supplier?</div>
+          </div>
+          <div class="field-row">
+            <div class="field-label">Confidence / Cx</div>
+            <div class="field-value">
+              <div class="chip-row">
+                <span class="chip chip-conf-high">Confidence: High</span>
+                <span class="chip">Complexity: High</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="meeting-test">Meeting test: The team will want to debate whether the current data model can support requirement-instance-level evidence attachment — and whether this is the right framing for the POC scope.</div>
+      </div>
+    </article>
+
+    <!-- ── Idea 2 ─────────────────────────────────────── -->
+    <article class="idea-card" id="idea-2">
+      <div class="card-axis-bar ax-review" aria-hidden="true"></div>
+      <div class="card-body">
+        <div class="card-top-row">
+          <h2 class="card-title">Pathology Tumor Board — Domain-Specialist AI Ensemble Before Human Review</h2>
+          <span class="card-axis-tag tag-review">review-and-reporting</span>
+        </div>
+        <p class="card-analogy">Analogous domain: oncology multidisciplinary tumor board — multi-specialist pre-read before treatment decision</p>
+
+        <p class="card-description">Complex cancer cases go to a tumor board before the treating oncologist makes a decision. The board includes pathology, radiology, surgical oncology, and medical oncology — each reads the same case through their specialist lens and produces an independent structured finding. The treating physician reviews the board's disagreements, not the raw imaging. The structural analog: rather than one AI model producing a single pre-assessment verdict across all evidence types, the Athian platform routes each evidence item to the validator that matches its DSL field type. A PDF audit certificate goes to a document-classification validator. A quantitative threshold measurement goes to a numeric-bounds validator. A regulatory registration code goes to a public-registry lookup validator. Each returns a structured finding with confidence and the specific clause it evaluated. The compliance specialist reviews the ensemble — and crucially, reviews the disagreements between validators or the low-confidence items — rather than re-examining raw supplier documents. The specialist's cognitive load shifts from evidence review to judgment arbitration.</p>
+
+        <!-- diagram: evidence types fan out to specialist validators, converge to specialist review -->
+        <div class="card-diagram" aria-label="Diagram: evidence items fan out to specialist AI validators, findings converge to human specialist review">
+          <svg viewBox="0 0 780 130" xmlns="http://www.w3.org/2000/svg">
+            <rect width="780" height="130" fill="#F7F5F1"/>
+            <!-- left: evidence types -->
+            <text x="30" y="24" font-family="IBM Plex Mono, monospace" font-size="8.5" fill="#7E8494" letter-spacing="0.06em">EVIDENCE</text>
+            <rect x="20" y="30" width="130" height="24" fill="#EEECEA" stroke="#D4D0C8" stroke-width="1" rx="2"/>
+            <text x="85" y="46" text-anchor="middle" font-family="IBM Plex Serif, serif" font-size="9" fill="#1A1C22">audit certificate (PDF)</text>
+            <rect x="20" y="60" width="130" height="24" fill="#EEECEA" stroke="#D4D0C8" stroke-width="1" rx="2"/>
+            <text x="85" y="76" text-anchor="middle" font-family="IBM Plex Serif, serif" font-size="9" fill="#1A1C22">GHG measurement (num)</text>
+            <rect x="20" y="90" width="130" height="24" fill="#EEECEA" stroke="#D4D0C8" stroke-width="1" rx="2"/>
+            <text x="85" y="106" text-anchor="middle" font-family="IBM Plex Serif, serif" font-size="9" fill="#1A1C22">registry registration (id)</text>
+            <!-- arrows to validators -->
+            <line x1="150" y1="42" x2="240" y2="42" stroke="#B8B3A8" stroke-width="1" stroke-dasharray="3 2"/>
+            <line x1="150" y1="72" x2="240" y2="72" stroke="#B8B3A8" stroke-width="1" stroke-dasharray="3 2"/>
+            <line x1="150" y1="102" x2="240" y2="102" stroke="#B8B3A8" stroke-width="1" stroke-dasharray="3 2"/>
+            <!-- middle: specialist validators -->
+            <text x="255" y="24" font-family="IBM Plex Mono, monospace" font-size="8.5" fill="#6D28D9" letter-spacing="0.06em">AI VALIDATORS</text>
+            <rect x="240" y="30" width="150" height="24" fill="rgba(109,40,217,0.07)" stroke="#6D28D9" stroke-width="1" rx="2"/>
+            <text x="315" y="46" text-anchor="middle" font-family="IBM Plex Serif, serif" font-size="9" fill="#1A1C22">document classifier</text>
+            <rect x="240" y="60" width="150" height="24" fill="rgba(109,40,217,0.07)" stroke="#6D28D9" stroke-width="1" rx="2"/>
+            <text x="315" y="76" text-anchor="middle" font-family="IBM Plex Serif, serif" font-size="9" fill="#1A1C22">numeric bounds validator</text>
+            <rect x="240" y="90" width="150" height="24" fill="rgba(109,40,217,0.07)" stroke="#6D28D9" stroke-width="1" rx="2"/>
+            <text x="315" y="106" text-anchor="middle" font-family="IBM Plex Serif, serif" font-size="9" fill="#1A1C22">registry lookup validator</text>
+            <!-- arrows to findings -->
+            <line x1="390" y1="42" x2="470" y2="65" stroke="#B8B3A8" stroke-width="1"/>
+            <line x1="390" y1="72" x2="470" y2="70" stroke="#B8B3A8" stroke-width="1"/>
+            <line x1="390" y1="102" x2="470" y2="79" stroke="#B8B3A8" stroke-width="1"/>
+            <!-- right: findings review -->
+            <text x="475" y="24" font-family="IBM Plex Mono, monospace" font-size="8.5" fill="#7E8494" letter-spacing="0.06em">SPECIALIST REVIEW</text>
+            <rect x="470" y="50" width="160" height="54" fill="#EEECEA" stroke="#D4D0C8" stroke-width="1" rx="2"/>
+            <text x="550" y="68" text-anchor="middle" font-family="IBM Plex Serif, serif" font-size="9" fill="#1A1C22">3 findings, 1 low-conf</text>
+            <text x="550" y="82" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" fill="#B45309">⚠ numeric validator: 0.61</text>
+            <text x="550" y="95" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" fill="#15803D">✓ document, registry: 0.95+</text>
+            <!-- arrow to human -->
+            <line x1="630" y1="77" x2="660" y2="77" stroke="#B8B3A8" stroke-width="1.5"/>
+            <polygon points="660,73 670,77 660,81" fill="#B8B3A8"/>
+            <rect x="670" y="62" width="90" height="30" fill="rgba(109,40,217,0.08)" stroke="#6D28D9" stroke-width="1.5" rx="2"/>
+            <text x="715" y="80" text-anchor="middle" font-family="IBM Plex Serif, serif" font-size="9.5" fill="#1A1C22" font-style="italic">human arbiter</text>
+          </svg>
+        </div>
+
+        <div class="card-fields">
+          <div class="field-row">
+            <div class="field-label">Basis</div>
+            <div class="field-value basis-tag">
+              <span class="basis-label basis-reasoned">reasoned</span>
+              <span>The DSL already types each requirement field — <code>numeric_threshold</code>, <code>document_presence</code>, <code>registry_id</code>. That type information is currently used only to validate the requirement spec itself. Routing evidence to type-specific validators uses the same information to route the AI evaluation — a structural extension of the DSL's existing semantics, not a new architecture.</span>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field-label">Why it matters</div>
+            <div class="field-value">EcoVadis's defensibility claim is that human analysts provide expert interpretation. An ensemble of type-specialized validators produces a structured disagreement surface — the compliance specialist sees exactly where the AI's confidence is low and why, rather than receiving a binary pass/fail to ratify. This is a better human-in-the-loop design: the specialist's judgment is applied precisely where machine confidence is insufficient, not uniformly across everything.</div>
+          </div>
+          <div class="field-row">
+            <div class="field-label">Downsides</div>
+            <div class="field-value">Requires building and maintaining multiple specialized validators, which is more engineering surface than a single general model. The "ensemble disagreement" UX needs careful design — surfacing every low-confidence item could flood the specialist if calibration is off.</div>
+          </div>
+          <div class="field-row">
+            <div class="field-label">Confidence / Cx</div>
+            <div class="field-value">
+              <div class="chip-row">
+                <span class="chip chip-conf-high">Confidence: High</span>
+                <span class="chip">Complexity: Medium</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="meeting-test">Meeting test: The AI Automation track and the Assessment Workflow track both touch this — the team will want to decide whether this is a Phase 1 architecture choice or a post-POC refinement.</div>
+      </div>
+    </article>
+
+    <!-- ── Idea 3 ─────────────────────────────────────── -->
+    <article class="idea-card" id="idea-3">
+      <div class="card-axis-bar ax-lifecycle" aria-hidden="true"></div>
+      <div class="card-body">
+        <div class="card-top-row">
+          <h2 class="card-title">Pharmacovigilance Signal Detection — Post-Compliance Drift as a First-Class Mode</h2>
+          <span class="card-axis-tag tag-lifecycle">standard-lifecycle</span>
+        </div>
+        <p class="card-analogy">Analogous domain: FDA/EMA pharmacovigilance — post-market adverse event signal detection</p>
+
+        <p class="card-description">After a drug is approved, the manufacturer does not wait for the next scheduled audit to learn whether harm patterns have emerged. Pharmacovigilance teams run continuous signal detection across adverse event databases, looking for unexpected patterns that would trigger a label update or market withdrawal. The "compliance" with the drug's approved indication is not a point-in-time event — it is a continuously monitored posture that can degrade between reviews. The structural analog for Athian: after a supplier achieves a passing compliance state, the platform runs continuous signal detection on the evidence that underpins that state. Four specific signal types: (1) a referenced certificate's expiry date is approaching; (2) the third-party audit firm that signed an evidence document has lost accreditation; (3) a DSL threshold requirement can be recomputed from newer public data (e.g., an updated emissions factor table affects a carbon intensity calculation); (4) a standard revision publishes, changing the threshold the evidence was evaluated against. These signals surface without waiting for the next audit cycle — the compliance state degrades in real time, and the specialist is notified when action is required, not when the calendar says so.</p>
+
+        <div class="card-fields">
+          <div class="field-row">
+            <div class="field-label">Basis</div>
+            <div class="field-value basis-tag">
+              <span class="basis-label basis-external">external</span>
+              <span>The grounding identifies "batch-mode compliance with no drift detection — evidence ages between cycles" as an explicit pain point. The pharmacovigilance analogy is structurally precise: it maps the FDA's signal-detection obligation post-approval to the platform's obligation to detect evidence degradation post-assessment. Both face the same fundamental problem: the compliant state achieved at assessment time is not guaranteed to persist.</span>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field-label">Why it matters</div>
+            <div class="field-value">Drift detection is what transforms the platform from a compliance portal (periodic) into a compliance infrastructure (continuous). The DSL already encodes time periods on requirement fields — this makes drift detection computable without additional data collection. For buyers, it changes the product's value claim: not "we ran an assessment" but "we maintain visibility into your supply chain compliance posture at all times." That claim is defensible against EcoVadis's human-analyst approach in a way that periodic assessments are not.</div>
+          </div>
+          <div class="field-row">
+            <div class="field-label">Downsides</div>
+            <div class="field-value">Signal types 2 and 3 require ongoing data feeds — accreditation status for third-party auditors, updated emissions factor tables. These are tractable but require external data sourcing. Signal type 4 requires that standard updates are versioned in the DSL, which is a prerequisite the DSL track already aims to solve.</div>
+          </div>
+          <div class="field-row">
+            <div class="field-label">Confidence / Cx</div>
+            <div class="field-value">
+              <div class="chip-row">
+                <span class="chip chip-conf-high">Confidence: High</span>
+                <span class="chip">Complexity: Medium</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="meeting-test">Meeting test: Drift detection is the product differentiator that separates the platform's value story from EcoVadis — the team will debate which signal types to implement first and whether the DSL expiry field is already sufficient for signal type 1.</div>
+      </div>
+    </article>
+
+    <!-- ── Idea 4 ─────────────────────────────────────── -->
+    <article class="idea-card" id="idea-4">
+      <div class="card-axis-bar ax-supplier" aria-hidden="true"></div>
+      <div class="card-body">
+        <div class="card-top-row">
+          <h2 class="card-title">Passport Biometric Binding — Holder-Bound Evidence Credentials with DID Infrastructure</h2>
+          <span class="card-axis-tag tag-supplier">supplier-experience</span>
+        </div>
+        <p class="card-analogy">Analogous domain: biometric passport — cryptographic binding of credential to holder, border-readable without re-application</p>
+
+        <p class="card-description">The visa application is the current state of supplier compliance: re-apply to each portal, resubmit the same documents, start from scratch per buyer. A passport already contains the holder's identity and prior credentials and is readable at any border without re-application. The biometric layer makes the passport cryptographically bound to the holder — the document cannot be presented on behalf of another holder. The structural analog goes further than just "evidence wallet": the Supplier Evidence Wallet issues W3C Verifiable Credentials that are cryptographically bound to the supplier's Decentralized Identifier (DID). When Supplier A submits an FSSC 22000 certificate, the platform issues a VC that binds that certificate to Supplier A's DID. Any buyer's compliance system that receives this VC can verify (a) the certificate is authentic, (b) it was issued to this supplier, and (c) it is within its validity period — without contacting Supplier A or the original issuing body. The non-obvious extension: Athian becomes the DID management infrastructure for the CPG supply chain compliance ecosystem. That is an identity-layer play, not just an evidence-storage play — and it is a genuine network-effect asset because the value of the DID network grows with each new buyer that accepts Athian-issued VCs.</span>
+
+        <div class="card-fields">
+          <div class="field-row">
+            <div class="field-label">Basis</div>
+            <div class="field-value basis-tag">
+              <span class="basis-label basis-external">external</span>
+              <span>W3C Verifiable Credentials 2.0 published as a W3C Standard in 2025. GS1 is implementing VC-based end-to-end traceability; the Verifiable Supply Chain Community Group is developing VC profiles for food &amp; beverage specifically. UNTP (UN Transparency Protocol) v0.7.0 requires every traceability event to be issued as a W3C VC. The infrastructure exists and is being adopted in adjacent supply chain contexts.</span>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field-label">Why it matters</div>
+            <div class="field-value">The grounding identifies the Supplier Evidence Wallet as "a two-sided network play (W3C Verifiable Credentials 2.0)" — this idea fills in the specific mechanism that makes that play defensible. Without holder-binding, a certificate PDF can be passed from one supplier to another. The DID layer makes compliance evidence as supplier-specific as a biometric passport. It also positions Athian as identity infrastructure, which is a far more durable competitive moat than evidence storage alone.</div>
+          </div>
+          <div class="field-row">
+            <div class="field-label">Downsides</div>
+            <div class="field-value">DID infrastructure is non-trivial to operate and imposes wallet-management complexity on suppliers. Adoption requires buyer systems to be capable of verifying W3C VCs, which most current portals are not. This is a medium-term play — it requires the ecosystem to move with the platform. For the Nestle POC, this is probably a design-for-later not a build-now.</div>
+          </div>
+          <div class="field-row">
+            <div class="field-label">Confidence / Cx</div>
+            <div class="field-value">
+              <div class="chip-row">
+                <span class="chip chip-conf-high">Confidence: High</span>
+                <span class="chip">Complexity: High</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="meeting-test">Meeting test: The team will want to separate "design the evidence wallet with DID-bindability in mind" from "build DID infrastructure now" — and debate whether GS1/UNTP adoption timelines make this near-term or 18-month horizon.</div>
+      </div>
+    </article>
+
+    <!-- ── Idea 5 ─────────────────────────────────────── -->
+    <article class="idea-card" id="idea-5">
+      <div class="card-axis-bar ax-lifecycle" aria-hidden="true"></div>
+      <div class="card-body">
+        <div class="card-top-row">
+          <h2 class="card-title">GAAP–IFRS Bridge Schedules — Compliance-Impact Reports for Standard Version Migration</h2>
+          <span class="card-axis-tag tag-lifecycle">standard-lifecycle</span>
+        </div>
+        <p class="card-analogy">Analogous domain: GAAP to IFRS transition — bridge schedules mapping every financial statement line between standards</p>
+
+        <p class="card-description">When a company transitions from GAAP to IFRS, auditors produce a bridge schedule: every financial statement line maps from the old standard to the new, with explicit notes on what changed, what is equivalent, and what requires new treatment. This is not a version diff of the standards document — it is a compliance-impact computation applied to this company's specific financial position. The structural analog: when a buyer updates their sustainability policy (SQF 8.0 → 9.0, or a proprietary buyer policy revision), the Athian platform auto-generates a migration bridge report for each supplier in the assessment. The output is not "here's what changed in the standard" but "here's what changed for your suppliers, specifically": 3 of 7 requirements are unchanged and prior evidence carries over; 2 requirements have updated thresholds (prior evidence is grandfathered for 90 days per the DSL migration policy); 2 requirements are new and require fresh evidence. The DSL's versioned structure makes this computation possible. Specialists review the bridge report rather than re-reading the full standard; suppliers receive targeted gap notifications rather than a new full assessment request.</p>
+
+        <div class="card-fields">
+          <div class="field-row">
+            <div class="field-label">Basis</div>
+            <div class="field-value basis-tag">
+              <span class="basis-label basis-reasoned">reasoned</span>
+              <span>The DSL already versions requirements — each standard has a name, version, and set of components. A bridge computation requires only the set-difference between versions plus a grandfathering policy on the time-period field. GAAP–IFRS bridge schedules are the established accounting practice for this exact problem: standard-migration impact on a specific entity's compliance state.</span>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field-label">Why it matters</div>
+            <div class="field-value">Standard updates are currently a manual re-review event — someone reads the new version and re-derives what changed. With a DSL-native bridge computation, a standard update becomes a platform event: the system computes impact, generates supplier-specific bridge reports, and routes only the delta to specialists. This is the mechanism that makes "standard retention across renewal cycles" (a key metric in the strategy) tractable at scale.</div>
+          </div>
+          <div class="field-row">
+            <div class="field-label">Downsides</div>
+            <div class="field-value">The bridge computation's accuracy depends on standard versions being modeled with sufficient semantic precision — if the DSL uses free-text description fields for some requirements, the diff may miss substantive changes. Grandfathering policy requires business logic decisions that the platform cannot make automatically.</div>
+          </div>
+          <div class="field-row">
+            <div class="field-label">Confidence / Cx</div>
+            <div class="field-value">
+              <div class="chip-row">
+                <span class="chip chip-conf-high">Confidence: High</span>
+                <span class="chip">Complexity: Medium</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="meeting-test">Meeting test: This is a direct capability for the DSL + Standard Onboarding track — the team will want to decide whether bridge-computation is in scope for the Nestle POC or a post-pilot feature.</div>
+      </div>
+    </article>
+
+    <!-- ── Idea 6 ─────────────────────────────────────── -->
+    <article class="idea-card" id="idea-6">
+      <div class="card-axis-bar ax-supplier" aria-hidden="true"></div>
+      <div class="card-body">
+        <div class="card-top-row">
+          <h2 class="card-title">Clinical Trial Master Protocol — Single Enrollment, Platform-Wide Evidence Reuse</h2>
+          <span class="card-axis-tag tag-supplier">supplier-experience</span>
+        </div>
+        <p class="card-analogy">Analogous domain: FDA 21st Century Cures Act — master protocols and basket trials enabling patient data reuse across studies</p>
+
+        <p class="card-description">Clinical trials have historically required patients to re-consent and resubmit baseline health data separately for each study. FDA's 21st Century Cures Act created provisions for master protocols and basket trials to reuse patient data and consent across multiple studies when the data is still valid. The structural analog for the supplier experience: a supplier who has previously provided evidence for a requirement should never be asked to resubmit it while it remains valid. The DSL's time-period field on each requirement drives a "still valid" computation. More powerfully: a supplier can enroll in a "platform compliance profile" by providing a canonical evidence set once. The platform maps that canonical set forward to all buyers' requirements that the evidence satisfies — using the DSL's equivalence mappings between requirements from different standards. If Supplier A provides FSSC 22000 certification and the DSL knows that FSSC 22000 Clause 7.4 satisfies a buyer's proprietary food-safety requirement, the evidence propagates without re-collection. The supplier's portal-fatigue problem dissolves: they submit evidence to the platform once per evidence type per validity period, and the platform handles all buyer-specific mappings.</p>
+
+        <div class="card-fields">
+          <div class="field-row">
+            <div class="field-label">Basis</div>
+            <div class="field-value basis-tag">
+              <span class="basis-label basis-reasoned">reasoned</span>
+              <span>The grounding identifies "evidence re-entry across multiple systems — no unified data model" as pain point 1. The master protocol analogy provides the mechanism: canonical enrollment once, mapping to many buyer requirements via DSL equivalences. This requires the DSL to encode cross-standard equivalence mappings, which is an extension of its existing typed-requirements structure.</span>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field-label">Why it matters</div>
+            <div class="field-value">This is the supplier-side value proposition that makes the evidence wallet a two-sided network: suppliers get real relief from portal fatigue, which drives evidence-wallet adoption, which in turn gives buyers access to a richer pre-verified evidence set. The network effect requires cross-standard equivalence mappings, which is a DSL capability investment — but the master protocol framing makes the user-facing benefit concrete: "enroll once, satisfy many."</div>
+          </div>
+          <div class="field-row">
+            <div class="field-label">Downsides</div>
+            <div class="field-value">Cross-standard equivalence mappings require expert review to build and maintain — they cannot be generated automatically. The claim that FSSC 22000 Clause X satisfies Buyer Y's Requirement Z requires a compliance specialist to validate. This is a content operation problem, not just an engineering problem.</div>
+          </div>
+          <div class="field-row">
+            <div class="field-label">Confidence / Cx</div>
+            <div class="field-value">
+              <div class="chip-row">
+                <span class="chip chip-conf-med">Confidence: Medium</span>
+                <span class="chip">Complexity: High</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="meeting-test">Meeting test: The team will debate whether cross-standard equivalence mappings are in scope for the platform or a separate content product — and whether the specialist's time is better spent on review or on building equivalence maps.</div>
+      </div>
+    </article>
+
+    <!-- ── Idea 7 ─────────────────────────────────────── -->
+    <article class="idea-card" id="idea-7">
+      <div class="card-axis-bar ax-evidence" aria-hidden="true"></div>
+      <div class="card-body">
+        <div class="card-top-row">
+          <h2 class="card-title">AML Source-of-Funds Tracing — Declared Provenance Depth as a DSL Requirement Field</h2>
+          <span class="card-axis-tag tag-evidence">evidence-collection</span>
+        </div>
+        <p class="card-analogy">Analogous domain: Anti-Money Laundering compliance — ultimate beneficial owner tracing through multi-hop fund chains</p>
+
+        <p class="card-description">AML compliance in banking does not just collect evidence that a transaction occurred; it traces the origin chain of funds through potentially many hops. The regulatory obligation is that the institution can demonstrate the ultimate beneficial owner — the source authority at the end of the chain, not the immediate counterparty. The structural analog: when a supplier submits a compliance certificate, the DSL requirement field for that certificate should carry a declared "source authority depth" — how far back the evidence must be traceable to satisfy the requirement. A self-attested declaration satisfies depth 0. A third-party audit report satisfies depth 1. A certificate issued directly by the standard body (e.g., an SQF certificate signed by SQF Institute) satisfies depth 2. An AI-retrieved document whose provenance is verified back to the issuing body's public registry satisfies the same depth 2 without supplier involvement. The evidence collection agent's job changes: it does not just retrieve the document, it validates that the provenance chain reaches the declared depth. This makes source authority a typed, computable field in the DSL — not an implicit assumption baked into the review process.</p>
+
+        <div class="card-fields">
+          <div class="field-row">
+            <div class="field-label">Basis</div>
+            <div class="field-value basis-tag">
+              <span class="basis-label basis-reasoned">reasoned</span>
+              <span>The grounding identifies "accepted sources" as an existing typed field in the DSL. "Provenance depth" is a precision extension of that field: instead of listing accepted source names, a requirement declares the structural depth of the source chain that satisfies it. AML's beneficial ownership tracing is the established pattern for exactly this: a requirement that evidence traces back to a specific authority level, not just that it comes from a named source.</span>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field-label">Why it matters</div>
+            <div class="field-value">The current certificate-as-PDF paradigm is source-authority-agnostic: a supplier-generated PDF and an issuer-signed certificate look the same in a document store. Making source authority a typed DSL field means the AI collection agent can compute whether evidence satisfies the requirement's depth — and the compliance specialist is not left guessing whether a submitted document is actually authoritative. It also enables the "evidence pull beats evidence submission" principle to be enforced at the DSL level: requirements that can be satisfied by direct registry lookup never need supplier submission.</div>
+          </div>
+          <div class="field-row">
+            <div class="field-label">Downsides</div>
+            <div class="field-value">Requires that the certification registries for major standards (SQF, BRC, FSSC, etc.) have accessible lookup APIs or public databases. Some do; others are behind paywalls or have no programmatic access. The depth system also needs careful definition to avoid over-specification that rejects valid evidence.</div>
+          </div>
+          <div class="field-row">
+            <div class="field-label">Confidence / Cx</div>
+            <div class="field-value">
+              <div class="chip-row">
+                <span class="chip chip-conf-med">Confidence: Medium</span>
+                <span class="chip">Complexity: Medium</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="meeting-test">Meeting test: This is a direct DSL schema question — the team will want to audit whether existing DSL fields can express this or whether a new field type is needed, and which certification registries already have programmatic access.</div>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- ── Rejection Summary ──────────────────────────── -->
+  <section class="rejection-section" aria-label="Rejection summary">
+    <h2>Rejection Summary</h2>
+    <table class="rejection-table">
+      <thead>
+        <tr>
+          <th>Candidate</th>
+          <th>Title</th>
+          <th>Reason rejected</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>RAW-1</td>
+          <td>Nuclear Safety Case Argument Trees — Structured Claim-Evidence-Warrant Trees</td>
+          <td>Structurally interesting but below the meeting-test floor as a standalone idea — it is a DSL implementation detail, not a product-level direction. Better as input to the DSL track's brainstorm.</td>
+        </tr>
+        <tr>
+          <td>RAW-2</td>
+          <td>FDA Orange Book Equivalence Chains — Compliance Inheritance</td>
+          <td>Real and grounded, but substantially subsumed by Idea 6 (Clinical Trial Master Protocol), which covers the same equivalence-propagation mechanism with a clearer supplier-facing narrative. The "versioned equivalence registry" extension is better as a detail within Idea 6's brainstorm.</td>
+        </tr>
+        <tr>
+          <td>RAW-3</td>
+          <td>Musical Score vs. Performance — Unit Conversion as a DSL First-Class Property</td>
+          <td>The unit-conversion-as-DSL-field insight is precise and implementable, but it is a specific DSL feature too narrow to warrant a standalone team discussion. Below the meeting-test floor; strong input for the DSL Standard Onboarding track sprint planning.</td>
+        </tr>
+        <tr>
+          <td>RAW-10</td>
+          <td>Air Traffic Control Handoff — State-Preserving Context Transfer Between Controllers</td>
+          <td>Subsumed by Idea 1 (Aircraft Continuing Airworthiness). Both target evidence-state continuity, but the MRO analog maps more precisely to the evidence-at-requirement-instance model. The ATC handoff variant does not add a distinct mechanism once Idea 1 is understood.</td>
+        </tr>
+        <tr>
+          <td>RAW-6</td>
+          <td>Environmental Phase I/II ESA — Risk-Triggered Evidence Depth Escalation</td>
+          <td>Solid structural analog but partially covered by the grounding's existing "evidence pull beats evidence submission" principle. The two-tier escalation mechanism is a useful operational detail but not a product-level direction that would change what the team builds next.</td>
+        </tr>
+        <tr>
+          <td>RAW-13</td>
+          <td>CLIA Proficiency Testing — Periodic Benchmark Events as Supplier Trust Score</td>
+          <td>Genuinely non-obvious and interesting, but partially overlaps with Idea 6 (master protocol enrollment / ongoing trust-building). The proficiency-event mechanism is a compelling extension — held as an honorable cut; would resurface in a Phase 4 ideation on the supplier trust track.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer class="doc-footer">
+    Composed 2026-06-22T00:00Z by ce-ideate (cross-domain analogy frame, Pass 3) &nbsp;·&nbsp; Athian Compliance ideation series
+  </footer>
+
+</div>

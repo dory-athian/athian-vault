@@ -1,0 +1,881 @@
+
+<title>Ideation: Athian Compliance — Assumption-Breaking &amp; Constraint-Flipping</title>
+<style>
+  /* ── Tokens ─────────────────────────────── */
+  :root {
+    --ground:       #0D1117;
+    --ground-2:     #151C27;
+    --ground-3:     #1E2839;
+    --text:         #E8EBF0;
+    --text-mid:     #A0AABF;
+    --text-dim:     #5E6A82;
+    --accent:       #39FF6A;
+    --accent-dim:   #1A7A32;
+    --accent-faint: rgba(57,255,106,0.08);
+    --accent2:      #5B8CFF;
+    --accent2-dim:  #2A4899;
+    --accent2-faint:rgba(91,140,255,0.08);
+    --border:       #1E2839;
+    --border-mid:   #2D3A52;
+    --border-strong:#4A5875;
+    --display:      'Libre Baskerville', Georgia, serif;
+    --body:         'Source Serif 4', Georgia, serif;
+    --mono:         'JetBrains Mono', 'Fira Mono', monospace;
+    --radius:       3px;
+  }
+
+  /* ── Reset ───────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    background: var(--ground);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+  /* ── Page shell ──────────────────────────── */
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 28px 100px;
+  }
+
+  /* ── Header ──────────────────────────────── */
+  .doc-header {
+    padding: 56px 0 40px;
+    border-bottom: 1px solid var(--border-mid);
+    margin-bottom: 44px;
+  }
+  .doc-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .doc-eyebrow::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent-dim) 0%, transparent 80%);
+  }
+  .doc-title {
+    font-family: var(--display);
+    font-size: 2.25rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+  .doc-subtitle {
+    font-family: var(--body);
+    font-size: 1rem;
+    color: var(--text-mid);
+    line-height: 1.6;
+    max-width: 68ch;
+    margin-bottom: 28px;
+  }
+  .doc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 20px;
+  }
+  .meta-item {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--text-dim);
+  }
+  .meta-item strong {
+    color: var(--text-mid);
+    font-weight: 400;
+  }
+
+  /* ── Context callout ─────────────────────── */
+  .context-block {
+    border: 1px solid var(--border-mid);
+    border-left: 2px solid var(--accent-dim);
+    background: var(--ground-2);
+    padding: 16px 20px;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    margin-bottom: 48px;
+    font-size: 0.875rem;
+    color: var(--text-mid);
+    line-height: 1.65;
+  }
+  .context-block strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* ── Jump nav ────────────────────────────── */
+  .jump-nav {
+    margin-bottom: 52px;
+  }
+  .jump-nav-label {
+    font-family: var(--mono);
+    font-size: 0.67rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+  .jump-nav-list {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-mid);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .jump-item {
+    display: grid;
+    grid-template-columns: 44px 1fr auto;
+    align-items: center;
+    gap: 0;
+    padding: 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    transition: background 0.1s;
+  }
+  .jump-item:last-child { border-bottom: none; }
+  .jump-item:hover { background: var(--ground-2); }
+  .jump-item:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .jump-num {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    text-align: center;
+    padding: 11px 0;
+    border-right: 1px solid var(--border);
+  }
+  .jump-title {
+    font-size: 0.84rem;
+    color: var(--text-mid);
+    padding: 11px 16px;
+  }
+  .jump-item:hover .jump-title { color: var(--text); }
+  .jump-axis {
+    font-family: var(--mono);
+    font-size: 0.63rem;
+    color: var(--text-dim);
+    padding: 11px 14px 11px 0;
+    white-space: nowrap;
+  }
+
+  /* ── Section label ───────────────────────── */
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.67rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 28px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── Idea card ───────────────────────────── */
+  .idea-card {
+    position: relative;
+    border: 1px solid var(--border-mid);
+    border-radius: var(--radius);
+    margin-bottom: 32px;
+    background: var(--ground-2);
+    overflow: hidden;
+  }
+  .card-accent-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+  }
+  .bar-standard  { background: var(--accent); }
+  .bar-evidence  { background: var(--accent2); }
+  .bar-supplier  { background: #FF8C42; }
+  .bar-review    { background: #D4A7FF; }
+  .bar-lifecycle { background: #5CF0FF; }
+  .bar-encoding  { background: #5CF0FF; }
+
+  .card-body {
+    padding: 24px 26px 24px 30px;
+  }
+  .card-top-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    gap: 12px;
+  }
+  .card-axis-tag {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 2px 8px;
+    border-radius: 2px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .tag-standard  { background: var(--accent-faint); color: var(--accent); border: 1px solid var(--accent-dim); }
+  .tag-evidence  { background: var(--accent2-faint); color: var(--accent2); border: 1px solid var(--accent2-dim); }
+  .tag-supplier  { background: rgba(255,140,66,0.08); color: #FF8C42; border: 1px solid rgba(255,140,66,0.3); }
+  .tag-review    { background: rgba(212,167,255,0.08); color: #D4A7FF; border: 1px solid rgba(212,167,255,0.3); }
+  .tag-lifecycle { background: rgba(92,240,255,0.08); color: #5CF0FF; border: 1px solid rgba(92,240,255,0.3); }
+  .tag-encoding  { background: rgba(92,240,255,0.08); color: #5CF0FF; border: 1px solid rgba(92,240,255,0.3); }
+
+  .card-title {
+    font-family: var(--display);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+  .card-frame-tag {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    margin-bottom: 14px;
+  }
+  .card-description {
+    font-size: 0.905rem;
+    color: var(--text-mid);
+    line-height: 1.72;
+    margin-bottom: 20px;
+    max-width: 72ch;
+  }
+
+  /* diagram slot */
+  .card-diagram {
+    margin: 0 0 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--ground);
+    overflow: hidden;
+  }
+  .card-diagram svg {
+    display: block;
+    width: 100%;
+  }
+
+  /* basis + fields */
+  .card-basis {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--ground);
+    border: 1px solid var(--border-mid);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    margin-bottom: 18px;
+  }
+  .basis-tag {
+    font-family: var(--mono);
+    font-size: 0.63rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 2px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 1px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .basis-tag.ext { background: rgba(57,255,106,0.12); color: var(--accent); }
+  .basis-tag.rsn { background: rgba(91,140,255,0.12); color: var(--accent2); }
+  .basis-tag.dir { background: rgba(92,240,255,0.12); color: #5CF0FF; }
+  .basis-text {
+    font-size: 0.82rem;
+    color: var(--text-mid);
+    line-height: 1.6;
+  }
+
+  .card-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .card-field {
+    background: var(--ground);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 13px;
+  }
+  .field-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 5px;
+  }
+  .field-value {
+    font-size: 0.83rem;
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .card-field.full { grid-column: 1 / -1; }
+
+  .card-meeting-test {
+    border-top: 1px solid var(--border);
+    padding-top: 13px;
+    margin-top: 4px;
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+  .card-meeting-test strong {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--accent);
+    margin-right: 7px;
+  }
+
+  /* ── Rejection table ─────────────────────── */
+  .rejection-section {
+    margin-top: 60px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border-mid);
+  }
+  .rejection-section .section-label {
+    margin-bottom: 20px;
+  }
+  .rejection-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.84rem;
+  }
+  .rejection-table th {
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-mid);
+    background: var(--ground);
+  }
+  .rejection-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--text-dim);
+    line-height: 1.55;
+  }
+  .rejection-table tr:last-child td { border-bottom: none; }
+  .rejected-title { font-weight: 600; color: var(--text-mid); display: block; margin-bottom: 2px; }
+
+  /* ── Footer ──────────────────────────────── */
+  .composition-signal {
+    margin-top: 60px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-dim);
+  }
+
+  /* ── Responsive ──────────────────────────── */
+  @media (max-width: 620px) {
+    .card-fields { grid-template-columns: 1fr; }
+    .card-field.full { grid-column: 1; }
+    .doc-title { font-size: 1.65rem; }
+    .jump-axis { display: none; }
+    .card-top-row { flex-direction: column; gap: 6px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .jump-item { transition: none; }
+  }
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<div class="page">
+
+  <header class="doc-header">
+    <div class="doc-eyebrow">Athian Compliance · Ideation · Assumption-Breaking &amp; Constraint-Flipping</div>
+    <h1 class="doc-title">Seven things the platform treats as fixed that aren't</h1>
+    <p class="doc-subtitle">Ranked survivors from assumption-breaking and constraint-flipping passes. 12 raw candidates generated, 5 cut, 7 carry. Grounded in user-named pain points, institutional learnings, and external prior art.</p>
+    <div class="doc-meta">
+      <span class="meta-item"><strong>date</strong> 2026-06-22</span>
+      <span class="meta-item"><strong>frames</strong> assumption-breaking · constraint-flipping</span>
+      <span class="meta-item"><strong>mode</strong> elsewhere-software</span>
+      <span class="meta-item"><strong>candidates</strong> 12 raw → 7 survivors</span>
+    </div>
+  </header>
+
+  <div class="context-block">
+    <strong>Frame logic:</strong> Assumption-breaking asks what is being treated as fixed that is actually a choice — orientation, role, customer, data source, cycle model. Constraint-flipping inverts the obvious constraint to its opposite and uses the resulting design as a candidate even if the flip isn't realistic in isolation. The five axes: standard encoding, evidence collection, supplier experience, review and reporting, standard lifecycle.
+  </div>
+
+  <nav class="jump-nav" aria-label="Jump to idea">
+    <div class="jump-nav-label">Ranked ideas</div>
+    <div class="jump-nav-list" role="list">
+      <a class="jump-item" href="#idea-1">
+        <span class="jump-num">1</span>
+        <span class="jump-title">Specialist as Exception Arbiter</span>
+        <span class="jump-axis">review-and-reporting</span>
+      </a>
+      <a class="jump-item" href="#idea-2">
+        <span class="jump-num">2</span>
+        <span class="jump-title">Compliance as Live Signal, Not Project</span>
+        <span class="jump-axis">standard-lifecycle</span>
+      </a>
+      <a class="jump-item" href="#idea-3">
+        <span class="jump-num">3</span>
+        <span class="jump-title">Gap Detection as Zero-Standard Onboarding</span>
+        <span class="jump-axis">standard-encoding</span>
+      </a>
+      <a class="jump-item" href="#idea-4">
+        <span class="jump-num">4</span>
+        <span class="jump-title">Ambient Evidence Pull</span>
+        <span class="jump-axis">evidence-collection</span>
+      </a>
+      <a class="jump-item" href="#idea-5">
+        <span class="jump-num">5</span>
+        <span class="jump-title">Continuous Compliance Score with Decay</span>
+        <span class="jump-axis">supplier-experience</span>
+      </a>
+      <a class="jump-item" href="#idea-6">
+        <span class="jump-num">6</span>
+        <span class="jump-title">Meta-Schema from Shared Primitives</span>
+        <span class="jump-axis">standard-encoding</span>
+      </a>
+      <a class="jump-item" href="#idea-7">
+        <span class="jump-num">7</span>
+        <span class="jump-title">DSL as Published Writable Standard</span>
+        <span class="jump-axis">standard-lifecycle</span>
+      </a>
+    </div>
+  </nav>
+
+  <section aria-label="Ranked ideas">
+    <div class="section-label">Ranked ideas — assumption-breaking + constraint-flipping — 7 survivors</div>
+
+    <!-- ── Idea 1 ─────────────────────────────── -->
+    <article class="idea-card" id="idea-1">
+      <div class="card-accent-bar bar-review"></div>
+      <div class="card-body">
+        <div class="card-top-row">
+          <h2 class="card-title">Specialist as Exception Arbiter</h2>
+          <span class="card-axis-tag tag-review">review &amp; reporting</span>
+        </div>
+        <div class="card-frame-tag">assumption-breaking + constraint-flipping · merged</div>
+        <p class="card-description">The platform assumes the compliance specialist reviews AI pre-assessments — scanning evidence, checking thresholds, signing off on findings. But the specialist's comparative advantage is judgment on ambiguous cases, not verification of machine-checkable assertions. Invert the model: AI approves everything at high confidence; the specialist sees only flags and disputes. This collapses the review queue by an order of magnitude, changes the specialist's job from transaction processing to policy calibration, and makes the staffing math for scaling to thousands of suppliers tractable for the first time. The UI for this isn't a review queue — it's a triage dashboard where every open item is a genuine judgment call.</p>
+
+        <div class="card-diagram" aria-label="Diagram: before and after model for specialist review workload">
+          <svg viewBox="0 0 740 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Before: specialist reviews every assessment. After: specialist reviews only AI-flagged exceptions.">
+            <defs>
+              <marker id="arr1" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                <path d="M0,0 L7,3.5 L0,7 Z" fill="#5E6A82"/>
+              </marker>
+              <marker id="arr2" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                <path d="M0,0 L7,3.5 L0,7 Z" fill="#D4A7FF"/>
+              </marker>
+            </defs>
+            <!-- Before label -->
+            <text x="20" y="24" font-family="'JetBrains Mono', monospace" font-size="9" fill="#5E6A82" text-anchor="start" letter-spacing="0.08em" text-transform="uppercase">BEFORE</text>
+            <!-- AI box -->
+            <rect x="20" y="34" width="80" height="30" rx="2" fill="#1E2839" stroke="#2D3A52"/>
+            <text x="60" y="53" font-family="'JetBrains Mono', monospace" font-size="9" fill="#A0AABF" text-anchor="middle">AI pre-review</text>
+            <!-- arrow -->
+            <line x1="100" y1="49" x2="130" y2="49" stroke="#5E6A82" stroke-width="1.2" marker-end="url(#arr1)"/>
+            <!-- Specialist box - highlighted every assessment -->
+            <rect x="130" y="34" width="110" height="30" rx="2" fill="#2A1840" stroke="rgba(212,167,255,0.3)"/>
+            <text x="185" y="49" font-family="'Source Serif 4', Georgia, serif" font-size="9.5" fill="#D4A7FF" text-anchor="middle">specialist reviews</text>
+            <text x="185" y="61" font-family="'Source Serif 4', Georgia, serif" font-size="9" fill="#A0AABF" text-anchor="middle">every assessment</text>
+            <!-- N assessments -->
+            <text x="260" y="53" font-family="'JetBrains Mono', monospace" font-size="8.5" fill="#5E6A82" text-anchor="start">→ N assessments/specialist</text>
+
+            <!-- divider -->
+            <line x1="20" y1="92" x2="720" y2="92" stroke="#1E2839" stroke-width="1"/>
+
+            <!-- After label -->
+            <text x="20" y="113" font-family="'JetBrains Mono', monospace" font-size="9" fill="#5E6A82" text-anchor="start" letter-spacing="0.08em">AFTER</text>
+            <!-- AI box -->
+            <rect x="20" y="123" width="80" height="30" rx="2" fill="#1E2839" stroke="#2D3A52"/>
+            <text x="60" y="142" font-family="'JetBrains Mono', monospace" font-size="9" fill="#A0AABF" text-anchor="middle">AI approves</text>
+            <!-- high confidence path -->
+            <line x1="100" y1="130" x2="200" y2="130" stroke="#1A7A32" stroke-width="1.2" marker-end="url(#arr1)"/>
+            <text x="150" y="126" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="#1A7A32" text-anchor="middle">high conf</text>
+            <rect x="200" y="120" width="70" height="18" rx="2" fill="rgba(57,255,106,0.06)" stroke="#1A7A32"/>
+            <text x="235" y="132" font-family="'Source Serif 4', Georgia, serif" font-size="9" fill="#39FF6A" text-anchor="middle">approved ✓</text>
+            <!-- low confidence path -->
+            <line x1="100" y1="148" x2="200" y2="148" stroke="#5E6A82" stroke-width="1.2" marker-end="url(#arr1)"/>
+            <text x="150" y="144" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="#5E6A82" text-anchor="middle">flagged</text>
+            <rect x="200" y="140" width="70" height="18" rx="2" fill="#2A1840" stroke="rgba(212,167,255,0.3)"/>
+            <text x="235" y="152" font-family="'Source Serif 4', Georgia, serif" font-size="9" fill="#D4A7FF" text-anchor="middle">specialist</text>
+            <!-- result -->
+            <text x="285" y="135" font-family="'JetBrains Mono', monospace" font-size="8.5" fill="#5E6A82" text-anchor="start">→ ~5–10% land with specialist</text>
+          </svg>
+        </div>
+
+        <div class="card-basis">
+          <span class="basis-tag ext">external</span>
+          <span class="basis-text">EcoVadis runs 500+ analysts at 6–10 week cycles and positions analyst review as its defensibility feature. Vanta/Drata shifted SOC 2 continuous monitoring to automated control testing; humans touch only failed tests and exceptions. Both are existence proofs that human review can be scoped to judgment-only work once the evidence layer is automated.</span>
+        </div>
+
+        <div class="card-fields">
+          <div class="card-field">
+            <div class="field-label">Why it matters</div>
+            <div class="field-value">Changes the staffing math for scale. One specialist managing exceptions across thousands of suppliers is viable; one specialist reviewing thousands of full assessments is not. This is the path from Nestle pilot to Nestle at scale.</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Downsides</div>
+            <div class="field-value">Requires well-calibrated AI confidence scoring — an overconfident model approves bad evidence automatically. Liability for auto-approved assessments needs a contractual answer before launch.</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Confidence</div>
+            <div class="field-value">High — 88%</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Complexity</div>
+            <div class="field-value">Low–Medium (UX redesign, not architectural change)</div>
+          </div>
+        </div>
+        <div class="card-meeting-test">
+          <strong>Meeting test</strong>If the AI automation success rate is the primary product metric (per STRATEGY.md), then what the specialist does with the output of that automation is a strategy question, not a UX detail — this warrants a dedicated discussion.
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 2 ─────────────────────────────── -->
+    <article class="idea-card" id="idea-2">
+      <div class="card-accent-bar bar-lifecycle"></div>
+      <div class="card-body">
+        <div class="card-top-row">
+          <h2 class="card-title">Compliance as Live Signal, Not Project</h2>
+          <span class="card-axis-tag tag-lifecycle">standard lifecycle</span>
+        </div>
+        <div class="card-frame-tag">assumption-breaking · A5</div>
+        <p class="card-description">The platform treats a compliance cycle as a project with a start date, an evidence collection phase, a review phase, and a close. This is how EcoVadis works, how most supplier audits work, and how the compliance team currently thinks. But batch-mode compliance with no drift detection is user-named pain point five — evidence ages between cycles and no one sees it happening. The assumption to break: compliance is a project. The reframe: compliance is a live state computed continuously from evidence, and that state changes every time evidence ages past its validity window. The architecture to build toward is a threshold-triggered state machine that re-evaluates compliance whenever upstream evidence changes — which the institutional learnings already name as the right model. The user interface for this isn't a "start audit" button. It's a compliance health feed.</p>
+
+        <div class="card-basis">
+          <span class="basis-tag dir">direct</span>
+          <span class="basis-text">"Threshold-triggered compliance state machine inverts periodic review" — named as a past institutional learning. "Batch-mode compliance with no drift detection — evidence ages between cycles" — user-named pain point #5.</span>
+        </div>
+
+        <div class="card-fields">
+          <div class="card-field">
+            <div class="field-label">Why it matters</div>
+            <div class="field-value">Eliminates the gap between audits where a supplier falls out of compliance without anyone knowing. Converts a one-time annual cost into continuous value — retention follows from the platform becoming operationally necessary, not just useful at audit time.</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Downsides</div>
+            <div class="field-value">Buyers and suppliers are mentally anchored to the project model — "in compliance" as a binary state, once a year. Selling continuous compliance requires re-educating the customer on what they're buying. Real-time re-evaluation requires reliable evidence freshness signals.</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Confidence</div>
+            <div class="field-value">High — 90%</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Complexity</div>
+            <div class="field-value">Medium (state machine + evidence TTL modeling)</div>
+          </div>
+        </div>
+        <div class="card-meeting-test">
+          <strong>Meeting test</strong>The institutional learnings already name this architecture. Whether to build toward it for the Nestle pilot or defer it to a later phase is a sequencing decision the team needs to make explicitly.
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 3 ─────────────────────────────── -->
+    <article class="idea-card" id="idea-3">
+      <div class="card-accent-bar bar-encoding"></div>
+      <div class="card-body">
+        <div class="card-top-row">
+          <h2 class="card-title">Gap Detection as Zero-Standard Onboarding</h2>
+          <span class="card-axis-tag tag-encoding">standard encoding</span>
+        </div>
+        <div class="card-frame-tag">constraint-flipping · B1 — what if the platform encoded zero standards to start?</div>
+        <p class="card-description">The platform currently onboards a new customer by encoding their compliance standard in the DSL. This requires an Athian-side encoding effort before the customer sees any value. The flip: launch with no pre-built standard library. Instead, the customer onboards by uploading their existing compliance questionnaire — the PDF, Excel sheet, or Word document they already send to suppliers. The platform generates a DSL draft from it, highlighting every requirement that is structurally ambiguous, every threshold that lacks a unit, every field that accepts multiple answer types. The gap report is what the customer sees first. Encoding is the natural follow-on. This inverts the sales motion: instead of "we have your standard, come see it," the pitch is "let us show you what's structurally broken in what you're already sending to suppliers."</p>
+
+        <div class="card-diagram" aria-label="Diagram: gap detection as the onboarding wedge before full encoding">
+          <svg viewBox="0 0 740 130" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Gap detection as onboarding wedge: customer uploads questionnaire, AI generates DSL draft with highlighted ambiguities, gap report is the first deliverable, encoding follows.">
+            <defs>
+              <marker id="arr3" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                <path d="M0,0 L7,3.5 L0,7 Z" fill="#5E6A82"/>
+              </marker>
+              <marker id="arr4" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                <path d="M0,0 L7,3.5 L0,7 Z" fill="#39FF6A"/>
+              </marker>
+            </defs>
+            <!-- Step 1: Upload -->
+            <rect x="20" y="45" width="100" height="40" rx="2" fill="#1E2839" stroke="#2D3A52"/>
+            <text x="70" y="62" font-family="'JetBrains Mono', monospace" font-size="9" fill="#A0AABF" text-anchor="middle">Customer uploads</text>
+            <text x="70" y="75" font-family="'JetBrains Mono', monospace" font-size="9" fill="#A0AABF" text-anchor="middle">questionnaire</text>
+            <!-- arrow -->
+            <line x1="120" y1="65" x2="155" y2="65" stroke="#5E6A82" stroke-width="1.2" marker-end="url(#arr3)"/>
+            <!-- Step 2: AI draft -->
+            <rect x="155" y="45" width="115" height="40" rx="2" fill="#1E2839" stroke="#2D3A52"/>
+            <text x="212" y="62" font-family="'JetBrains Mono', monospace" font-size="9" fill="#A0AABF" text-anchor="middle">AI generates</text>
+            <text x="212" y="75" font-family="'JetBrains Mono', monospace" font-size="9" fill="#A0AABF" text-anchor="middle">DSL draft</text>
+            <!-- arrow -->
+            <line x1="270" y1="65" x2="305" y2="65" stroke="#5E6A82" stroke-width="1.2" marker-end="url(#arr3)"/>
+            <!-- Step 3: Gap report - the wedge -->
+            <rect x="305" y="38" width="120" height="54" rx="2" fill="rgba(92,240,255,0.06)" stroke="#5CF0FF"/>
+            <text x="365" y="57" font-family="'Source Serif 4', Georgia, serif" font-size="10" fill="#5CF0FF" text-anchor="middle" font-style="italic">Gap report</text>
+            <text x="365" y="72" font-family="'JetBrains Mono', monospace" font-size="8" fill="#5E6A82" text-anchor="middle">first deliverable</text>
+            <text x="365" y="84" font-family="'JetBrains Mono', monospace" font-size="8" fill="#5E6A82" text-anchor="middle">→ immediate value</text>
+            <!-- arrow -->
+            <line x1="425" y1="65" x2="460" y2="65" stroke="#1A7A32" stroke-width="1.2" marker-end="url(#arr4)"/>
+            <!-- Step 4: Full encoding -->
+            <rect x="460" y="45" width="100" height="40" rx="2" fill="rgba(57,255,106,0.06)" stroke="#1A7A32"/>
+            <text x="510" y="62" font-family="'Source Serif 4', Georgia, serif" font-size="10" fill="#39FF6A" text-anchor="middle">Full encoding</text>
+            <text x="510" y="75" font-family="'JetBrains Mono', monospace" font-size="8" fill="#5E6A82" text-anchor="middle">natural follow-on</text>
+            <!-- label below gap report -->
+            <text x="365" y="108" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="#5E6A82" text-anchor="middle">the sales wedge</text>
+          </svg>
+        </div>
+
+        <div class="card-basis">
+          <span class="basis-tag rsn">reasoned</span>
+          <span class="basis-text">The largest friction in DSL onboarding is the blank-page problem — a new standard encoding starts from nothing. Buyers already have compliance programs expressed in existing questionnaires. SBOM tooling grew because it auto-generated SBOMs from existing manifests rather than requiring manual authoring. The gap report turns the encoding effort into a consulting deliverable the customer pays for, not a cost Athian absorbs before revenue.</span>
+        </div>
+
+        <div class="card-fields">
+          <div class="card-field">
+            <div class="field-label">Why it matters</div>
+            <div class="field-value">Changes how the platform enters a new customer relationship. Time-to-first-assessment is a key metric (STRATEGY.md); gap detection delivers value in a single session. Also generates leads from the customer's own existing compliance burden rather than requiring a known standard.</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Downsides</div>
+            <div class="field-value">AI-generated DSL drafts from unstructured questionnaires will be noisy — requires a human review pass before encoding is live. The gap report may expose weaknesses in a buyer's own compliance program, which some customers will resist.</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Confidence</div>
+            <div class="field-value">High — 85%</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Complexity</div>
+            <div class="field-value">Medium (document ingestion + DSL draft generation)</div>
+          </div>
+        </div>
+        <div class="card-meeting-test">
+          <strong>Meeting test</strong>This changes the Nestle onboarding motion and the sales story simultaneously — it warrants team discussion before the POC scope is finalized.
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 4 ─────────────────────────────── -->
+    <article class="idea-card" id="idea-4">
+      <div class="card-accent-bar bar-evidence"></div>
+      <div class="card-body">
+        <div class="card-top-row">
+          <h2 class="card-title">Ambient Evidence Pull</h2>
+          <span class="card-axis-tag tag-evidence">evidence collection</span>
+        </div>
+        <div class="card-frame-tag">assumption-breaking + constraint-flipping · A2 + B3 merged — what if evidence was never collected from suppliers?</div>
+        <p class="card-description">The platform assumes evidence originates with the supplier: they submit documents, fill out attestations, answer questionnaires. The assumption to break: evidence doesn't have to come from suppliers. For a meaningful portion of compliance requirements in livestock and food safety, authoritative evidence exists elsewhere — USDA databases, breed registries, veterinary pharmacy records, satellite-derived pasture and land-use datasets, load boards, feed mill certificates. Instead of asking suppliers to submit evidence, the platform pulls it from the authoritative source directly, and the supplier's role changes from submitter to authorizer. One-time authorization replaces every annual questionnaire for evidence types where a third-party source exists. Supplier experience becomes consent management, not data entry. This is the Evidence Wallet insight applied specifically to evidence collection mechanics rather than to portability.</p>
+
+        <div class="card-basis">
+          <span class="basis-tag ext">external</span>
+          <span class="basis-text">Vanta/Drata pull evidence from 400+ API integrations — evidence stays attached to controls, not submitted per audit. W3C Verifiable Credentials 2.0 (published 2025) and the UN Transparency Protocol adopted VCs for greenwashing prevention — the infrastructure for cryptographically verifiable third-party assertions already exists. "Evidence pull beats evidence submission" is a named institutional learning.</span>
+        </div>
+
+        <div class="card-fields">
+          <div class="card-field">
+            <div class="field-label">Why it matters</div>
+            <div class="field-value">Solves portal fatigue at the source — if evidence lives at authoritative third parties and the platform pulls it, the supplier never touches a portal for those requirements. Eliminates re-entry as a problem class rather than managing it.</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Downsides</div>
+            <div class="field-value">Integration-first growth is expensive — building and maintaining 400 integrations is Vanta/Drata's moat, and they operate in SaaS where APIs are standard. Ag and food safety systems have no comparable API surface. Requires negotiating data access with USDA, breed registries, etc. High complexity, slow to scale.</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Confidence</div>
+            <div class="field-value">High — 82%</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Complexity</div>
+            <div class="field-value">High (integration partnerships, data access agreements)</div>
+          </div>
+        </div>
+        <div class="card-meeting-test">
+          <strong>Meeting test</strong>This is a multi-year infrastructure play, not a sprint. Whether to invest in two or three anchor integrations for the Nestle pilot — establishing the model — is a strategic question that affects the platform's architecture now.
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 5 ─────────────────────────────── -->
+    <article class="idea-card" id="idea-5">
+      <div class="card-accent-bar bar-supplier"></div>
+      <div class="card-body">
+        <div class="card-top-row">
+          <h2 class="card-title">Continuous Compliance Score with Decay</h2>
+          <span class="card-axis-tag tag-supplier">supplier experience</span>
+        </div>
+        <div class="card-frame-tag">constraint-flipping · B8 — invert pass/fail binary</div>
+        <p class="card-description">Compliance today is binary and batch: a supplier is compliant or non-compliant, determined once a year. The flip: replace the binary state with a continuous score (0–100) with component-level breakdown, and let evidence age visibly as a score decay. A supplier sees not just whether they're compliant but how much margin they have, which requirements are approaching their validity window, and exactly where points are being lost. Buyers set their own acceptance thresholds. Suppliers compete on score trajectory, not on a single pass/fail event. Evidence aging — currently invisible until it causes a failure — becomes a visible leading indicator. The platform's supplier-facing surface stops being a questionnaire portal and becomes a compliance health dashboard that suppliers have a reason to check between audit cycles.</p>
+
+        <div class="card-basis">
+          <span class="basis-tag rsn">reasoned</span>
+          <span class="basis-text">"Batch-mode compliance with no drift detection — evidence ages between cycles" is user-named pain point #5. Score decay directly inverts this: evidence aging becomes a visible continuous signal rather than an invisible failure accumulating between cycles. Financial materiality thresholds and SOC 2 control health feeds apply the same proportional-evidence-depth model — compliance health is not binary in either domain.</span>
+        </div>
+
+        <div class="card-fields">
+          <div class="card-field">
+            <div class="field-label">Why it matters</div>
+            <div class="field-value">Converts supplier engagement from annual obligation to continuous behavior. Gives suppliers a reason to maintain the platform relationship between audit cycles. Turns evidence aging from a hidden risk into a visible dashboard metric buyers and suppliers both monitor.</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Downsides</div>
+            <div class="field-value">A score model requires calibrating weights per requirement — poorly calibrated weights produce meaningless or gameable scores. Buyers may resist moving away from binary pass/fail because it simplifies procurement decisions. Score inflation is a risk if the AI applies weights too generously.</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Confidence</div>
+            <div class="field-value">High — 84%</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Complexity</div>
+            <div class="field-value">Medium (score modeling + decay function design)</div>
+          </div>
+        </div>
+        <div class="card-meeting-test">
+          <strong>Meeting test</strong>Score vs. binary is a product definition question that affects the entire supplier-facing UX — worth a dedicated conversation before the Nestle pilot spec is locked.
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 6 ─────────────────────────────── -->
+    <article class="idea-card" id="idea-6">
+      <div class="card-accent-bar bar-encoding"></div>
+      <div class="card-body">
+        <div class="card-top-row">
+          <h2 class="card-title">Meta-Schema from Shared Primitives</h2>
+          <span class="card-axis-tag tag-encoding">standard encoding</span>
+        </div>
+        <div class="card-frame-tag">assumption-breaking · A6</div>
+        <p class="card-description">The platform treats each new standard as a new encoding effort — a blank DSL document to be written for each compliance program. The assumption to break: standard diversity requires custom encoding per standard. Athian already owns four protocol DSLs (Bovaer, AMMP, Rumensin, Carbon Intensity), and they share structural primitives: threshold checks, document attestations, time-bounded claims, source-verified assertions. Most requirements across any food safety or ESG standard are compositions of these same few types. A meta-schema layer would expose a library of typed primitives that new standards are assembled from, rather than authored from scratch. The encoding effort becomes configuration — picking primitives and setting values — rather than authoring. Time to onboard a standard (a key STRATEGY.md metric) drops from weeks to hours for standards that fit the primitive library.</p>
+
+        <div class="card-basis">
+          <span class="basis-tag rsn">reasoned</span>
+          <span class="basis-text">Athian's four existing DSLs (Bovaer, AMMP, Rumensin, Carbon Intensity) share structural primitives by inspection — all involve threshold checks against measured values, time-bounded claims, and attestation from accepted sources. NIST OSCAL uses a three-layer catalog→profile→plan model precisely because control requirements across frameworks share structural primitives; the catalog is the primitive library. Standard onboarding speed is a named STRATEGY.md metric — this directly addresses it.</span>
+        </div>
+
+        <div class="card-fields">
+          <div class="card-field">
+            <div class="field-label">Why it matters</div>
+            <div class="field-value">Makes standard onboarding a configuration problem rather than an engineering problem. Dramatically lowers the cost for the secondary persona (third-party auditing firms) who want to expand business by onboarding new standards faster.</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Downsides</div>
+            <div class="field-value">Building a robust primitive library requires generalizing from a small sample (4 existing DSLs) — early over-generalization locks in wrong abstractions. Standards with unusual structure won't fit, creating a two-tier system (configured standards vs. bespoke standards).</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Confidence</div>
+            <div class="field-value">Medium-High — 76%</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Complexity</div>
+            <div class="field-value">Medium (DSL refactor toward composable primitives)</div>
+          </div>
+        </div>
+        <div class="card-meeting-test">
+          <strong>Meeting test</strong>This is an architectural decision about the DSL — the load-bearing constraint. Royce and Mike need to weigh in on whether the current DSL structure supports this refactor before the team builds more standards against the current model.
+        </div>
+      </div>
+    </article>
+
+    <!-- ── Idea 7 ─────────────────────────────── -->
+    <article class="idea-card" id="idea-7">
+      <div class="card-accent-bar bar-lifecycle"></div>
+      <div class="card-body">
+        <div class="card-top-row">
+          <h2 class="card-title">DSL as Published Writable Standard</h2>
+          <span class="card-axis-tag tag-lifecycle">standard lifecycle</span>
+        </div>
+        <div class="card-frame-tag">assumption-breaking · A8</div>
+        <p class="card-description">The DSL is treated as an internal engineering artifact — a format Athian uses to encode standards it has ingested. The assumption to break: the DSL is a private tool. Reframe it as a publishable, versioned schema that trade associations and standard-setting bodies can write to directly. If the Sustainable Livestock Standard (or any industry certification body) publishes their requirements as a DSL file rather than a PDF, every audit platform that reads DSL gets automatic machine-readable coverage. Athian becomes the schema owner — analogous to how SBOM adoption followed procurement requirements once a format was mandated, or how NIST OSCAL's catalog format became the thing FedRAMP adopted for authorization packages. The DSL stops being the platform's internal encoding format and becomes the standard format for machine-readable compliance requirements in the livestock and food safety space.</p>
+
+        <div class="card-basis">
+          <span class="basis-tag ext">external</span>
+          <span class="basis-text">SBOM adoption followed procurement requirements (EO 14028) — the format itself was not the adoption driver, the mandate was. NIST OSCAL: near-zero adoption until FedRAMP adoption created the mandate. Both cases show that a published schema becomes the market standard only when a party with authority to require it requires it. Athian's path: one standard-setting body adopting DSL as their publication format creates a mandate downstream. The grounding names "machine-readable compliance logic gap for ESG/food safety is identifiable and unoccupied."</span>
+        </div>
+
+        <div class="card-fields">
+          <div class="card-field">
+            <div class="field-label">Why it matters</div>
+            <div class="field-value">Escapes the encoding treadmill — each new standard becomes a configuration problem, not an Athian engineering project. Creates a network effect: every new standard-setter who adopts DSL generates demand for the platform without Athian lifting a hand.</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Downsides</div>
+            <div class="field-value">Requires ecosystem development and a partnership with at least one standard-setting body willing to publish in DSL format — a multi-year, relationship-intensive play. The window to own the format is real but may be short if EcoVadis or a larger player moves first.</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Confidence</div>
+            <div class="field-value">Medium — 68%</div>
+          </div>
+          <div class="card-field">
+            <div class="field-label">Complexity</div>
+            <div class="field-value">High (ecosystem and partnership play; multi-year)</div>
+          </div>
+        </div>
+        <div class="card-meeting-test">
+          <strong>Meeting test</strong>This is a platform vs. product strategic question — whether Athian wants to own a compliance format standard, not just a compliance platform. It belongs in a Series A conversation as much as an engineering one.
+        </div>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- ── Rejection summary ──────────────────────── -->
+  <section class="rejection-section" aria-label="Rejection summary">
+    <div class="section-label">Rejection summary — 5 candidates cut</div>
+    <table class="rejection-table">
+      <thead>
+        <tr>
+          <th style="width:28%">Candidate</th>
+          <th>Reason rejected</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="rejected-title">A3 — Compliance as Policy Graph</span>Assumption-breaking · standard encoding</td>
+          <td>Too architectural without a user-facing payoff on its own — the DSL is already implicitly a policy graph; surfacing this framing doesn't change the product until the meta-schema idea (A6) gives it a concrete expression.</td>
+        </tr>
+        <tr>
+          <td><span class="rejected-title">A4 — Supplier OS Reframe</span>Assumption-breaking · supplier experience</td>
+          <td>Substantially captured in the existing Supplier Evidence Wallet institutional learning (W3C Verifiable Credentials, two-sided network play). Reframing the product's primary orientation as supplier-first is a separate strategic decision, not a product feature — better handled in a strategy session than an ideation candidate.</td>
+        </tr>
+        <tr>
+          <td><span class="rejected-title">B4 — Compliance Oracle Model</span>Constraint-flipping · evidence collection</td>
+          <td>Overlaps substantially with Ambient Evidence Pull (B3/A2 merged). The oracle framing adds the idea that suppliers with no audit footprint fail by default — a viable angle, but not strong enough to justify a separate card over the merged idea's cleaner framing.</td>
+        </tr>
+        <tr>
+          <td><span class="rejected-title">B6 — Athian as Standard-Setter</span>Constraint-flipping · standard lifecycle</td>
+          <td>Subject-replacement risk — publishing an Athian-native standard that buyers adopt means abandoning third-party standard encoding rather than improving it. Requires market adoption before it generates any revenue. The DSL-as-published-standard idea (A8) achieves a similar strategic position without requiring Athian to invent the standard itself.</td>
+        </tr>
+        <tr>
+          <td><span class="rejected-title">B7 — Risk-Tiered AI Approval</span>Constraint-flipping · review &amp; reporting</td>
+          <td>Duplicate of Specialist as Exception Arbiter (A7+B2 merged) — risk tiering is the implementation mechanism for the exception-arbiter model, not a distinct idea. The merged idea is stronger because it names the structural shift, not the threshold-setting detail.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer class="composition-signal">
+    Composed 2026-06-22 by ce-ideate · frames: assumption-breaking + constraint-flipping · Athian Compliance platform
+  </footer>
+
+</div>

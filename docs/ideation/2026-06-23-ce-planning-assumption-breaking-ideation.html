@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ideation: CE Planning — Assumption-Breaking & Constraint-Flipping</title>
+<style>
+  :root {
+    --ground:       #F0EEE8;
+    --ground-mid:   #E4E1D8;
+    --ground-dark:  #D4D0C5;
+    --text:         #1C1F1A;
+    --text-muted:   #5C6059;
+    --text-faint:   #8A9087;
+    --accent:       #C4903A;
+    --accent-soft:  #F5EADB;
+    --accent-dim:   #8A6228;
+    --accent2:      #3A6B8A;
+    --accent2-soft: #DDE8EF;
+    --accent2-dim:  #2A4D65;
+    --border:       #C8C4B8;
+    --border-strong:#9A9690;
+    --red-soft:     #F2DDD8;
+    --red-dim:      #8A3228;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 15px; scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--ground);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    font-weight: 300;
+    line-height: 1.65;
+  }
+
+  /* ── MASTHEAD ── */
+  .masthead {
+    border-bottom: 2px solid var(--text);
+    padding: 2.5rem 0 1.75rem;
+  }
+  .masthead-inner {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 0 2.5rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    align-items: end;
+  }
+  .masthead-eyebrow {
+    font-family: 'IBM Plex Mono', 'Courier New', monospace;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+  .masthead-title {
+    font-size: 1.75rem;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+  .masthead-meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  /* ── FRAME STRIP ── */
+  .frame-strip {
+    background: var(--text);
+    color: var(--ground);
+    padding: 0.9rem 0;
+  }
+  .frame-strip-inner {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 0 2.5rem;
+    display: flex;
+    gap: 2rem;
+    align-items: baseline;
+    flex-wrap: wrap;
+  }
+  .frame-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ground-dark);
+    flex-shrink: 0;
+  }
+  .frame-tag {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--ground);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 500;
+    padding: 0.15rem 0.5rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-right: 0.4rem;
+  }
+  .frame-tag.frame2 {
+    background: var(--accent2);
+  }
+
+  /* ── LAYOUT ── */
+  .container {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 0 2.5rem;
+  }
+
+  /* ── PREAMBLE ── */
+  .preamble {
+    padding: 2rem 0 0;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2rem;
+  }
+  .preamble p {
+    max-width: 680px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+  .preamble p:last-child { margin-bottom: 0; }
+
+  /* ── ASSUMPTION / FLIP INDICATORS ── */
+  .what-breaks {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.12rem 0.45rem;
+    border: 1px solid var(--accent-dim);
+    color: var(--accent-dim);
+    background: var(--accent-soft);
+    margin-right: 0.3rem;
+    white-space: nowrap;
+  }
+  .what-breaks.flip {
+    border-color: var(--accent2-dim);
+    color: var(--accent2-dim);
+    background: var(--accent2-soft);
+  }
+
+  /* ── IDEA CARD ── */
+  .ideas-section {
+    padding: 2.5rem 0;
+  }
+  .ideas-section-header {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 1.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .idea {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 0 2rem;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .idea:last-child { border-bottom: none; }
+
+  .idea-number {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--ground-dark);
+    line-height: 1;
+    padding-top: 0.2rem;
+    letter-spacing: -0.03em;
+  }
+
+  .idea-body {}
+
+  .idea-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-bottom: 0.6rem;
+    align-items: center;
+  }
+
+  .idea-title {
+    font-size: 1.05rem;
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.75rem;
+  }
+
+  .idea-summary {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    max-width: 720px;
+    margin-bottom: 1rem;
+    line-height: 1.7;
+  }
+
+  /* ── METADATA GRID ── */
+  .idea-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem 1.5rem;
+    background: var(--ground-mid);
+    padding: 1rem 1.25rem;
+    margin-top: 0.25rem;
+  }
+  .meta-item {}
+  .meta-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 0.2rem;
+  }
+  .meta-value {
+    font-size: 0.8rem;
+    color: var(--text);
+    line-height: 1.45;
+  }
+  .meta-value code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    background: var(--ground-dark);
+    padding: 0.05rem 0.3rem;
+  }
+  .meta-value.axis-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+
+  /* ── MEETING TEST CALLOUT ── */
+  .meeting-test {
+    border-left: 3px solid var(--accent);
+    padding: 0.6rem 1rem;
+    margin-top: 0.75rem;
+    background: var(--accent-soft);
+  }
+  .meeting-test-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-dim);
+    margin-bottom: 0.2rem;
+  }
+  .meeting-test p {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    font-style: italic;
+  }
+
+  /* ── REJECTED IDEAS ── */
+  .rejected-section {
+    padding: 2rem 0 2.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .rejected-section h2 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 1rem;
+  }
+  .rejected-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .rejected-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.75rem;
+    align-items: baseline;
+    font-size: 0.82rem;
+  }
+  .rejected-name {
+    font-weight: 500;
+    color: var(--text-muted);
+    text-decoration: line-through;
+    text-decoration-color: var(--border-strong);
+  }
+  .rejected-reason {
+    color: var(--text-faint);
+  }
+
+  /* ── FOOTER ── */
+  .page-footer {
+    border-top: 2px solid var(--text);
+    padding: 1.25rem 0;
+    margin-top: 1rem;
+  }
+  .page-footer-inner {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 0 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .footer-note {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-faint);
+  }
+
+  /* ── AXES REFERENCE ── */
+  .axes-bar {
+    background: var(--ground-mid);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+  }
+  .axes-bar-inner {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 0 2.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.5rem;
+    align-items: center;
+  }
+  .axes-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    flex-shrink: 0;
+    margin-right: 0.5rem;
+  }
+  .axis-pill {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 0.1rem 0.45rem;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 680px) {
+    .masthead-inner { grid-template-columns: 1fr; }
+    .masthead-meta { text-align: left; }
+    .idea { grid-template-columns: 2rem 1fr; gap: 0 1rem; }
+    .idea-meta { grid-template-columns: 1fr; }
+    .frame-strip-inner { gap: 0.75rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <div>
+      <div class="masthead-eyebrow">CE Ideation · Cross-repo planning</div>
+      <h1 class="masthead-title">Assumption-Breaking &amp; Constraint-Flipping<br>for CE Planning Storage</h1>
+    </div>
+    <div class="masthead-meta">
+      <div>2026-06-23</div>
+      <div>7 ideas · 1 rejected</div>
+      <div>Frames: Assumption-breaking</div>
+      <div>+ Constraint-flipping</div>
+    </div>
+  </div>
+</header>
+
+<!-- FRAME STRIP -->
+<div class="frame-strip">
+  <div class="frame-strip-inner">
+    <span class="frame-label">Active frames</span>
+    <span>
+      <span class="frame-tag">Assumption-breaking</span>
+      What is being treated as fixed that is actually a choice? Reframe one level up or sideways.
+    </span>
+    <span>
+      <span class="frame-tag frame2">Constraint-flipping</span>
+      Invert the obvious constraint to its opposite or extreme. Use the resulting design as a candidate.
+    </span>
+  </div>
+</div>
+
+<!-- AXES REFERENCE -->
+<div class="axes-bar">
+  <div class="axes-bar-inner">
+    <span class="axes-label">Axes covered</span>
+    <span class="axis-pill">storage location</span>
+    <span class="axis-pill">CLAUDE.md hierarchy</span>
+    <span class="axis-pill">session continuity</span>
+    <span class="axis-pill">discoverability</span>
+    <span class="axis-pill">artifact lifecycle</span>
+  </div>
+</div>
+
+<!-- PREAMBLE -->
+<div class="container">
+  <div class="preamble">
+    <p>The prior ideation pass (2026-06-23 — same day) covered the planning-repo, spine, and lifecycle-trigger ideas. Those are the pattern-matching answers. These ideas cut against what that run treated as given: that artifacts need repos, that persistence requires saving, that the team finds things by searching, that the session boundary is the unit of continuity.</p>
+    <p>Each idea is generated from one of two frames: an assumption being treated as fixed, or a constraint inverted to its extreme. Basis tags reference the grounding document directly.</p>
+  </div>
+</div>
+
+<!-- IDEAS -->
+<div class="container">
+  <div class="ideas-section">
+    <div class="ideas-section-header">Ideas — 7 survivors</div>
+
+    <!-- IDEA 01 -->
+    <div class="idea">
+      <div class="idea-number">01</div>
+      <div class="idea-body">
+        <div class="idea-tags">
+          <span class="what-breaks">Assumption-breaking</span>
+          <span class="what-breaks flip">Constraint-flipping: storage</span>
+        </div>
+        <h2 class="idea-title">Linear is the repo. Kill the docs/ directory for planning.</h2>
+        <p class="idea-summary">The assumption: planning artifacts belong in a repo. The flip: Linear already is a structured, version-controlled, cross-repo planning layer — with documents, projects, milestones, and a rich text editor. The constraint "must be in a repo" exists because the team wants planning artifacts version-controlled and findable. Linear satisfies both, plus it surfaces to the whole team automatically. Rather than creating a planning repo with <code>_plans/</code> and frontmatter, write CE planning outputs directly into Linear documents attached to the relevant project (e.g., "Nestle Pilot" project in Linear). The artifact lives where decisions get acted on, not in a directory no one opens unless they know to look.</p>
+        <div class="idea-meta">
+          <div class="meta-item">
+            <div class="meta-label">Axis</div>
+            <div class="meta-value axis-tag">storage location · discoverability</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Basis</div>
+            <div class="meta-value">direct: Jira → Linear migration active; Linear MCP server in use. reasoned: Linear documents are already the planning layer the team uses — adding a parallel repo-based system doubles storage without adding coverage.</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Assumption broken</div>
+            <div class="meta-value">"Planning artifacts belong in a repo" — actually they belong where the team acts on them. Linear is that place at Athian now.</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Constraint flipped</div>
+            <div class="meta-value">Budget from 0 to 10x: if you had 10x the tooling budget, you'd buy a dedicated planning layer. You already own one. The repo is the code; Linear is the plan.</div>
+          </div>
+        </div>
+        <div class="meeting-test">
+          <div class="meeting-test-label">Meeting test</div>
+          <p>"Why do we have a <code>docs/</code> directory for things that aren't documentation?" — if no one can answer that without defending inertia, this idea wins the room.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- IDEA 02 -->
+    <div class="idea">
+      <div class="idea-number">02</div>
+      <div class="idea-body">
+        <div class="idea-tags">
+          <span class="what-breaks">Assumption-breaking</span>
+        </div>
+        <h2 class="idea-title">Abolish docs/. CLAUDE.md files are the only documentation system.</h2>
+        <p class="idea-summary">The assumption: AI context (CLAUDE.md) and planning artifacts (docs/) are different things. They are not. A planning artifact that doesn't end up in a CLAUDE.md gets read once and forgotten; a CLAUDE.md entry gets included in every subsequent session automatically. The flip: stop writing to <code>docs/ideation/</code> and <code>docs/plans/</code> entirely. CE outputs get distilled into the appropriate CLAUDE.md file — workspace-level decisions go into <code>/Athian/CLAUDE.md</code>, repo-level patterns into the per-repo CLAUDE.md, cross-repo decisions into the workspace layer with explicit <code>@import</code> directives. Discoverability comes from the context hierarchy, not from a directory tree. The artifact is the context, not a record of what the context used to be.</p>
+        <div class="idea-meta">
+          <div class="meta-item">
+            <div class="meta-label">Axis</div>
+            <div class="meta-value axis-tag">CLAUDE.md hierarchy · discoverability · artifact lifecycle</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Basis</div>
+            <div class="meta-value">direct: three-tier CLAUDE.md hierarchy "partially in place"; @-import for canonical shared.md noted in grounding. external: research on master reference documents (arXiv 2604.04258) shows single evolving doc raises AI quality — the CLAUDE.md already serves this role. reasoned: docs/ adds a second system that the first system (CLAUDE.md) already covers better.</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Assumption broken</div>
+            <div class="meta-value">"AI context and planning artifacts are different things" — a decision that doesn't reach the AI context on the next session hasn't been documented, it's been archived.</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Risk</div>
+            <div class="meta-value">CLAUDE.md bloat if every CE output gets distilled in. Needs a strict discipline: CLAUDE.md gets the decision, not the reasoning. Reasoning goes to Linear if it needs to be preserved at all.</div>
+          </div>
+        </div>
+        <div class="meeting-test">
+          <div class="meeting-test-label">Meeting test</div>
+          <p>"When's the last time you opened <code>docs/solutions/</code> without being in a CE session?" — if the answer is "never," the directory exists for the AI, and the AI should just read its own files.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- IDEA 03 -->
+    <div class="idea">
+      <div class="idea-number">03</div>
+      <div class="idea-body">
+        <div class="idea-tags">
+          <span class="what-breaks">Assumption-breaking</span>
+          <span class="what-breaks flip">Constraint-flipping: session boundary</span>
+        </div>
+        <h2 class="idea-title">Sessions are stateless by design. The only persistence is the commit or the issue.</h2>
+        <p class="idea-summary">The assumption: session continuity requires saving the artifact. The flip: what if sessions are designed to be stateless, and the only thing that outlives a session is a git commit or a Linear issue? The <code>done</code> skill already writes a session log — but the log is itself another artifact to manage. Invert this: instead of the session log as the persistence layer, treat every CE session as ephemeral by design. The session produces exactly one durable output: either a commit (code changes, CLAUDE.md updates) or a Linear issue (decision recorded, work item created). No <code>docs/</code>, no handoff files, no session logs. The HANDOFF.md currently in <code>/Athian/</code> is a symptom of this: it exists because sessions aren't designed to end cleanly, so there's residue to hand off.</p>
+        <div class="idea-meta">
+          <div class="meta-item">
+            <div class="meta-label">Axis</div>
+            <div class="meta-value axis-tag">session continuity · artifact lifecycle</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Basis</div>
+            <div class="meta-value">direct: HANDOFF.md exists in /Athian/ — a real symptom of session residue that doesn't have a clean home. direct: done skill writes session log. reasoned: if the session log is the continuity mechanism, then every session requires reading the session log — which is a fixed cost that compounds. A Linear issue costs zero to read the next time you open the project.</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Constraint flipped</div>
+            <div class="meta-value">Zero sessions to continue → no session boundary problem. Each session is a complete unit. If you need to continue, you open the Linear issue — which was always the right artifact.</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">What this costs</div>
+            <div class="meta-value">Exploratory sessions (ideation, brainstorming) don't always produce a commit or an issue. Needs a third option: "close without output, intentionally" — the session is the thinking, and that's allowed.</div>
+          </div>
+        </div>
+        <div class="meeting-test">
+          <div class="meeting-test-label">Meeting test</div>
+          <p>"What does a well-run CE session produce?" — if the answer isn't instantly obvious, the system is accumulating artifacts instead of decisions.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- IDEA 04 -->
+    <div class="idea">
+      <div class="idea-number">04</div>
+      <div class="idea-body">
+        <div class="idea-tags">
+          <span class="what-breaks">Assumption-breaking</span>
+        </div>
+        <h2 class="idea-title">Location is determined at commit time by frontmatter, not by where you ran the session.</h2>
+        <p class="idea-summary">The assumption: humans should decide where to commit artifacts. The flip: the artifact carries its own routing instructions in frontmatter, and the <code>done</code> skill reads those to determine where to commit, not where the session happened to start. A CE output with <code>repos: [duita, sus-plat]</code> and <code>type: decision</code> gets committed to the workspace CLAUDE.md automatically. An output with <code>type: plan</code> and <code>milestone: Nestle POC</code> creates a Linear issue and commits a plan file to the designated planning location. The session runner doesn't think about storage — they think about the artifact. This is the "humans shouldn't decide where to commit" constraint flipped: the system routes, the human authors.</p>
+        <div class="idea-meta">
+          <div class="meta-item">
+            <div class="meta-label">Axis</div>
+            <div class="meta-value axis-tag">artifact lifecycle · session continuity</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Basis</div>
+            <div class="meta-value">direct: docs/solutions/ YAML frontmatter pattern already in use (module, tags, problem_type). direct: done skill already writes session log. reasoned: the frontmatter convention is already installed — extend it rather than add a new system. The routing logic is a small addition to the done skill or a post-hook.</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Assumption broken</div>
+            <div class="meta-value">"Humans should decide where to commit artifacts" — the human already made this decision when they wrote the frontmatter. The commit is mechanical from there.</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Implementation note</div>
+            <div class="meta-value">Requires: (1) frontmatter schema extended with <code>type:</code>, <code>repos:</code>, <code>commit_to:</code>. (2) done skill updated to read frontmatter and route. (3) a small Linear MCP call for <code>type: issue</code> outputs. All three are small — the n8n pipeline already validates this pattern.</div>
+          </div>
+        </div>
+        <div class="meeting-test">
+          <div class="meeting-test-label">Meeting test</div>
+          <p>"Should a planning artifact know where it belongs?" — yes, obviously. Everything else in software that knows where it belongs gets routed automatically. Artifacts shouldn't be different.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- IDEA 05 -->
+    <div class="idea">
+      <div class="idea-number">05</div>
+      <div class="idea-body">
+        <div class="idea-tags">
+          <span class="what-breaks">Assumption-breaking</span>
+        </div>
+        <h2 class="idea-title">The organizing unit is the person, not the repo. Planning lives in dotfiles.</h2>
+        <p class="idea-summary">The assumption: the repos are the right unit of organization for planning work. The flip: planning context is personal — it belongs to Dory, not to <code>duita</code> or <code>sus-plat</code>. The dotfiles repo (<code>/Users/doryweiss/dotfiles/</code>) is already in use (CLAUDE.md with voice spec). Add a <code>work/</code> directory there: cross-repo planning context, active decisions, a personal ADR log. Each repo gets only the CLAUDE.md it needs via <code>--add-dir</code>. The workspace-level context (what Dory is working on, what decisions she's made across repos) lives with her, not with any repo. When she hands something off, she exports the relevant slice to Linear. The repos stay clean; the person carries the context.</p>
+        <div class="idea-meta">
+          <div class="meta-item">
+            <div class="meta-label">Axis</div>
+            <div class="meta-value axis-tag">storage location · CLAUDE.md hierarchy</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Basis</div>
+            <div class="meta-value">direct: dotfiles repo at /Users/doryweiss/dotfiles/ with CORE_VOICE.md, VOICE_CHECKLIST.md, VOICE_EXAMPLES.md already structured. direct: Claude Code --add-dir flag and CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 available. reasoned: the HANDOFF.md in /Athian/ is personal working state that doesn't belong to any repo — it should live with the person.</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Assumption broken</div>
+            <div class="meta-value">"The repos are the right unit of organization for planning work" — for code, yes. For decisions about what to do next across multiple repos, the person is the right unit.</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Risk</div>
+            <div class="meta-value">Doesn't solve team discoverability if Dory is the only one who can see her dotfiles. Correct response: when work is done and a decision is made, it moves to Linear. Personal planning context is personal; shared decisions are shared.</div>
+          </div>
+        </div>
+        <div class="meeting-test">
+          <div class="meeting-test-label">Meeting test</div>
+          <p>"Who needs to find this artifact — and when?" — if the answer is "me, during a session," dotfiles. If the answer is "the team, after the session," Linear. The question resolves the storage decision.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- IDEA 06 -->
+    <div class="idea">
+      <div class="idea-number">06</div>
+      <div class="idea-body">
+        <div class="idea-tags">
+          <span class="what-breaks flip">Constraint-flipping: scale to 1</span>
+        </div>
+        <h2 class="idea-title">Design for 1 engineer. Grep is discovery. Everything else is premature infrastructure.</h2>
+        <p class="idea-summary">The constraint flip: if this were a team of 1, there would be no discoverability problem at all. The only person who needs to find an artifact is the person who made it — and they remember roughly when and why. <code>grep -r "Nestle" /Users/doryweiss/Athian/docs/</code> is instant. A tagging system, a planning manifest, a cross-repo routing layer — all of these are solutions to a team-scale discoverability problem that doesn't yet exist at Athian's actual size. The right design for a team of 4 engineers (under 10) is: flat, readable, grep-able. The investment in a more elaborate system should be triggered by the first time grep fails, not anticipated in advance. This idea isn't "do nothing" — it's "the simplest thing that actually works at your current scale, deferred scaling infrastructure until scale forces it."</p>
+        <div class="idea-meta">
+          <div class="meta-item">
+            <div class="meta-label">Axis</div>
+            <div class="meta-value axis-tag">discoverability · storage location</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Basis</div>
+            <div class="meta-value">direct: "Small team driving AI adoption culturally" — team under 10 engineers. reasoned: discoverability infrastructure (tagging, manifests, routing) produces compounding value only at team scale. At 1-4 engineers, grep + Linear + memory covers 95% of cases. external: YAGNI applied to organizational infrastructure, not just code.</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Constraint flipped</div>
+            <div class="meta-value">Team of 1 → no discoverability system needed, ever. Team of 100 → complex routing and tagging essential. At ~4 engineers: the minimum viable system is a flat directory + grep + Linear for shared decisions. Period.</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">What this changes</div>
+            <div class="meta-value">The docs/ directory stays, but the frontmatter schema, the routing conventions, and the planning manifest get deferred. One decision: "cross-repo planning context lives in /Athian/ and is grep-able." That's the whole system.</div>
+          </div>
+        </div>
+        <div class="meeting-test">
+          <div class="meeting-test-label">Meeting test</div>
+          <p>"Has grep ever failed to find a CE artifact?" — if the answer is no, the discoverability system you're designing is solving a hypothetical problem. Ship the simplest thing; revisit when grep fails.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- IDEA 07 -->
+    <div class="idea">
+      <div class="idea-number">07</div>
+      <div class="idea-body">
+        <div class="idea-tags">
+          <span class="what-breaks flip">Constraint-flipping: category</span>
+        </div>
+        <h2 class="idea-title">Plans are tests. Abandoned plans fail CI. Nothing gets "forgotten."</h2>
+        <p class="idea-summary">The category flip: what if CE planning artifacts were treated as test fixtures rather than documents? A plan file at <code>_plans/nestle-pilot.yaml</code> carries structured frontmatter (<code>repos</code>, <code>milestone</code>, <code>owner</code>, <code>status: active|closed|blocked</code>). A lightweight CI check (a GitHub Action on the workspace repo, if it's git-initialized) validates that every active plan file is complete — has all required fields — and that no plan has been in <code>status: active</code> for more than N days without a commit referencing it. Plans don't get abandoned; they rot visibly. A plan that hasn't been touched in 30 days produces a CI warning: "Plan nestle-pilot.yaml has had no referenced commits in 30 days — close it or update it." This is accountability as infrastructure: the system notices when planning artifacts diverge from what's actually happening.</p>
+        <div class="idea-meta">
+          <div class="meta-item">
+            <div class="meta-label">Axis</div>
+            <div class="meta-value axis-tag">artifact lifecycle · discoverability</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Basis</div>
+            <div class="meta-value">direct: docs/solutions/ YAML frontmatter already in use — machine-readable shape exists. direct: NO cross-repo relationship layer exists — plans currently have no lifecycle visibility. reasoned: the HANDOFF.md in /Athian/ contains next steps that have no enforcement mechanism; this treats that problem structurally rather than procedurally.</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Constraint flipped</div>
+            <div class="meta-value">Category flip: plans are docs (soft, ignored, forgotten) → plans are tests (assertions, enforced, visible). The workspace repo (if git-initialized) gets a GitHub Action. Cost: one yaml file, one workflow.</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Aesthetic risk</div>
+            <div class="meta-value">This is the sharpest idea here and the one most likely to be rejected as "too much." It is also the only one that makes planning artifacts structurally accountable rather than culturally expected. "We'll keep it updated" is not a system; CI is a system.</div>
+          </div>
+        </div>
+        <div class="meeting-test">
+          <div class="meeting-test-label">Meeting test</div>
+          <p>"How do you know when a plan is abandoned vs. just paused?" — if the answer is "we check manually" or "we don't really," this idea is the only one that closes that gap without depending on discipline.</p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /ideas-section -->
+
+  <!-- REJECTED IDEAS -->
+  <div class="rejected-section">
+    <h2>Rejected — warm-up ideas dropped</h2>
+    <div class="rejected-list">
+      <div class="rejected-item">
+        <span class="rejected-name">True monorepo migration</span>
+        <span class="rejected-reason">Subsumes the actual problem. Migrating platform + sus-plat + duita into one monorepo is a multi-month engineering project that answers a different question than "where do CE planning outputs live." Dropped as orthogonal and overscaled.</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- FOOTER -->
+<footer class="page-footer">
+  <div class="page-footer-inner">
+    <span class="footer-note">ce-ideate · frames: assumption-breaking, constraint-flipping · 2026-06-23</span>
+    <span class="footer-note">7 survivors · 1 rejected · companion to 2026-06-23-ce-planning-storage-ideation.html</span>
+  </div>
+</footer>
+
+</body>
+</html>
