@@ -1,2 +1,2 @@
 # athian-vault
-Vault for syncing Obsidian files
+Version control for Athian projects and processes
