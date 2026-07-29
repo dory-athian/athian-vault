@@ -1,13 +1,13 @@
 ---
 name: Athian Compliance
-last_updated: 2026-06-22
+last_updated: 2026-07-27
 ---
 
 # Athian Compliance Strategy
 
 ## Target problem
 
-Compliance professionals—internal specialists at CPG companies and third-party auditors—spend the majority of their time on manual evidence collection and reconstruction rather than on the compliance judgment itself. There is no centralized system of record: every update requires recompiling evidence from scratch across email, surveys, and documents, a burden that falls on both the compliance pro and the supplier.
+Food service buyers (CPGs, QSRs, retailers) and their suppliers (co-ops, farmers, producers) spend the majority of their time on manual evidence collection and reconstruction rather than on the compliance judgment itself. There is no centralized system of record: every update requires recompiling evidence from scratch across email, surveys, and documents, a burden that falls on both the buyer's compliance team and the supplier — who re-answers the same questions separately for every buyer relationship.
 
 ## Our approach
 
@@ -15,9 +15,11 @@ We model compliance standards as structured, machine-readable specifications in 
 
 ## Who it's for
 
-**Primary:** Internal compliance specialist at a large CPG company — they're hiring Athian Compliance to automate evidence collection and pre-review across thousands of suppliers so they can focus on the compliance decision itself rather than data assembly.
+**Primary:** The buyer — an internal compliance team at a food service CPG, QSR, or retailer. They're hiring Athian Compliance to collect and pre-verify evidence across their entire supplier base without reconstructing it by hand each cycle. The buyer drives the sales motion today.
 
-**Secondary:** Third-party auditing firms (e.g., Sensiba) who want to expand business by onboarding new standards faster. This persona is gated on DSL onboarding being de-risked.
+**Secondary (network effect):** The supplier — a co-op, farmer, or producer. Initially pulled onto the platform because a buyer requires it, but because it makes data collection and reporting so easy, they'll want to use it for all of their buyer relationships. That stickiness is intended to become its own bottom-up sales engine.
+
+**Lower priority for now:** Third-party verification/validation bodies (VVB/CAB, e.g. Sensiba) who want to onboard new standards faster. Gated on DSL onboarding being de-risked.
 
 ## Key metrics
 
@@ -47,7 +49,14 @@ The full evidence exchange cycle: compliance user requesting and reviewing evide
 
 _Why it serves the approach:_ The primary persona's day-to-day experience — the UI that makes automated evidence collection and review usable in practice.
 
+### Trial Experience
+
+A self-serve trial where a prospect uploads a set of requirements (an internal policy, an industry scheme, a regulatory framework) plus a document or evidence, and sees whether it "complies." Aimed mostly at buyers, though nothing stops a supplier from trying it.
+
+_Why it serves the approach:_ Makes the offering tangible — substance over hype — by running the DSL and AI automation live on the prospect's own material. As it matures, it shortens the sales cycle.
+
 ## Milestones
 
-- **2026-07-01** — POC delivered to Nestle (AI automation output)
-- **2026-09-30** — Pilot delivered to Nestle (web app)
+- **2026-07-01** — Nestlé POC delivered successfully (AI automation output)
+- **2026-08 (mid-month)** — CDI audit begins (part of the Nestlé pilot arc)
+- **2026-09-30** — Pilot delivered to Nestlé (web app)
